@@ -1,0 +1,72 @@
+﻿body {
+    margin: 0; padding: 0;
+}
+
+/* random shit */
+.image-container{}
+.image-container img{width: 200px; box-shadow: 0 0 2px gray;}
+
+/* override */
+body .pesdk-react-header{display: none;}
+body .pesdk-react-subHeader.pesdk-react-subHeader__row{display: none;}
+body .pesdk-react-editor .pesdk-react-editorScreen{top: -30px;}
+
+/* hide react ui */
+body .pesdk-react-editor .pesdk-react-controls__table{display: none;}
+
+/* override background color */
+body .pesdk-react-editor .pesdk-react-screen,
+body .pesdk-react-editor .pesdk-react-controls__container__row,
+body .pesdk-react-editor .pesdk-react-canvas__container__row{background: rgb(255,255,255);}
+
+/* react ui reposition */
+body .pesdk-react-editor .pesdk-react-controls__container__cell{position: relative; bottom: -30px;}
+body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__overlay--large{margin-bottom: 30px;}
+
+/* custom */
+.image-editor{box-shadow: 0 0 2px gray;
+              width: 94%;
+              max-width: 900px;
+              height: 600px;
+              position: absolute;
+}
+.image-editor:not(.active){visibility: hidden;}
+.photo-editor-ui_nav{position: absolute;}
+.photo-editor-ui_nav button{margin: 10px;}
+.photo-editor-ui_nav-paging{}
+.photo-editor-ui_nav-paging .photo-editor-ui_pg-item {cursor: pointer; margin: 4px; width: 20px;}
+body .pesdk-react-canvas__canvas{border: 1px dotted gray;}
+
+/* photo editor ui */
+.photo-editor-ui_container{margin-top: -114px; position: relative; width: 100%; height: 26%; padding: 10px;}
+.photo-editor-ui_container > .photo-editor-ui_tab-contrll-container{}
+.photo-editor-ui_container > .photo-editor-ui_tab-control-container > span{display: inline-block; width: 26%; padding: 6px 2%; text-align: center; cursor: pointer; margin-left: 1%; border: 1px solid gray;}
+
+.photo-editor-ui_container > .photo-editor-ui_tab-container{width: 100%; overflow-x: auto;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div{ padding: 10px;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div:not(.active){display: none;}
+
+/* picture settings */
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div button{text-align: center; width: 100px; height: 100px; margin: 4px; cursor: pointer; border-radius: 50%; }
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_rotate-left{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_rotate-right{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_flip-h{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_flip-v{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_crop{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_resize{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_fitToScreen{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_resetAll{}
+
+.photo-editor-ui_lock-ratio.active{background-color: #2e2e2e; color: white;}
+
+/* color settings */
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_brightness{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_saturation{}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_contrast{}
+
+/* filter item */
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item{ display: inline-block; margin: 4px; cursor: pointer; width: 60px; height: 100px; text-align: center;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item img{width: 60px; height: 60px;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item div{color: gray;}
+
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_sub-controls-container{}

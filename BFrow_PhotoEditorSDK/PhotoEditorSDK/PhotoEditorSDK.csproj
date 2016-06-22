@@ -1,0 +1,664 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CD0CBD7C-9880-4735-8CB9-6AB0C7F512D2}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PhotoEditorSDK</RootNamespace>
+    <AssemblyName>PhotoEditorSDK</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>1.7</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\js\photo-editor.js" />
+    <Content Include="content\js\photo-editor.min.js" />
+    <Content Include="photo-editor.html" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\metal%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\metal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\glasses-nerd.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\glasses-normal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\glasses-shutter-green.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\glasses-shutter-yellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\glasses-sun.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\hat-cap.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\hat-cylinder.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\hat-party.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\hat-sheriff.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\heart.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\mustache-long.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\mustache1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\mustache2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\mustache3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\pipe.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\snowflake.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\base\star.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\glasses-nerd.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\glasses-normal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\glasses-shutter-green.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\glasses-shutter-yellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\glasses-sun.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\hat-cap.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\hat-cylinder.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\hat-party.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\hat-sheriff.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\heart.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\mustache-long.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\mustache1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\mustache2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\mustache3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\pipe.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\snowflake.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\stickers\thumb\star.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\close%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\close.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\brightness%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\brightness.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\contrast%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\contrast.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\exposure%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\exposure.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\highlights%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\highlights.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\saturation%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\saturation.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\shadows%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\adjustments\shadows.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\back%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\back.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\brush\thickness%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\brush\thickness.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\16-9%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\16-9.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\4-3%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\4-3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\custom%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\custom.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\square%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\crop\square.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\a15%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\a15.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\breeze%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\breeze.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\bw%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\bw.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\bwhard%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\bwhard.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\all%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\all.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\analog%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\analog.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\bw%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\bw.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\retro%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\retro.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\special%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\special.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\summer%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\summer.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\winter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\categories\winter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\celsius%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\celsius.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\chest%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\chest.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\fixie%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\fixie.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\food%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\food.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\fridge%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\fridge.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\glam%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\glam.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\gobblin%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\gobblin.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\identity%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\identity.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k1%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k2%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k6%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\k6.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\kdynamic%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\kdynamic.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\lenin%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\lenin.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\lomo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\lomo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\mellow%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\mellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\metal%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\metal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\morning%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\morning.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\orchid%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\orchid.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\pola%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\pola.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\pola669%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\pola669.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\quozi%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\quozi.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\semired%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\semired.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\sunny%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\sunny.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\texas%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\texas.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\x400%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\filters\x400.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\focus\linear%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\focus\linear.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\focus\radial%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\focus\radial.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\remove%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\remove.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\resize-diagonal-down%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\resize-diagonal-down.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\resize-diagonal-up%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\resize-diagonal-up.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\rotate%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\knobs\rotate.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\minus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\minus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\flip-h%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\flip-h.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\flip-v%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\flip-v.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\rotate-l%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\rotate-l.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\rotate-r%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\orientation\rotate-r.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\adjustments%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\adjustments.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\border%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\border.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\brush%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\brush.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\crop%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\crop.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\filters%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\filters.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\focus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\focus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\orientation%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\orientation.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\sticker%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\sticker.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\text%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\overview\text.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\plus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\plus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\flip-h%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\flip-h.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\flip-v%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\flip-v.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\remove%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\remove.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\take-to-front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\take-to-front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\take_to_front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\sprites\take_to_front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\all%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\all.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\beards%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\beards.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\glasses%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\glasses.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\hats%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\hats.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\misc%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\stickers\categories\misc.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_center%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_center.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_left%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_left.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_right%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\align_right.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\minus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\minus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\plus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\text\plus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\tick%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\tick.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\webcam\shutter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\controls\webcam\shutter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\export%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\export.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\new%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\new.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\undo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\editor\undo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\splash\add-photo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\splash\add-photo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\splash\shutter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\splash\shutter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\css\PhotoEditorReactUI.css" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\css\PhotoEditorReactUI.min.css" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorReactUI.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorReactUI.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorSDK.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorSDK.min.js" />
+    <Content Include="index-basic.html" />
+    <Content Include="packages.config" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\fonts\montserrat-light.woff" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\fonts\montserrat-regular.woff" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\SDK\ActionsState.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\ExportedImage.ts" />
+    <TypeScriptCompile Include="photo-editor.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Globals\Globals.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\SDKActions.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Globals\Version.ts" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\fonts\montserrat-light.woff" />
+    <Content Include="content\js\PhotoEditorSDK\3.3.0\assets\ui\react\fonts\montserrat-regular.woff" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="content\css\main.css" />
+    <Content Include="content\images\car.jpg" />
+    <Content Include="content\images\piano.jpeg" />
+    <Content Include="content\images\space.jpg" />
+    <Content Include="content\images\space2.jpg" />
+    <Content Include="content\images\vikings_go_wild.jpg" />
+    <Content Include="content\images\windows.jpg" />
+    <TypeScriptCompile Include="content\js\photo-editor\Editor\ImageEditor.ts" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\glasses-nerd.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\glasses-normal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\glasses-shutter-green.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\glasses-shutter-yellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\glasses-sun.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\hat-cap.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\hat-cylinder.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\hat-party.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\hat-sheriff.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\heart.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\mustache-long.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\mustache1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\mustache2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\mustache3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\pipe.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\snowflake.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\base\star.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\glasses-nerd.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\glasses-normal.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\glasses-shutter-green.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\glasses-shutter-yellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\glasses-sun.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\hat-cap.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\hat-cylinder.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\hat-party.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\hat-sheriff.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\heart.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\mustache-long.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\mustache1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\mustache2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\mustache3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\pipe.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\snowflake.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\stickers\thumb\star.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\close%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\close.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\brightness%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\brightness.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\contrast%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\contrast.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\saturation%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\adjustments\saturation.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\back%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\back.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\brush\thickness%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\brush\thickness.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\16-9%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\16-9.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\4-3%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\4-3.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\custom%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\custom.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\square%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\crop\square.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\a15%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\a15.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\breeze%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\breeze.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\bw%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\bw.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\bwhard%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\bwhard.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\all%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\all.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\analog%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\analog.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\bw%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\bw.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\retro%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\retro.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\special%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\special.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\summer%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\summer.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\winter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\categories\winter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\celsius%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\celsius.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\chest%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\chest.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\fixie%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\fixie.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\food%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\food.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\fridge%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\fridge.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\glam%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\glam.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\gobblin%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\gobblin.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\identity%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\identity.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k1%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k1.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k2%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k2.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k6%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\k6.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\kdynamic%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\kdynamic.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\lenin%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\lenin.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\lomo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\lomo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\mellow%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\mellow.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\morning%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\morning.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\orchid%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\orchid.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\pola%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\pola.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\pola669%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\pola669.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\quozi%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\quozi.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\semired%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\semired.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\sunny%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\sunny.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\texas%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\texas.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\x400%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\x400.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\focus\linear%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\focus\linear.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\focus\radial%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\focus\radial.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\remove%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\remove.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\resize-diagonal-down%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\resize-diagonal-down.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\resize-diagonal-up%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\resize-diagonal-up.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\rotate%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\knobs\rotate.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\minus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\minus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\flip-h%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\flip-h.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\flip-v%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\flip-v.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\rotate-l%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\rotate-l.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\rotate-r%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\orientation\rotate-r.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\adjustments%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\adjustments.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\border%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\border.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\brush%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\brush.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\crop%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\crop.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\filters%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\filters.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\focus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\focus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\orientation%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\orientation.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\sticker%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\sticker.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\text%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\overview\text.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\plus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\plus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\flip-h%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\flip-h.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\flip-v%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\flip-v.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\remove%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\remove.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\take-to-front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\take-to-front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\take_to_front%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\sprites\take_to_front.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\all%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\all.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\beards%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\beards.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\glasses%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\glasses.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\hats%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\hats.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\misc%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\stickers\categories\misc.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_center%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_center.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_left%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_left.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_right%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\align_right.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\minus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\minus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\plus%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\text\plus.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\tick%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\tick.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\webcam\shutter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\webcam\shutter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\export%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\export.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\new%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\new.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\undo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\editor\undo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\splash\add-photo%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\splash\add-photo.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\splash\shutter%402x.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\splash\shutter.png" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\css\PhotoEditorReactUI.css" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\css\PhotoEditorReactUI.min.css" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.2.0\PhotoEditorReactUI.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.2.0\PhotoEditorReactUI.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.2.0\PhotoEditorSDK.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.2.0\PhotoEditorSDK.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.3.0\PhotoEditorReactUI.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.3.0\PhotoEditorReactUI.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.3.0\PhotoEditorSDK.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\3.3.0\PhotoEditorSDK.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\PhotoEditorReactUI.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\PhotoEditorReactUI.min.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\PhotoEditorSDK.js" />
+    <Content Include="content\js\PhotoEditorSDK\3.2.0\js\PhotoEditorSDK.min.js" />
+    <Content Include="content\js\vendor\jquery-1.12.4.min.js" />
+    <Content Include="content\test.js" />
+    <Content Include="index.html" />
+    <Content Include="test.txt" />
+    <Content Include="Web.config" />
+    <TypeScriptCompile Include="content\js\photo-editor\Html\HTMLButtonControl.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Html\HTMLControls.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\ImageContainer.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Globals\Texts.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="content\js\jquery-ImageContainer.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\SDK\BaseAction.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\SDK\BasicActions.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\ReactUI\ReactUIBase.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Actions\ReactUI\ReactUIOverlay.ts" />
+    <TypeScriptCompile Include="content\js\typings\custom.d.ts" />
+    <TypeScriptCompile Include="content\js\typings\es6-promise.d.ts" />
+    <TypeScriptCompile Include="content\js\typings\jquery.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildScripts\BuildScripts.csproj">
+      <Project>{c849f665-ddbe-4fe1-8547-c79d88969157}</Project>
+      <Name>BuildScripts</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>
+    </TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptModuleKind>None</TypeScriptModuleKind>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile>
+    </TypeScriptOutFile>
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>False</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>61578</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:61578/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>BuildScripts.exe</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

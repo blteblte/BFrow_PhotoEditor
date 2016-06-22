@@ -1,0 +1,2 @@
+
+/photo-editor.html?url=%2Fcontent%2Fimages%2Fcar.jpg

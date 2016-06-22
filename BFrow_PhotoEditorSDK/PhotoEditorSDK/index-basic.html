@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Bfrow photo editor</title>
+    <script src="content/js/PhotoEditorSDK/js/PhotoEditorSDK.min.js"></script>
+    <script src="content/js/PhotoEditorSDK/js/PhotoEditorReactUI.min.js"></script>
+    <link rel="stylesheet" href="content/js/PhotoEditorSDK/css/PhotoEditorReactUI.min.css" />
+    <link href="content/css/main.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <canvas id="editor" width="600" height="480" style="box-shadow: 0 0 2px gray;" />
+    </div>
+
+    <button id="click">set filter</button>
+    <button id="render">just render</button>
+
+    <script src="content/js/vendor/jquery-1.12.4.min.js"></script>
+    <script>
+        "use strict";
+
+        /// <reference path="PhotoEditorSDK/js/PhotoEditorSDK.js" />
+        /// <reference path="PhotoEditorSDK/js/PhotoEditorReactUI.js" />
+        /// <reference path="vendor/jquery-1.12.4.min.js" />
+
+        var SDK = null;
+
+        var loadEditor = function loadEditor(containerId, imageUrl) {
+
+            var container = document.getElementById(containerId);
+            var image = new Image();
+
+            image.onload = function () {
+                console.log("loading image: \"" + imageUrl + "\" into: \"#" + containerId + "\"");
+
+                var sdk = new PhotoEditorSDK('webgl', {
+                    canvas: container,
+                    transparent: true,
+                    renderMode: "dynamic",
+                    zoom: 0.22
+                });
+
+                //logLevel: 'info',
+                sdk.setImage(image);
+                sdk.render();
+                SDK = sdk;
+            };
+            image.src = imageUrl;
+        };
+
+        $(function () {
+            loadEditor("editor", "content/images/vikings_go_wild.jpg");
+
+            var filters = [];
+            $.each(PhotoEditorSDK.Filters, function (i, filter) {
+                filters.push(filter);
+            });
+
+            var f = null;
+            var i = 0;
+            $('#click').click(function () {
+                if (i >= filters.length) i = 0;
+                var last = i !== 0 ? i - 1 : filters.length - 1;
+
+                var filterOperation = new PhotoEditorSDK.Operations.FilterOperation(SDK, { filter: filters[i] });
+                if (f != null) {
+                    SDK.removeOperation(f);
+                    console.log("removed operation: ", filters[last].displayName);
+                }
+
+                SDK.addOperation(filterOperation);
+                f = filterOperation;
+                console.log("added operation: ", filters[i].displayName);
+                SDK.render().then(function () {
+                    console.log(' ---> on render resolve, operation stack: ', SDK.getOperationsStack());
+                });
+
+                f = filterOperation;
+
+                i++;
+            });
+
+            $('#render').click(function () {
+                SDK.render().then(function () {
+                    console.log(' ---> on render resolve');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+C:\Users\User\Desktop\BuildScripts\bin\Debug\BuildScripts.exe.config
+C:\Users\User\Desktop\BuildScripts\bin\Debug\BuildScripts.exe
+C:\Users\User\Desktop\BuildScripts\bin\Debug\BuildScripts.pdb
+C:\Users\User\Desktop\BuildScripts\bin\Debug\AjaxMin.dll
+C:\Users\User\Desktop\BuildScripts\obj\Debug\BuildScripts.exe
+C:\Users\User\Desktop\BuildScripts\obj\Debug\BuildScripts.pdb
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\bin\Debug\BuildScripts.exe.config
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\bin\Debug\BuildScripts.exe
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\bin\Debug\BuildScripts.pdb
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\bin\Debug\AjaxMin.dll
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\obj\Debug\BuildScripts.csprojResolveAssemblyReference.cache
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\obj\Debug\BuildScripts.exe
+C:\Users\User\Desktop\BFrow_PhotoEditor\BuildScripts\obj\Debug\BuildScripts.pdb
