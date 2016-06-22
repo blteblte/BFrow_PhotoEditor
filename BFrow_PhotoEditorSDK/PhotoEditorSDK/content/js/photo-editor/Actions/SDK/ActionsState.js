@@ -14,7 +14,6 @@ var PhotoEditor;
                     this.rotation = 0;
                     this.flippedH = false;
                     this.flippedV = false;
-                    this._lastExit = null;
                     this.originalZoom = sdk !== null ? sdk.getZoom() : 1;
                     this.RotationOperationStack = [];
                     this.FlipOperationStack = [];
@@ -32,8 +31,6 @@ var PhotoEditor;
                         this.initialImageH = this.imageH;
                     }
                 }
-                ActionState.prototype._lastExit = function () { };
-                ;
                 /**
                 * Reset values to initial
                 */

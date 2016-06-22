@@ -5,7 +5,6 @@
         RotationOperationStack: Array<any>;
         FlipOperationStack: Array<any>;
         FilterOperationStack: Array<any>;
-        _lastExit(): void { };
         originalZoom: any;
         wToHRatio: number;
         hToWRatio: number;
@@ -22,7 +21,6 @@
         * @param {any} sdk - instance of PhotoEditorSDK
         */
         constructor(public sdk) {
-            this._lastExit = null;
             this.originalZoom = sdk !== null ? sdk.getZoom() : 1;
             this.RotationOperationStack = [];
             this.FlipOperationStack = [];

@@ -16,6 +16,7 @@ var PhotoEditor;
                     this.containerId = containerId;
                     this.editorIndex = sdk !== null ? PhotoEditor.Globals._editorInstances++ : -1;
                     this.state = new SDK.ActionState(sdk);
+                    this._lastExit = null;
                     if (sdk !== null) {
                         var inresize = false;
                         window.onresize = function () {
@@ -25,6 +26,8 @@ var PhotoEditor;
                         };
                     }
                 }
+                BaseAction.prototype._lastExit = function () { };
+                ;
                 /**
                 * Zoom editor to fit the image to screen
                 * @param {Function} callback
@@ -120,9 +123,9 @@ var PhotoEditor;
                 BaseAction.prototype.init = function (newExit, callback) {
                     if (newExit === void 0) { newExit = null; }
                     if (callback === void 0) { callback = null; }
-                    if (typeof (this.state._lastExit) === 'function')
-                        this.state._lastExit();
-                    this.state._lastExit = newExit;
+                    if (typeof (this._lastExit) === 'function')
+                        this._lastExit();
+                    this._lastExit = newExit;
                     setTimeout(function () { if (typeof (callback) === 'function')
                         callback(); }, 100);
                 };

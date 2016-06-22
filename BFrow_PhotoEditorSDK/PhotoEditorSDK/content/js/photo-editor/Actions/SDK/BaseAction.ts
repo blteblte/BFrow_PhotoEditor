@@ -5,13 +5,15 @@ namespace PhotoEditor.Actions.SDK {
 
         editorIndex: number;
         state: ActionState;
+        _lastExit(): void { };
 
         constructor(public sdk: any, public editor: any, public containerId: string, public image: HTMLImageElement) {
             this.sdk = sdk;
             this.editor = editor;
             this.containerId = containerId;
             this.editorIndex = sdk !== null ? Globals._editorInstances++ : -1;
-            this.state = new ActionState(sdk)
+            this.state = new ActionState(sdk);
+            this._lastExit = null;
 
             if (sdk !== null) {
                 var inresize = false;
@@ -122,8 +124,8 @@ namespace PhotoEditor.Actions.SDK {
         * @param {Function} callback
         */
         init(newExit = null, callback = null) {
-            if (typeof (this.state._lastExit) === 'function') this.state._lastExit();
-            this.state._lastExit = newExit;
+            if (typeof (this._lastExit) === 'function') this._lastExit();
+            this._lastExit = newExit;
 
             setTimeout(() => { if (typeof (callback) === 'function') callback(); }, 100);
         }
