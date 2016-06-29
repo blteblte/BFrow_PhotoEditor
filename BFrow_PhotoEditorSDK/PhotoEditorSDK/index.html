@@ -10,57 +10,51 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="format-detection" content="telephone=no">
 
-    <script src="content/js/PhotoEditorSDK/3.3.0/js/PhotoEditorSDK.js"></script>
-    <script src="content/js/PhotoEditorSDK/3.3.0/js/PhotoEditorReactUI.js"></script>
-    <link rel="stylesheet" href="content/js/PhotoEditorSDK/3.3.0/css/PhotoEditorReactUI.min.css" />
+    <!-- SDK -->
+    <!--<script src="build/js/PhotoEditorSDK/3.3.0/js/PhotoEditorSDK.js"></script>
+    <script src="build/js/PhotoEditorSDK/3.3.0/js/PhotoEditorReactUI.js"></script>
+    <link href="build/js/PhotoEditorSDK/3.3.0/css/PhotoEditorReactUI.min.css" rel="stylesheet" />-->
+    <script src="build/js/PhotoEditorSDK/pre_3.4.0/js/PhotoEditorSDK.js"></script>
+    <script src="build/js/PhotoEditorSDK/pre_3.4.0/js/PhotoEditorReactUI.js"></script>
+    <link href="build/js/PhotoEditorSDK/pre_3.4.0/css/PhotoEditorReactUI.min.css" rel="stylesheet" />
 
-    <link href="content/css/main.css" rel="stylesheet" />
+    <link href="build/css/photo-editor.css" rel="stylesheet" />
+    <link href="build/css/slick.css" rel="stylesheet" />
+    <link href="build/css/jquery-ui.css" rel="stylesheet" />
 </head>
 <body>
-    <div>
-        <div>
-            Note: this is scetch version - not the final product. Known bugs apply. No design.
-        </div>
-        <div>
-            Crop function cries to have "Submit & Cancel" buttons
-        </div>
-    </div>
-    <div>
-        <select id="renderer-select">
-            <option value="canvas">canvas</option>
-            <option value="webgl" selected="selected">webgl</option>
-        </select>
-    </div>
+    <p>
+        <button id="btn1">img1</button>
+        <button id="btn2">img2</button>
+    </p>
+    <div id="photo-editor" class="image-editor active" style="width: 100%; height: 540px;"></div>
 
-    <div id="image-container" class="image-container">
-        <!--<img src="content/images/vikings_go_wild.jpg" />-->
-        <img src="content/images/car.jpg" />
-        <!--<img src="content/images/piano.jpeg" />-->
-        <!--<img src="content/images/space.jpg" />-->
-        <!--<img src="content/images/space2.jpg" />-->
-        <!--<img src="content/images/windows.jpg" />-->
-    </div>
-    <button id="start-edit">start edit</button>
-
-    <div id="images-editors"></div>
-
-    <div id="temp-preview" style="display: none; position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.9); top: 0; left: 0; padding: 30px;">
+    <!--<div id="temp-preview" style="display: none; position: fixed; width: 100%; height: 100%; background: rgba(255,255,255,0.9); top: 0; left: 0; padding: 30px;">
         <span style="position: absolute; top: 50px; right: 200px; color: red; font-size: 20px; cursor: pointer;" onclick="javascript: $('#temp-preview').fadeOut(200);">CLOSE RESULT</span>
         <div style="height: 100%; overflow: auto;"></div>
-    </div>
+    </div>-->
 
-    <script src="content/js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="content/js/photo-editor.min.js"></script>
+    <script src="build/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="build/js/vendor/jquery-ui.min.js"></script>
+    <script src="build/js/vendor/slick.min.js"></script>
+    <script src="build/js/photo-editor.min.js"></script>
     <script>
         $(function () {
-            //test
-            $('#start-edit').click(function () {
-                $("#image-container").ImageContainer({
-                    appendTo: 'images-editors',
-                    disposeOnSave: true
-                });
-                $(this).hide();
+
+            PhotoEditor.Handlers.onSaveHandler = function (exportedImage) {
+                console.log(exportedImage);
+            };
+
+            $('#btn1').click(function () {
+                var editorInstance = new PhotoEditor.Editor.ImageEditor("photo-editor", 0, "content/images/car.jpg");
+                editorInstance.LoadEditor();
             });
+
+            $('#btn2').click(function () {
+                var editorInstance = new PhotoEditor.Editor.ImageEditor("photo-editor", 0, "content/images/nomanssky.jpg");
+                editorInstance.LoadEditor();
+            });
+
         });
     </script>
 </body>

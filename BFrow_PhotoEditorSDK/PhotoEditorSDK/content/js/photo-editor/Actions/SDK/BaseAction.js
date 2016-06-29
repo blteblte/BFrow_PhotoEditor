@@ -65,13 +65,9 @@ var PhotoEditor;
                     if (render === void 0) { render = true; }
                     var resolve = function () { if (typeof (callback) === 'function')
                         callback(); };
-                    var hasOrientationOperations = this.state.RotationOperationStack.length > 0 || this.state.FlipOperationStack.length > 0;
-                    if (hasOrientationOperations) {
-                        this.state.ClearRotationStack();
-                        this.state.rotation = 0;
-                        this.state.ClearFlipStack();
-                        this.state.flippedH = false;
-                        this.state.flippedV = false;
+                    if (this.state.OrientationOperation !== null) {
+                        this.sdk.removeOperation(this.state.OrientationOperation);
+                        this.state.ResetOrientationState();
                         if (render)
                             this.FitToScreen(callback);
                         else
@@ -102,17 +98,19 @@ var PhotoEditor;
                                 .then(function (image) {
                                 callback(new PhotoEditor.ExportedImage(image, _this.image.src));
                                 if (!!dispose) {
-                                    setTimeout(function () { _this.DisposeEditor(); }, 1000);
+                                    setTimeout(function () { _this.DisposeEditor(true); }, 1000);
                                 }
                             });
                         });
                     });
                 };
-                BaseAction.prototype.DisposeEditor = function () {
-                    //do not dispose sdk -> single instance
-                    //this.sdk.dispose();
-                    var id = "#" + this.containerId;
+                BaseAction.prototype.DisposeEditor = function (disposeSdk) {
+                    if (disposeSdk === void 0) { disposeSdk = false; }
+                    if (disposeSdk)
+                        this.sdk.dispose();
+                    var id = "#" + this.containerId + "-editor";
                     $(id).remove();
+                    $('.photo-editor-ui_container').remove();
                     console.log(id + " disposed");
                 };
                 /**
@@ -128,6 +126,49 @@ var PhotoEditor;
                     this._lastExit = newExit;
                     setTimeout(function () { if (typeof (callback) === 'function')
                         callback(); }, 100);
+                };
+                BaseAction.prototype.ResizeImage = function (w, h, callback, render) {
+                    var _this = this;
+                    if (callback === void 0) { callback = null; }
+                    if (render === void 0) { render = true; }
+                    this.ResetOrientation(function () {
+                        _this.init(null, function () {
+                            _this.state.imageW = w;
+                            _this.state.imageH = h;
+                            var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
+                            _this.sdk.setImage(_this.sdk.getImage(), _this.sdk.getExif(), dimensions);
+                            if (render)
+                                _this.FitToScreen(callback);
+                            else if (typeof (callback) === 'function')
+                                callback();
+                        });
+                    }, false);
+                };
+                BaseAction.prototype.ResetPictureSettings = function () {
+                    var _this = this;
+                    this.init(null, function () {
+                        _this.ResetOrientation(function () {
+                            _this.ResizeImage(_this.state.initialImageW, _this.state.initialImageH, function () {
+                                console.log(_this.editor);
+                                var operationStack = _this.editor.getOperationsStack();
+                                operationStack.forEach(function (v, i) {
+                                    if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
+                                        _this.editor.removeOperation(v);
+                                    }
+                                });
+                                _this.TriggerFitToScreen();
+                            }, false);
+                        }, false);
+                    });
+                };
+                /**
+                * Gets filter image by filter name
+                * @param {string} filterName
+                * @return {string}
+                */
+                BaseAction.prototype.getFilterImageByName = function (filterName) {
+                    var path = "content/img/filters/";
+                    return path + filterName + '.png';
                 };
                 return BaseAction;
             })();

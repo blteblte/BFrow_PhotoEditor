@@ -1,5 +1,11 @@
 
+//declare PhotoEditorSDK type
 declare var PhotoEditorSDK: any;
+
+//declare JQuery plugins
+interface JQuery {
+    slick: any;
+}
 
 //declare namespace PhotoEditorSDK.Math {
 //    interface Vector2 {

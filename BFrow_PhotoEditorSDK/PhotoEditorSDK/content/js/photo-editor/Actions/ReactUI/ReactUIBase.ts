@@ -12,42 +12,57 @@ namespace PhotoEditor.Actions.ReactUI {
         protected _CropCancelSelector: string;
         protected _CropSubmitSelector: string;
 
+        private _controlContainer: string;
+        private _buttonContainer: string;
+
         constructor(sdk: any, editor: any, containerId: string, image: HTMLImageElement) {
             super(sdk, editor, containerId, image);
             this._isInControl = false;
-            this._AdjustInitButtonSelector = '#' + containerId +
-                ' .pesdk-react-controls__button__icon[data-reactid=".'
-                + this.editorIndex
-                + '.1.1.2.0.0.0.0.0.0.$adjustments.0.0"]';
-            this._AdjustSubmitSelector = '#' + containerId +
-                ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
-                + this.editorIndex
-                + '.1.1.2.0.0.1.0.0.0"]';
-            this._FiltersInitButtonSelector = '#' + containerId +
-                ' .pesdk-react-controls__button__icon[data-reactid=".'
-                + this.editorIndex
-                + '.1.1.2.0.0.0.0.0.0.$filter.0.0"]';
-            this._FiltersSubmitSelector = '#' + containerId +
-                ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
-                + this.editorIndex
-                + '.1.1.2.0.0.1.0.0.0"]';
-            this._CropInitButtonSelector =
-                `#${this.containerId} .pesdk-react-controls__button__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0.$crop.0.0"]`;
-            this._CropCancelSelector =
-                `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0"]`;
-            this._CropSubmitSelector =
-                `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.2.0.0"]`;
+
+            this._controlContainer = `#${containerId} .pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row .pesdk-react-controls__table > .pesdk-react-controls__cell.pesdk-react-controls__cell--list`;
+            this._buttonContainer = `#${containerId}-editor > div > div:nth-child(3) > div.pesdk-react-editorScreen > div.pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row > div > div > div`;
+
+            this._CropInitButtonSelector = `${this._controlContainer} .pesdk-react-controls__list__item:nth-child(1) > div`
+
+            this._CropCancelSelector = `${this._buttonContainer} > div:nth-child(1) > div`;
+            this._CropSubmitSelector = `${this._buttonContainer} > div:nth-child(3) > div`;
+
+            //this._AdjustInitButtonSelector = '#' + containerId +
+            //    ' .pesdk-react-controls__button__icon[data-reactid=".'
+            //    + this.editorIndex
+            //    + '.1.1.2.0.0.0.0.0.0.$adjustments.0.0"]';
+            //this._AdjustSubmitSelector = '#' + containerId +
+            //    ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
+            //    + this.editorIndex
+            //    + '.1.1.2.0.0.1.0.0.0"]';
+            //this._FiltersInitButtonSelector = '#' + containerId +
+            //    ' .pesdk-react-controls__button__icon[data-reactid=".'
+            //    + this.editorIndex
+            //    + '.1.1.2.0.0.0.0.0.0.$filter.0.0"]';
+            //this._FiltersSubmitSelector = '#' + containerId +
+            //    ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
+            //    + this.editorIndex
+            //    + '.1.1.2.0.0.1.0.0.0"]';
+            //this._CropInitButtonSelector =
+            //    `#${this.containerId} .pesdk-react-controls__button__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0.$crop.0.0"]`;
+            //this._CropCancelSelector =
+            //    `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0"]`;
+            //this._CropSubmitSelector =
+            //    `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.2.0.0"]`;
         }
 
-        _createSubControls(buttonControls: JQuery[], $target: JQuery) {
+        _createSubControls(buttonControls: JQuery[], $target: JQuery, callback: () => void = null) {
+            $(`#${this.containerId} .main-controls-button, #${this.containerId} .slick-dots`).hide();
             var $subActionsContainer = $(`<div class="photo-editor-ui_sub-controls-container"></div>`);
             buttonControls.forEach((v, i) => {
                 $subActionsContainer.append(v);
             });
             $target.append($subActionsContainer);
+            if (typeof(callback) === 'function') callback();
         }
 
         _disposeSubControls() {
+            $(`#${this.containerId} .main-controls-button, #${this.containerId} .slick-dots`).show();
             $(`#${this.containerId} .photo-editor-ui_sub-controls-container`).remove();
         }
 
@@ -78,87 +93,5 @@ namespace PhotoEditor.Actions.ReactUI {
             return selector;
         }
 
-        //v 3.2.0
-        //getFilterImageByName(filterName) {
-        //    var path = 'content/js/PhotoEditorSDK/assets/ui/react/controls/filters/';
-
-        //    //TODO: no switch needed here -> just use <filterName>.jpeg/.png for image names
-        //    switch (filterName) {
-        //        case 'IdentityFilter': return path + 'identity@2x.png';
-        //        case 'A15Filter': return path + 'a15@2x.png';
-        //        case 'BreezeFilter': return path + 'breeze@2x.png';
-        //        case 'BWFilter': return path + 'bw@2x.png';
-        //        case 'BWHardFilter': return path + 'bwhard@2x.png';
-        //        case 'CelsiusFilter': return path + 'celsius@2x.png';
-        //        case 'ChestFilter': return path + 'chest@2x.png';
-        //        case 'FixieFilter': return path + 'fixie@2x.png';
-        //        case 'FoodFilter': return path + 'food@2x.png';
-        //        case 'FridgeFilter': return path + 'fridge@2x.png';
-        //        case 'FrontFilter': return path + 'front@2x.png';
-        //        case 'GlamFilter': return path + 'glam@2x.png';
-        //        case 'GobblinFilter': return path + 'gobblin@2x.png';
-        //        //case 'K1Filter': return path + 'k1@2x.png';
-        //        //case 'K2Filter': return path + 'k2@2x.png';
-        //        //case 'K6Filter': return path + 'k6@2x.png';
-        //        //case 'KDynamicFilter': return path + 'kdynamic@2x.png';
-        //        case 'LeninFilter': return path + 'lenin@2x.png';
-        //        case 'LomoFilter': return path + 'lomo@2x.png';
-        //        case 'MellowFilter': return path + 'mellow@2x.png';
-        //        //case 'MorningFilter': return path + 'morning@2x.png';
-        //        case 'OrchidFilter': return path + 'orchid@2x.png';
-        //        case 'PolaFilter': return path + 'pola@2x.png';
-        //        case 'Pola669Filter': return path + 'pola669@2x.png';
-        //        case 'QuoziFilter': return path + 'quozi@2x.png';
-        //        case 'SemiredFilter': return path + 'semired@2x.png';
-        //        case 'SunnyFilter': return path + 'sunny@2x.png';
-        //        case 'TexasFilter': return path + 'texas@2x.png';
-        //        case 'X400Filter': return path + 'x400@2x.png';
-        //    }
-        //}
-
-        //v 3.3.0
-        /**
-        * Gets filter image by filter name
-        * @param {string} filterName
-        * @return {string}
-        */
-        getFilterImageByName(filterName) {
-            var path = `content/js/PhotoEditorSDK/${Globals.sdkVersionFolder}/assets/ui/react/controls/filters/`;
-
-            //TODO: no switch needed here -> just use <filterName>.jpeg/.png for image names
-            switch (filterName) {
-                case 'IdentityFilter': return path + 'identity@2x.png';
-                case 'A15Filter': return path + 'a15@2x.png';
-                case 'BreezeFilter': return path + 'breeze@2x.png';
-                case 'BWFilter': return path + 'bw@2x.png';
-                case 'BWHardFilter': return path + 'bwhard@2x.png';
-                case 'CelsiusFilter': return path + 'celsius@2x.png';
-                case 'ChestFilter': return path + 'chest@2x.png';
-                case 'FixieFilter': return path + 'fixie@2x.png';
-                case 'FoodFilter': return path + 'food@2x.png';
-                case 'FridgeFilter': return path + 'fridge@2x.png';
-                case 'FrontFilter': return path + 'front@2x.png';
-                case 'GlamFilter': return path + 'glam@2x.png';
-                case 'GobblinFilter': return path + 'gobblin@2x.png';
-                //case 'K1Filter': return path + 'k1@2x.png';
-                //case 'K2Filter': return path + 'k2@2x.png';
-                //case 'K6Filter': return path + 'k6@2x.png';
-                //case 'KDynamicFilter': return path + 'kdynamic@2x.png';
-                case 'LeninFilter': return path + 'lenin@2x.png';
-                case 'LomoFilter': return path + 'lomo@2x.png';
-                case 'MellowFilter': return path + 'mellow@2x.png';
-                case 'MetalFilter': return path + 'metal@2x.png';
-                //case 'MorningFilter': return path + 'morning@2x.png';
-                case 'OrchidFilter': return path + 'orchid@2x.png';
-                case 'PolaFilter': return path + 'pola@2x.png';
-                case 'Pola669Filter': return path + 'pola669@2x.png';
-                case 'QuoziFilter': return path + 'quozi@2x.png';
-                case 'SemiredFilter': return path + 'semired@2x.png';
-                case 'SunnyFilter': return path + 'sunny@2x.png';
-                case 'TexasFilter': return path + 'texas@2x.png';
-                case 'X400Filter': return path + 'x400@2x.png';
-                default: return path + 'identity@2x.png';
-            }
-        }
     }
 }

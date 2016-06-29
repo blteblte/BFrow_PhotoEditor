@@ -11,61 +11,137 @@ var PhotoEditor;
                 */
                 function ActionState(sdk) {
                     this.sdk = sdk;
+                    this.OrientationOperation = null;
+                    this.FilterOperation = null;
+                    this.AdjustmentOperation = null;
+                    this._originalZoom = null;
+                    this._wToHRatio = null;
+                    this._hToWRatio = null;
+                    this._initialImageW = null;
+                    this._initialImageH = null;
+                    this._imageW = null;
+                    this._imageH = null;
+                    //orientation state
                     this.rotation = 0;
                     this.flippedH = false;
                     this.flippedV = false;
-                    this.originalZoom = sdk !== null ? sdk.getZoom() : 1;
-                    this.RotationOperationStack = [];
-                    this.FlipOperationStack = [];
-                    this.FilterOperationStack = [];
-                    var outputDimensions = sdk !== null ? sdk.getOutputDimensions() : null;
-                    if (outputDimensions !== null) {
-                        this.wToHRatio = outputDimensions.x / outputDimensions.y;
-                        this.hToWRatio = outputDimensions.y / outputDimensions.x;
-                    }
-                    var inputDimensions = sdk !== null ? sdk.getInputDimensions() : null;
-                    if (inputDimensions !== null) {
-                        this.imageW = inputDimensions.x;
-                        this.imageH = inputDimensions.y;
-                        this.initialImageW = this.imageW;
-                        this.initialImageH = this.imageH;
-                    }
+                    //addjustments state
+                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
+                    this.adjustStateSaved = false;
                 }
+                Object.defineProperty(ActionState.prototype, "originalZoom", {
+                    get: function () {
+                        if (this._originalZoom === null && this.sdk !== null) {
+                            this._originalZoom = this.sdk.getZoom();
+                        }
+                        return this._originalZoom;
+                    },
+                    set: function (value) {
+                        this._originalZoom = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "wToHRatio", {
+                    get: function () {
+                        if (this._wToHRatio === null && this.sdk !== null) {
+                            var outputDimensions = this.sdk.getOutputDimensions();
+                            this._wToHRatio = outputDimensions.x / outputDimensions.y;
+                        }
+                        return this._wToHRatio;
+                    },
+                    set: function (value) {
+                        this._wToHRatio = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "hToWRatio", {
+                    get: function () {
+                        if (this._hToWRatio === null && this.sdk !== null) {
+                            var outputDimensions = this.sdk.getOutputDimensions();
+                            this._hToWRatio = outputDimensions.y / outputDimensions.x;
+                        }
+                        return this._hToWRatio;
+                    },
+                    set: function (value) {
+                        this._hToWRatio = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "initialImageW", {
+                    get: function () {
+                        if (this._initialImageW === null && this.sdk !== null) {
+                            this._initialImageW = this.sdk.getInputDimensions().x;
+                        }
+                        return this._initialImageW;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "initialImageH", {
+                    get: function () {
+                        if (this._initialImageH === null && this.sdk !== null) {
+                            this._initialImageH = this.sdk.getInputDimensions().y;
+                        }
+                        return this._initialImageH;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "imageW", {
+                    get: function () {
+                        if (this._imageW === null) {
+                            this._imageW = this.initialImageW;
+                        }
+                        return this._imageW;
+                    },
+                    set: function (value) {
+                        this._imageW = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "imageH", {
+                    get: function () {
+                        if (this._imageH === null) {
+                            this._imageH = this.initialImageH;
+                        }
+                        return this._imageH;
+                    },
+                    set: function (value) {
+                        this._imageH = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                 * Reset values to initial
                 */
                 ActionState.prototype.ResetState = function () {
-                    this.RotationOperationStack = [];
-                    this.FlipOperationStack = [];
                     this.rotation = 0;
                     this.flippedH = false;
                     this.flippedV = false;
                     this.imageW = this.initialImageW;
                     this.imageH = this.initialImageH;
+                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
-                /**
-                * Reset rotation operation values to initial
-                */
-                ActionState.prototype.ClearRotationStack = function () {
-                    var _this = this;
-                    if (this.RotationOperationStack.length > 0) {
-                        this.RotationOperationStack.forEach(function (v) {
-                            _this.sdk.removeOperation(v);
-                        });
-                        this.RotationOperationStack = [];
-                    }
-                };
-                /**
-                * Reset flip operation values to initial
-                */
-                ActionState.prototype.ClearFlipStack = function () {
-                    var _this = this;
-                    if (this.FlipOperationStack.length > 0) {
-                        this.FlipOperationStack.forEach(function (v) {
-                            _this.sdk.removeOperation(v);
-                        });
-                        this.FlipOperationStack = [];
-                    }
+                ActionState.prototype.ResetOrientationState = function () {
+                    this.OrientationOperation = null;
+                    this.rotation = 0;
+                    this.flippedV = false;
+                    this.flippedH = false;
                 };
                 /**
                 * Get image dimension ratio for specified dimension or reverse

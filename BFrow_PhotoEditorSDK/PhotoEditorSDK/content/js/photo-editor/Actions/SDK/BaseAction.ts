@@ -65,15 +65,9 @@ namespace PhotoEditor.Actions.SDK {
         ResetOrientation(callback, render: boolean = true) {
             var resolve = () => { if (typeof (callback) === 'function') callback(); };
 
-            var hasOrientationOperations = this.state.RotationOperationStack.length > 0 || this.state.FlipOperationStack.length > 0;
-            if (hasOrientationOperations) {
-
-                this.state.ClearRotationStack();
-                this.state.rotation = 0;
-
-                this.state.ClearFlipStack();
-                this.state.flippedH = false;
-                this.state.flippedV = false;
+            if (this.state.OrientationOperation !== null) {
+                this.sdk.removeOperation(this.state.OrientationOperation);
+                this.state.ResetOrientationState();
 
                 if (render) this.FitToScreen(callback);
                 else resolve();
@@ -103,18 +97,18 @@ namespace PhotoEditor.Actions.SDK {
                         .then((image) => {
                             callback(new ExportedImage(image, this.image.src));
                             if (!!dispose) {
-                                setTimeout(() => { this.DisposeEditor(); }, 1000);
+                                setTimeout(() => { this.DisposeEditor(true); }, 1000);
                             }
                         });
                 });
             });
         }
 
-        DisposeEditor() {
-            //do not dispose sdk -> single instance
-            //this.sdk.dispose();
-            var id = `#${this.containerId}`;
+        DisposeEditor(disposeSdk: boolean = false) {
+            if (disposeSdk) this.sdk.dispose();
+            var id = `#${this.containerId}-editor`;
             $(id).remove();
+            $('.photo-editor-ui_container').remove();
             console.log(`${id} disposed`);
         }
 
@@ -128,6 +122,49 @@ namespace PhotoEditor.Actions.SDK {
             this._lastExit = newExit;
 
             setTimeout(() => { if (typeof (callback) === 'function') callback(); }, 100);
+        }
+
+        ResizeImage(w: number, h: number, callback: () => void = null, render: boolean = true) {
+            this.ResetOrientation(() => {
+                this.init(null, () => {
+                    this.state.imageW = w;
+                    this.state.imageH = h;
+                    var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
+                    this.sdk.setImage(this.sdk.getImage(), this.sdk.getExif(), dimensions);
+
+                    if (render) this.FitToScreen(callback);
+                    else if (typeof (callback) === 'function') callback();
+                });
+            }, false);
+        }
+
+        ResetPictureSettings() {
+            this.init(null, () => {
+                this.ResetOrientation(() => {
+                    this.ResizeImage(this.state.initialImageW, this.state.initialImageH, () => {
+
+                        console.log(this.editor);
+                        let operationStack = this.editor.getOperationsStack();
+                        operationStack.forEach((v, i) => {
+                            if (v instanceof PhotoEditorSDK.Operations. CropOperation) {
+                                this.editor.removeOperation(v);
+                            }
+                        });
+
+                        this.TriggerFitToScreen();
+                    }, false);
+                }, false);
+            });
+        }
+
+        /**
+        * Gets filter image by filter name
+        * @param {string} filterName
+        * @return {string}
+        */
+        getFilterImageByName(filterName) {
+            var path = `content/img/filters/`;
+            return path + filterName + '.png';
         }
 
     }

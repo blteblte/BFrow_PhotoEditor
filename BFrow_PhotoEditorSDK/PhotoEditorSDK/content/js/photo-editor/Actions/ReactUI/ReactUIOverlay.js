@@ -87,26 +87,6 @@ var PhotoEditor;
                     $(this._FiltersSubmitSelector).click();
                     this._isInControl = false;
                 };
-                ReactUIOverlay.prototype.GenerateFilterIcons = function () {
-                    var _this = this;
-                    var filters = [];
-                    $.each(PhotoEditorSDK.Filters, function (i, filter) {
-                        if (filter.identifier !== 'k1'
-                            && filter.identifier !== 'k2'
-                            && filter.identifier !== 'k6'
-                            && filter.identifier !== 'kdynamic'
-                            && filter.identifier !== 'morning') {
-                            var $filterContainer = $('<div class="photo-editor-filter-item"></div>').click(function () {
-                                _this.StartFilter(filter.identifier);
-                            });
-                            var $image = $("<img src=\"" + _this.getFilterImageByName(filter.name) + "\" alt=\"\" />");
-                            var $nameItem = $("<div>" + filter.displayName + "</div>");
-                            $filterContainer.append($image, $nameItem);
-                            filters.push($filterContainer);
-                        }
-                    });
-                    return filters;
-                };
                 return ReactUIOverlay;
             })(ReactUI.ReactUIBase);
             ReactUI.ReactUIOverlay = ReactUIOverlay;

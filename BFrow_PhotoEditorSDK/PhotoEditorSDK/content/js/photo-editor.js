@@ -2,7 +2,8 @@ var PhotoEditor;
 (function (PhotoEditor) {
     var Globals;
     (function (Globals) {
-        Globals.sdkVersionFolder = "3.3.0";
+        //export var sdkVersionFolder: string = "3.3.0"
+        Globals.sdkVersionFolder = "pre_3.4.0";
     })(Globals = PhotoEditor.Globals || (PhotoEditor.Globals = {}));
 })(PhotoEditor || (PhotoEditor = {}));
 
@@ -43,7 +44,9 @@ var PhotoEditor;
                 FitToScreen: "Fit To Page",
                 LockRatio: "Lock Ratio",
                 Cancel: "Cancel",
-                Submit: "Submit"
+                Submit: "Submit",
+                Back: "Back",
+                Done: "Done"
             },
             Inputs: {
                 ResizeWidthPlch: "width...",
@@ -51,6 +54,14 @@ var PhotoEditor;
             }
         };
     })(Globals = PhotoEditor.Globals || (PhotoEditor.Globals = {}));
+})(PhotoEditor || (PhotoEditor = {}));
+
+
+var PhotoEditor;
+(function (PhotoEditor) {
+    var Handlers;
+    (function (Handlers) {
+    })(Handlers = PhotoEditor.Handlers || (PhotoEditor.Handlers = {}));
 })(PhotoEditor || (PhotoEditor = {}));
 
 
@@ -82,6 +93,50 @@ var PhotoEditor;
             return ImageDimension;
         })();
         Globals.ImageDimension = ImageDimension;
+        var AdjustmentTypes = (function () {
+            function AdjustmentTypes() {
+            }
+            AdjustmentTypes.Brightness = "brightness";
+            AdjustmentTypes.Saturation = "saturation";
+            AdjustmentTypes.Contrast = "contrast";
+            AdjustmentTypes.Exposure = "exposure";
+            AdjustmentTypes.Shadows = "shadows";
+            AdjustmentTypes.Highlights = "highlights";
+            return AdjustmentTypes;
+        })();
+        Globals.AdjustmentTypes = AdjustmentTypes;
+        var Adjustments = (function () {
+            function Adjustments(type, min, max, initial, multiplier) {
+                this.type = type;
+                this.min = min;
+                this.max = max;
+                this.initial = initial;
+                this.multiplier = multiplier;
+            }
+            return Adjustments;
+        })();
+        Globals.Adjustments = Adjustments;
+        var AdjustmentSettings = (function () {
+            function AdjustmentSettings() {
+            }
+            AdjustmentSettings.GetAdjustmentSettings = function (type) {
+                var lookup = {};
+                for (var i = 0, len = this._adjustmentSettings.length; i < len; i++) {
+                    lookup[this._adjustmentSettings[i].type] = this._adjustmentSettings[i];
+                }
+                return lookup[type];
+            };
+            AdjustmentSettings._adjustmentSettings = [
+                new Adjustments(AdjustmentTypes.Brightness, -50, 50, 0, 100),
+                new Adjustments(AdjustmentTypes.Saturation, 0, 200, 100, 100),
+                new Adjustments(AdjustmentTypes.Contrast, 0, 200, 100, 100),
+                new Adjustments(AdjustmentTypes.Exposure, -100, 100, 0, 100),
+                new Adjustments(AdjustmentTypes.Shadows, 0, 100, 0, 100),
+                new Adjustments(AdjustmentTypes.Highlights, 0, 100, 100, 100)
+            ];
+            return AdjustmentSettings;
+        })();
+        Globals.AdjustmentSettings = AdjustmentSettings;
         Globals._editorInstances = 0;
     })(Globals = PhotoEditor.Globals || (PhotoEditor.Globals = {}));
 })(PhotoEditor || (PhotoEditor = {}));
@@ -113,61 +168,137 @@ var PhotoEditor;
                 */
                 function ActionState(sdk) {
                     this.sdk = sdk;
+                    this.OrientationOperation = null;
+                    this.FilterOperation = null;
+                    this.AdjustmentOperation = null;
+                    this._originalZoom = null;
+                    this._wToHRatio = null;
+                    this._hToWRatio = null;
+                    this._initialImageW = null;
+                    this._initialImageH = null;
+                    this._imageW = null;
+                    this._imageH = null;
+                    //orientation state
                     this.rotation = 0;
                     this.flippedH = false;
                     this.flippedV = false;
-                    this.originalZoom = sdk !== null ? sdk.getZoom() : 1;
-                    this.RotationOperationStack = [];
-                    this.FlipOperationStack = [];
-                    this.FilterOperationStack = [];
-                    var outputDimensions = sdk !== null ? sdk.getOutputDimensions() : null;
-                    if (outputDimensions !== null) {
-                        this.wToHRatio = outputDimensions.x / outputDimensions.y;
-                        this.hToWRatio = outputDimensions.y / outputDimensions.x;
-                    }
-                    var inputDimensions = sdk !== null ? sdk.getInputDimensions() : null;
-                    if (inputDimensions !== null) {
-                        this.imageW = inputDimensions.x;
-                        this.imageH = inputDimensions.y;
-                        this.initialImageW = this.imageW;
-                        this.initialImageH = this.imageH;
-                    }
+                    //addjustments state
+                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
+                    this.adjustStateSaved = false;
                 }
+                Object.defineProperty(ActionState.prototype, "originalZoom", {
+                    get: function () {
+                        if (this._originalZoom === null && this.sdk !== null) {
+                            this._originalZoom = this.sdk.getZoom();
+                        }
+                        return this._originalZoom;
+                    },
+                    set: function (value) {
+                        this._originalZoom = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "wToHRatio", {
+                    get: function () {
+                        if (this._wToHRatio === null && this.sdk !== null) {
+                            var outputDimensions = this.sdk.getOutputDimensions();
+                            this._wToHRatio = outputDimensions.x / outputDimensions.y;
+                        }
+                        return this._wToHRatio;
+                    },
+                    set: function (value) {
+                        this._wToHRatio = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "hToWRatio", {
+                    get: function () {
+                        if (this._hToWRatio === null && this.sdk !== null) {
+                            var outputDimensions = this.sdk.getOutputDimensions();
+                            this._hToWRatio = outputDimensions.y / outputDimensions.x;
+                        }
+                        return this._hToWRatio;
+                    },
+                    set: function (value) {
+                        this._hToWRatio = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "initialImageW", {
+                    get: function () {
+                        if (this._initialImageW === null && this.sdk !== null) {
+                            this._initialImageW = this.sdk.getInputDimensions().x;
+                        }
+                        return this._initialImageW;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "initialImageH", {
+                    get: function () {
+                        if (this._initialImageH === null && this.sdk !== null) {
+                            this._initialImageH = this.sdk.getInputDimensions().y;
+                        }
+                        return this._initialImageH;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "imageW", {
+                    get: function () {
+                        if (this._imageW === null) {
+                            this._imageW = this.initialImageW;
+                        }
+                        return this._imageW;
+                    },
+                    set: function (value) {
+                        this._imageW = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(ActionState.prototype, "imageH", {
+                    get: function () {
+                        if (this._imageH === null) {
+                            this._imageH = this.initialImageH;
+                        }
+                        return this._imageH;
+                    },
+                    set: function (value) {
+                        this._imageH = value;
+                    },
+                    enumerable: true,
+                    configurable: true
+                });
                 /**
                 * Reset values to initial
                 */
                 ActionState.prototype.ResetState = function () {
-                    this.RotationOperationStack = [];
-                    this.FlipOperationStack = [];
                     this.rotation = 0;
                     this.flippedH = false;
                     this.flippedV = false;
                     this.imageW = this.initialImageW;
                     this.imageH = this.initialImageH;
+                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
-                /**
-                * Reset rotation operation values to initial
-                */
-                ActionState.prototype.ClearRotationStack = function () {
-                    var _this = this;
-                    if (this.RotationOperationStack.length > 0) {
-                        this.RotationOperationStack.forEach(function (v) {
-                            _this.sdk.removeOperation(v);
-                        });
-                        this.RotationOperationStack = [];
-                    }
-                };
-                /**
-                * Reset flip operation values to initial
-                */
-                ActionState.prototype.ClearFlipStack = function () {
-                    var _this = this;
-                    if (this.FlipOperationStack.length > 0) {
-                        this.FlipOperationStack.forEach(function (v) {
-                            _this.sdk.removeOperation(v);
-                        });
-                        this.FlipOperationStack = [];
-                    }
+                ActionState.prototype.ResetOrientationState = function () {
+                    this.OrientationOperation = null;
+                    this.rotation = 0;
+                    this.flippedV = false;
+                    this.flippedH = false;
                 };
                 /**
                 * Get image dimension ratio for specified dimension or reverse
@@ -289,13 +420,9 @@ var PhotoEditor;
                     if (render === void 0) { render = true; }
                     var resolve = function () { if (typeof (callback) === 'function')
                         callback(); };
-                    var hasOrientationOperations = this.state.RotationOperationStack.length > 0 || this.state.FlipOperationStack.length > 0;
-                    if (hasOrientationOperations) {
-                        this.state.ClearRotationStack();
-                        this.state.rotation = 0;
-                        this.state.ClearFlipStack();
-                        this.state.flippedH = false;
-                        this.state.flippedV = false;
+                    if (this.state.OrientationOperation !== null) {
+                        this.sdk.removeOperation(this.state.OrientationOperation);
+                        this.state.ResetOrientationState();
                         if (render)
                             this.FitToScreen(callback);
                         else
@@ -326,17 +453,19 @@ var PhotoEditor;
                                 .then(function (image) {
                                 callback(new PhotoEditor.ExportedImage(image, _this.image.src));
                                 if (!!dispose) {
-                                    setTimeout(function () { _this.DisposeEditor(); }, 1000);
+                                    setTimeout(function () { _this.DisposeEditor(true); }, 1000);
                                 }
                             });
                         });
                     });
                 };
-                BaseAction.prototype.DisposeEditor = function () {
-                    //do not dispose sdk -> single instance
-                    //this.sdk.dispose();
-                    var id = "#" + this.containerId;
+                BaseAction.prototype.DisposeEditor = function (disposeSdk) {
+                    if (disposeSdk === void 0) { disposeSdk = false; }
+                    if (disposeSdk)
+                        this.sdk.dispose();
+                    var id = "#" + this.containerId + "-editor";
                     $(id).remove();
+                    $('.photo-editor-ui_container').remove();
                     console.log(id + " disposed");
                 };
                 /**
@@ -352,6 +481,49 @@ var PhotoEditor;
                     this._lastExit = newExit;
                     setTimeout(function () { if (typeof (callback) === 'function')
                         callback(); }, 100);
+                };
+                BaseAction.prototype.ResizeImage = function (w, h, callback, render) {
+                    var _this = this;
+                    if (callback === void 0) { callback = null; }
+                    if (render === void 0) { render = true; }
+                    this.ResetOrientation(function () {
+                        _this.init(null, function () {
+                            _this.state.imageW = w;
+                            _this.state.imageH = h;
+                            var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
+                            _this.sdk.setImage(_this.sdk.getImage(), _this.sdk.getExif(), dimensions);
+                            if (render)
+                                _this.FitToScreen(callback);
+                            else if (typeof (callback) === 'function')
+                                callback();
+                        });
+                    }, false);
+                };
+                BaseAction.prototype.ResetPictureSettings = function () {
+                    var _this = this;
+                    this.init(null, function () {
+                        _this.ResetOrientation(function () {
+                            _this.ResizeImage(_this.state.initialImageW, _this.state.initialImageH, function () {
+                                console.log(_this.editor);
+                                var operationStack = _this.editor.getOperationsStack();
+                                operationStack.forEach(function (v, i) {
+                                    if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
+                                        _this.editor.removeOperation(v);
+                                    }
+                                });
+                                _this.TriggerFitToScreen();
+                            }, false);
+                        }, false);
+                    });
+                };
+                /**
+                * Gets filter image by filter name
+                * @param {string} filterName
+                * @return {string}
+                */
+                BaseAction.prototype.getFilterImageByName = function (filterName) {
+                    var path = "content/img/filters/";
+                    return path + filterName + '.png';
                 };
                 return BaseAction;
             })();
@@ -380,42 +552,90 @@ var PhotoEditor;
                 BasicActions.prototype.Rotate = function (direction) {
                     var _this = this;
                     this.init(null, function () {
-                        _this.state.ClearRotationStack();
-                        var rotateOperation = new PhotoEditorSDK.Operations.OrientationOperation(_this.sdk, {});
+                        if (_this.state.OrientationOperation == null) {
+                            _this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(_this.sdk, {});
+                            _this.sdk.addOperation(_this.state.OrientationOperation);
+                        }
                         var rotateTo = direction === PhotoEditor.Globals.RotateDirection.Left ? -90 : 90;
-                        rotateOperation.setRotation(_this.state._getRotation(rotateTo));
-                        _this.state.RotationOperationStack.push(rotateOperation);
-                        _this.sdk.addOperation(rotateOperation);
+                        _this.state.OrientationOperation.setRotation(_this.state._getRotation(rotateTo));
+                        //console.log(this.state.OrientationOperation);
                         _this.FitToScreen(null);
                     });
                 };
                 BasicActions.prototype.Flip = function (dir) {
-                    this.state.ClearFlipStack();
-                    var flipOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
+                    if (this.state.OrientationOperation == null) {
+                        this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
+                        this.sdk.addOperation(this.state.OrientationOperation);
+                    }
                     if (dir === PhotoEditor.Globals.FlipDirection.Horizontal) {
                         this.state.flippedH = !this.state.flippedH;
-                        flipOperation.setFlipHorizontally(this.state.flippedH);
+                        this.state.OrientationOperation.setFlipHorizontally(this.state.flippedH);
                     }
                     else {
                         this.state.flippedV = !this.state.flippedV;
-                        flipOperation.setFlipVertically(this.state.flippedV);
+                        this.state.OrientationOperation.setFlipVertically(this.state.flippedV);
                     }
-                    this.state.FlipOperationStack.push(flipOperation);
-                    this.sdk.addOperation(flipOperation);
                     this.sdk.render();
                 };
-                //todo: scetch
-                BasicActions.prototype.ResizeImage = function (w, h) {
+                BasicActions.prototype.Adjust = function (adjustmentType, value) {
+                    if (this.state.AdjustmentOperation == null) {
+                        this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
+                        this.sdk.addOperation(this.state.AdjustmentOperation);
+                    }
+                    var settings = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
+                    switch (adjustmentType) {
+                        case PhotoEditor.Globals.AdjustmentTypes.Brightness:
+                            this.state.AdjustmentOperation.setBrightness(value);
+                            this.state.brightnessValue = value * settings.multiplier;
+                            break;
+                        case PhotoEditor.Globals.AdjustmentTypes.Saturation:
+                            this.state.AdjustmentOperation.setSaturation(value);
+                            this.state.saturationValue = value * settings.multiplier;
+                            break;
+                        case PhotoEditor.Globals.AdjustmentTypes.Contrast:
+                            this.state.AdjustmentOperation.setContrast(value);
+                            this.state.contrastValue = value * settings.multiplier;
+                            break;
+                        case PhotoEditor.Globals.AdjustmentTypes.Exposure:
+                            this.state.AdjustmentOperation.setExposure(value);
+                            this.state.exposureValue = value * settings.multiplier;
+                            break;
+                        case PhotoEditor.Globals.AdjustmentTypes.Shadows:
+                            this.state.AdjustmentOperation.setShadows(value);
+                            this.state.shadowsValue = value * settings.multiplier;
+                            break;
+                        case PhotoEditor.Globals.AdjustmentTypes.Highlights:
+                            this.state.AdjustmentOperation.setHighlights(value);
+                            this.state.highlightsValue = value * settings.multiplier;
+                            break;
+                    }
+                    this.sdk.render();
+                };
+                BasicActions.prototype.GenerateFilterIcons = function () {
                     var _this = this;
-                    this.ResetOrientation(function () {
-                        _this.init(null, function () {
-                            _this.state.imageW = w;
-                            _this.state.imageH = h;
-                            var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
-                            _this.sdk.setImage(_this.image, _this.sdk.getExif(), dimensions);
-                            _this.FitToScreen(null);
-                        });
-                    }, false);
+                    var filters = [];
+                    $.each(PhotoEditorSDK.Filters, function (i, filter) {
+                        if (filter.identifier !== 'k1'
+                            && filter.identifier !== 'k2'
+                            && filter.identifier !== 'k6'
+                            && filter.identifier !== 'kdynamic'
+                            && filter.identifier !== 'morning'
+                            && filter.identifier !== 'lut') {
+                            var $filterContainer = $("<div class=\"photo-editor-filter-item " + filter.identifier + "\"></div>").click(function () {
+                                if (_this.state.FilterOperation == null) {
+                                    _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
+                                    _this.sdk.addOperation(_this.state.FilterOperation);
+                                }
+                                _this.state.FilterOperation.setFilter(new filter());
+                                _this.sdk.render();
+                            });
+                            var $image = $("<img src=\"" + _this.getFilterImageByName(filter.name) + "\" alt=\"\" />");
+                            var $nameItem = $("<div>" + filter.displayName + "</div>");
+                            $filterContainer.append($image, $nameItem);
+                            filters.push($filterContainer);
+                        }
+                    });
+                    return filters;
                 };
                 return BasicActions;
             })(SDK.BaseAction);
@@ -442,37 +662,47 @@ var PhotoEditor;
                 function ReactUIBase(sdk, editor, containerId, image) {
                     _super.call(this, sdk, editor, containerId, image);
                     this._isInControl = false;
-                    this._AdjustInitButtonSelector = '#' + containerId +
-                        ' .pesdk-react-controls__button__icon[data-reactid=".'
-                        + this.editorIndex
-                        + '.1.1.2.0.0.0.0.0.0.$adjustments.0.0"]';
-                    this._AdjustSubmitSelector = '#' + containerId +
-                        ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
-                        + this.editorIndex
-                        + '.1.1.2.0.0.1.0.0.0"]';
-                    this._FiltersInitButtonSelector = '#' + containerId +
-                        ' .pesdk-react-controls__button__icon[data-reactid=".'
-                        + this.editorIndex
-                        + '.1.1.2.0.0.0.0.0.0.$filter.0.0"]';
-                    this._FiltersSubmitSelector = '#' + containerId +
-                        ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
-                        + this.editorIndex
-                        + '.1.1.2.0.0.1.0.0.0"]';
-                    this._CropInitButtonSelector =
-                        "#" + this.containerId + " .pesdk-react-controls__button__icon[data-reactid=\"." + this.editorIndex + ".1.1.2.0.0.0.0.0.0.$crop.0.0\"]";
-                    this._CropCancelSelector =
-                        "#" + this.containerId + " .pesdk-react-controls__largeButton__icon[data-reactid=\"." + this.editorIndex + ".1.1.2.0.0.0.0.0.0\"]";
-                    this._CropSubmitSelector =
-                        "#" + this.containerId + " .pesdk-react-controls__largeButton__icon[data-reactid=\"." + this.editorIndex + ".1.1.2.0.0.0.2.0.0\"]";
+                    this._controlContainer = "#" + containerId + " .pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row .pesdk-react-controls__table > .pesdk-react-controls__cell.pesdk-react-controls__cell--list";
+                    this._buttonContainer = "#" + containerId + "-editor > div > div:nth-child(3) > div.pesdk-react-editorScreen > div.pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row > div > div > div";
+                    this._CropInitButtonSelector = this._controlContainer + " .pesdk-react-controls__list__item:nth-child(1) > div";
+                    this._CropCancelSelector = this._buttonContainer + " > div:nth-child(1) > div";
+                    this._CropSubmitSelector = this._buttonContainer + " > div:nth-child(3) > div";
+                    //this._AdjustInitButtonSelector = '#' + containerId +
+                    //    ' .pesdk-react-controls__button__icon[data-reactid=".'
+                    //    + this.editorIndex
+                    //    + '.1.1.2.0.0.0.0.0.0.$adjustments.0.0"]';
+                    //this._AdjustSubmitSelector = '#' + containerId +
+                    //    ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
+                    //    + this.editorIndex
+                    //    + '.1.1.2.0.0.1.0.0.0"]';
+                    //this._FiltersInitButtonSelector = '#' + containerId +
+                    //    ' .pesdk-react-controls__button__icon[data-reactid=".'
+                    //    + this.editorIndex
+                    //    + '.1.1.2.0.0.0.0.0.0.$filter.0.0"]';
+                    //this._FiltersSubmitSelector = '#' + containerId +
+                    //    ' .pesdk-react-controls__largeButton__icon[data-reactid=".'
+                    //    + this.editorIndex
+                    //    + '.1.1.2.0.0.1.0.0.0"]';
+                    //this._CropInitButtonSelector =
+                    //    `#${this.containerId} .pesdk-react-controls__button__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0.$crop.0.0"]`;
+                    //this._CropCancelSelector =
+                    //    `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.0.0.0"]`;
+                    //this._CropSubmitSelector =
+                    //    `#${this.containerId} .pesdk-react-controls__largeButton__icon[data-reactid=".${this.editorIndex}.1.1.2.0.0.0.2.0.0"]`;
                 }
-                ReactUIBase.prototype._createSubControls = function (buttonControls, $target) {
+                ReactUIBase.prototype._createSubControls = function (buttonControls, $target, callback) {
+                    if (callback === void 0) { callback = null; }
+                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").hide();
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
                     buttonControls.forEach(function (v, i) {
                         $subActionsContainer.append(v);
                     });
                     $target.append($subActionsContainer);
+                    if (typeof (callback) === 'function')
+                        callback();
                 };
                 ReactUIBase.prototype._disposeSubControls = function () {
+                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").show();
                     $("#" + this.containerId + " .photo-editor-ui_sub-controls-container").remove();
                 };
                 ReactUIBase.prototype._launchControl = function (operation, intitSelector) {
@@ -500,85 +730,6 @@ var PhotoEditor;
                     selector = "#" + this.containerId + " .pesdk-react-controls__list__item[data-reactid=\"" + dataid + "\"] .pesdk-react-controls__button";
                     //console.log(control, selector);
                     return selector;
-                };
-                //v 3.2.0
-                //getFilterImageByName(filterName) {
-                //    var path = 'content/js/PhotoEditorSDK/assets/ui/react/controls/filters/';
-                //    //TODO: no switch needed here -> just use <filterName>.jpeg/.png for image names
-                //    switch (filterName) {
-                //        case 'IdentityFilter': return path + 'identity@2x.png';
-                //        case 'A15Filter': return path + 'a15@2x.png';
-                //        case 'BreezeFilter': return path + 'breeze@2x.png';
-                //        case 'BWFilter': return path + 'bw@2x.png';
-                //        case 'BWHardFilter': return path + 'bwhard@2x.png';
-                //        case 'CelsiusFilter': return path + 'celsius@2x.png';
-                //        case 'ChestFilter': return path + 'chest@2x.png';
-                //        case 'FixieFilter': return path + 'fixie@2x.png';
-                //        case 'FoodFilter': return path + 'food@2x.png';
-                //        case 'FridgeFilter': return path + 'fridge@2x.png';
-                //        case 'FrontFilter': return path + 'front@2x.png';
-                //        case 'GlamFilter': return path + 'glam@2x.png';
-                //        case 'GobblinFilter': return path + 'gobblin@2x.png';
-                //        //case 'K1Filter': return path + 'k1@2x.png';
-                //        //case 'K2Filter': return path + 'k2@2x.png';
-                //        //case 'K6Filter': return path + 'k6@2x.png';
-                //        //case 'KDynamicFilter': return path + 'kdynamic@2x.png';
-                //        case 'LeninFilter': return path + 'lenin@2x.png';
-                //        case 'LomoFilter': return path + 'lomo@2x.png';
-                //        case 'MellowFilter': return path + 'mellow@2x.png';
-                //        //case 'MorningFilter': return path + 'morning@2x.png';
-                //        case 'OrchidFilter': return path + 'orchid@2x.png';
-                //        case 'PolaFilter': return path + 'pola@2x.png';
-                //        case 'Pola669Filter': return path + 'pola669@2x.png';
-                //        case 'QuoziFilter': return path + 'quozi@2x.png';
-                //        case 'SemiredFilter': return path + 'semired@2x.png';
-                //        case 'SunnyFilter': return path + 'sunny@2x.png';
-                //        case 'TexasFilter': return path + 'texas@2x.png';
-                //        case 'X400Filter': return path + 'x400@2x.png';
-                //    }
-                //}
-                //v 3.3.0
-                /**
-                * Gets filter image by filter name
-                * @param {string} filterName
-                * @return {string}
-                */
-                ReactUIBase.prototype.getFilterImageByName = function (filterName) {
-                    var path = "content/js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets/ui/react/controls/filters/";
-                    //TODO: no switch needed here -> just use <filterName>.jpeg/.png for image names
-                    switch (filterName) {
-                        case 'IdentityFilter': return path + 'identity@2x.png';
-                        case 'A15Filter': return path + 'a15@2x.png';
-                        case 'BreezeFilter': return path + 'breeze@2x.png';
-                        case 'BWFilter': return path + 'bw@2x.png';
-                        case 'BWHardFilter': return path + 'bwhard@2x.png';
-                        case 'CelsiusFilter': return path + 'celsius@2x.png';
-                        case 'ChestFilter': return path + 'chest@2x.png';
-                        case 'FixieFilter': return path + 'fixie@2x.png';
-                        case 'FoodFilter': return path + 'food@2x.png';
-                        case 'FridgeFilter': return path + 'fridge@2x.png';
-                        case 'FrontFilter': return path + 'front@2x.png';
-                        case 'GlamFilter': return path + 'glam@2x.png';
-                        case 'GobblinFilter': return path + 'gobblin@2x.png';
-                        //case 'K1Filter': return path + 'k1@2x.png';
-                        //case 'K2Filter': return path + 'k2@2x.png';
-                        //case 'K6Filter': return path + 'k6@2x.png';
-                        //case 'KDynamicFilter': return path + 'kdynamic@2x.png';
-                        case 'LeninFilter': return path + 'lenin@2x.png';
-                        case 'LomoFilter': return path + 'lomo@2x.png';
-                        case 'MellowFilter': return path + 'mellow@2x.png';
-                        case 'MetalFilter': return path + 'metal@2x.png';
-                        //case 'MorningFilter': return path + 'morning@2x.png';
-                        case 'OrchidFilter': return path + 'orchid@2x.png';
-                        case 'PolaFilter': return path + 'pola@2x.png';
-                        case 'Pola669Filter': return path + 'pola669@2x.png';
-                        case 'QuoziFilter': return path + 'quozi@2x.png';
-                        case 'SemiredFilter': return path + 'semired@2x.png';
-                        case 'SunnyFilter': return path + 'sunny@2x.png';
-                        case 'TexasFilter': return path + 'texas@2x.png';
-                        case 'X400Filter': return path + 'x400@2x.png';
-                        default: return path + 'identity@2x.png';
-                    }
                 };
                 return ReactUIBase;
             })(Actions.SDK.BasicActions);
@@ -677,26 +828,6 @@ var PhotoEditor;
                     $(this._FiltersSubmitSelector).click();
                     this._isInControl = false;
                 };
-                ReactUIOverlay.prototype.GenerateFilterIcons = function () {
-                    var _this = this;
-                    var filters = [];
-                    $.each(PhotoEditorSDK.Filters, function (i, filter) {
-                        if (filter.identifier !== 'k1'
-                            && filter.identifier !== 'k2'
-                            && filter.identifier !== 'k6'
-                            && filter.identifier !== 'kdynamic'
-                            && filter.identifier !== 'morning') {
-                            var $filterContainer = $('<div class="photo-editor-filter-item"></div>').click(function () {
-                                _this.StartFilter(filter.identifier);
-                            });
-                            var $image = $("<img src=\"" + _this.getFilterImageByName(filter.name) + "\" alt=\"\" />");
-                            var $nameItem = $("<div>" + filter.displayName + "</div>");
-                            $filterContainer.append($image, $nameItem);
-                            filters.push($filterContainer);
-                        }
-                    });
-                    return filters;
-                };
                 return ReactUIOverlay;
             })(ReactUI.ReactUIBase);
             ReactUI.ReactUIOverlay = ReactUIOverlay;
@@ -717,9 +848,10 @@ var PhotoEditor;
         var SDKActions = (function (_super) {
             __extends(SDKActions, _super);
             function SDKActions(editor, internalInstance, containerId, image) {
+                //console.log(internalInstance);
                 var _editor = editor;
                 var _internalEditor = internalInstance !== null
-                    ? internalInstance._component._reactInternalInstance._instance.refs.screen._editor
+                    ? internalInstance._component._reactInternalInstance._instance.refs.editorScreen._editor
                     : null;
                 var _sdk = _internalEditor !== null
                     ? _internalEditor.getSDK()
@@ -775,15 +907,84 @@ var PhotoEditor;
                         .click(function () { buttonControl.onclick($(this)); });
                 }
                 else {
-                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + "\">" + buttonControl.text + "</" + tag + ">")
+                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + " main-controls-button\">\n    <img src=\"content/img/buttons/" + buttonControl.cssClass + ".png\" alt=\"\" />\n    <span>" + buttonControl.text + "</span>\n</" + tag + ">")
                         .click(function () { buttonControl.onclick($(this)); });
                 }
             };
-            HTMLControls.DEFAULT_DOM_ELEMENT = 'button';
+            HTMLControls.DEFAULT_DOM_ELEMENT = 'div';
             HTMLControls.CSS_PREFIX = 'photo-editor-ui_';
             return HTMLControls;
         })();
         Html.HTMLControls = HTMLControls;
+    })(Html = PhotoEditor.Html || (PhotoEditor.Html = {}));
+})(PhotoEditor || (PhotoEditor = {}));
+
+
+var PhotoEditor;
+(function (PhotoEditor) {
+    var Html;
+    (function (Html) {
+        var EventBinder = (function () {
+            function EventBinder(actions) {
+                this.actions = actions;
+                this.lockedRatio = true;
+                this.prevResizeValues = { w: 0, h: 0 };
+            }
+            EventBinder.prototype.HandleRatioInputKeyUp = function ($caller, $target, dimension, e, submit, cancel) {
+                var inputValue = $caller.val();
+                var value = inputValue.replace(/[^0-9.]/g, '');
+                var prevVal = dimension === PhotoEditor.Globals.ImageDimension.W ? this.prevResizeValues.w : this.prevResizeValues.h;
+                if (inputValue != prevVal) {
+                    $caller.val(value);
+                    if (dimension === PhotoEditor.Globals.ImageDimension.W)
+                        this.prevResizeValues.w = parseInt(value);
+                    else
+                        this.prevResizeValues.h = parseInt(value);
+                }
+                if (this.lockedRatio) {
+                    $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
+                }
+                if (e.which === 13)
+                    submit();
+                if (e.which === 27)
+                    cancel();
+            };
+            EventBinder.prototype.HandleRatioInputBlur = function ($caller, $target, dimension) {
+                //todo: -> settings/options
+                var minRatio = 5;
+                var value = $caller.val();
+                var initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
+                value = value > initialDimensionSize
+                    ? initialDimensionSize
+                    : value >= Math.round(initialDimensionSize / minRatio)
+                        ? value
+                        : Math.round(initialDimensionSize / minRatio);
+                $caller.val(value);
+                if (this.lockedRatio) {
+                    $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
+                }
+            };
+            EventBinder.prototype.BindResizeEventHandlers = function ($w, $h, submit, cancel) {
+                var _instance = this;
+                this.prevResizeValues = { w: this.actions.state.imageW, h: this.actions.state.imageH };
+                $w
+                    .keyup(function (e) {
+                    _instance.HandleRatioInputKeyUp($(this), $h, PhotoEditor.Globals.ImageDimension.W, e, submit, cancel);
+                })
+                    .blur(function () {
+                    _instance.HandleRatioInputBlur($(this), $h, PhotoEditor.Globals.ImageDimension.W);
+                });
+                $h
+                    .keyup(function (e) {
+                    _instance.HandleRatioInputKeyUp($(this), $w, PhotoEditor.Globals.ImageDimension.H, e, submit, cancel);
+                })
+                    .blur(function () {
+                    _instance.HandleRatioInputBlur($(this), $w, PhotoEditor.Globals.ImageDimension.H);
+                });
+            };
+            return EventBinder;
+        })();
+        Html.EventBinder = EventBinder;
     })(Html = PhotoEditor.Html || (PhotoEditor.Html = {}));
 })(PhotoEditor || (PhotoEditor = {}));
 
@@ -803,18 +1004,18 @@ var PhotoEditor;
                 this.containerId = containerId;
                 this.dataId = dataId;
                 this.imageUrl = imageUrl;
-                this.lockedRatio = true;
-                //TODO: this doesnt belong here
-                //TODO: obj
-                this.prevResizeValues = { w: 0, h: 0 };
                 this.actions = null;
+                this.eventBinder = null;
+                if (typeof (PhotoEditor.Globals._editorDisposator) === 'function') {
+                    PhotoEditor.Globals._editorDisposator();
+                }
             }
             ImageEditor.prototype.LoadEditor = function () {
                 var _this = this;
                 return new Promise(function (resolve, reject) {
                     var containerparent = document.getElementById(_this.containerId);
                     var containerselector = _this.containerId + "-editor";
-                    $("#" + _this.containerId).append("<div id=\"" + containerselector + "\" style=\"width: 100%; height: 90%;\"></div>");
+                    $("#" + _this.containerId).append("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
@@ -823,7 +1024,6 @@ var PhotoEditor;
                     //
                     image.onload = function () {
                         console.log("loading image: \"" + _this.imageUrl + "\" into: \"#" + _this.containerId + "\"");
-                        //TODO: TYPE + extend this
                         var editor = new PhotoEditorSDK.UI.ReactUI({
                             pixelRatio: 1,
                             container: container,
@@ -848,64 +1048,14 @@ var PhotoEditor;
                             export: { type: PhotoEditorSDK.RenderType.DATAURL, download: false },
                         });
                         _this.actions = new PhotoEditor.Actions.SDKActions(editor, editor.setImage(image) /*edited source code*/, _this.containerId, image);
+                        _this.eventBinder = new PhotoEditor.Html.EventBinder(_this.actions);
                         _this._initializeUI($("#" + _this.containerId));
+                        PhotoEditor.Globals._editorDisposator = function () {
+                            _this.actions.DisposeEditor();
+                        };
                         resolve(_this.actions);
                     };
                     image.src = _this.imageUrl;
-                });
-            };
-            ImageEditor.prototype.HandleRatioInputKeyUp = function ($caller, $target, dimension, e, submit, cancel) {
-                var inputValue = $caller.val();
-                var value = inputValue.replace(/[^0-9.]/g, '');
-                var prevVal = dimension === "w" ? this.prevResizeValues.w : this.prevResizeValues.h;
-                if (inputValue != prevVal) {
-                    $caller.val(value);
-                    if (dimension === "w")
-                        this.prevResizeValues.w = parseInt(value);
-                    else
-                        this.prevResizeValues.h = parseInt(value);
-                }
-                if (this.lockedRatio) {
-                    $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
-                }
-                if (e.which === 13)
-                    submit();
-                if (e.which === 27)
-                    cancel();
-            };
-            //TODO: this doesnt belong here
-            ImageEditor.prototype.HandleRatioInputBlur = function ($caller, $target, dimension) {
-                //todo: -> settings/options
-                var minRatio = 5;
-                var value = $caller.val();
-                var initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
-                value = value > initialDimensionSize
-                    ? initialDimensionSize
-                    : value >= initialDimensionSize / minRatio
-                        ? value
-                        : initialDimensionSize / minRatio;
-                $caller.val(value);
-                if (this.lockedRatio) {
-                    $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
-                }
-            };
-            //TODO: this doesnt belong here
-            ImageEditor.prototype.BindResizeEventHandlers = function ($w, $h, submit, cancel) {
-                var _instance = this;
-                this.prevResizeValues = { w: this.actions.state.imageW, h: this.actions.state.imageH };
-                $w
-                    .keyup(function (e) {
-                    _instance.HandleRatioInputKeyUp($(this), $h, PhotoEditor.Globals.ImageDimension.W, e, submit, cancel);
-                })
-                    .blur(function () {
-                    _instance.HandleRatioInputBlur($(this), $h, PhotoEditor.Globals.ImageDimension.W);
-                });
-                $h
-                    .keyup(function (e) {
-                    _instance.HandleRatioInputKeyUp($(this), $w, PhotoEditor.Globals.ImageDimension.H, e, submit, cancel);
-                })
-                    .blur(function () {
-                    _instance.HandleRatioInputBlur($(this), $w, PhotoEditor.Globals.ImageDimension.H);
                 });
             };
             ImageEditor.prototype._initializeUI = function ($container) {
@@ -931,10 +1081,22 @@ var PhotoEditor;
                 $tab1.append(this._getTab1Content($tab1));
                 $tab2.append(this._getTab2Content($tab2));
                 $tab3.append(this._getTab3Content($tab3));
+                var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
+                var $disposeEditorButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
+                var $saveImageButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
+                    _this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, function (exportedImage) {
+                        if (typeof (PhotoEditor.Handlers.onSaveHandler) === 'function')
+                            PhotoEditor.Handlers.onSaveHandler(exportedImage);
+                    }, true);
+                });
                 $tabContainer.append($tab1, $tab2, $tab3);
                 $tabControlContainer.append($tabControl1, $tabControl2, $tabControl3);
-                $uiContainer.append($tabControlContainer, $tabContainer);
+                $buttonContainer.append($disposeEditorButton, $saveImageButton);
+                $uiContainer.append($tabControlContainer, $tabContainer, $buttonContainer);
                 $container.append($uiContainer);
+                this._applySlickJS(1);
+                this._applySlickJS(2);
+                this._applySlickJS(3);
             };
             ImageEditor.prototype._getTab1Content = function ($parent) {
                 var _this = this;
@@ -944,23 +1106,31 @@ var PhotoEditor;
                 var $flipV = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.FlipV, 'flip-v', function () { _this.actions.Flip(PhotoEditor.Globals.FlipDirection.Vertical); }));
                 var $crop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Crop, 'crop', function () {
                     _this.actions.StartCropping(function () {
-                        var $cancelCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Cancel, 'crop-cancel', function () { _this.actions._disposeSubControls(); _this.actions.CancelCrop(); }));
-                        var $submitCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Submit, 'crop-submit', function () { _this.actions._disposeSubControls(); _this.actions.SubmitCrop(); }));
-                        var $customCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.CropCustom, 'crop-custom', function ($caller) { _this.actions.CropCustom(); }));
-                        var $squareCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.CropSquare, 'crop-square', function ($caller) { _this.actions.CropSquare(); }));
-                        var $4to3Crop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Crop4to3, 'crop-4to3', function ($caller) { _this.actions.Crop4to3(); }));
-                        var $16to9Crop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Crop16to9, 'crop-16to9', function ($caller) { _this.actions.Crop16to6(); }));
+                        var $cancelCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Cancel, 'cancel', function () { _this.actions._disposeSubControls(); _this.actions.CancelCrop(); }));
+                        var $submitCrop = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Submit, 'submit', function () { _this.actions._disposeSubControls(); _this.actions.SubmitCrop(); }));
+                        //let $customCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropCustom, 'crop-custom',
+                        //    ($caller) => { this.actions.CropCustom(); }
+                        //));
+                        //let $squareCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropSquare, 'crop-square',
+                        //    ($caller) => { this.actions.CropSquare(); }
+                        //));
+                        //let $4to3Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop4to3, 'crop-4to3',
+                        //    ($caller) => { this.actions.Crop4to3(); }
+                        //));
+                        //let $16to9Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop16to9, 'crop-16to9',
+                        //    ($caller) => { this.actions.Crop16to6(); }
+                        //));
                         _this.actions.init(function () { _this.actions._disposeSubControls(); _this.actions.CancelCrop(); }, function () {
-                            _this.actions._createSubControls([$cancelCrop, $customCrop, $squareCrop, $4to3Crop, $16to9Crop, $submitCrop], $parent);
+                            _this.actions._createSubControls([$cancelCrop, $submitCrop], $parent);
                         });
                     });
                 }));
                 var $resize = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resize, 'resize', function () {
                     var $widthInput = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(_this.actions.state.imageW, 'input-width', function () { }, 'input', PhotoEditor.Globals.Texts.Inputs.ResizeWidthPlch));
                     var $heightInput = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(_this.actions.state.imageH, 'input-height', function () { }, 'input', PhotoEditor.Globals.Texts.Inputs.ResizeHeightPlch));
-                    var $lockRatioButton = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.LockRatio, "lock-ratio " + (_this.lockedRatio ? "active" : ""), function () {
-                        _this.lockedRatio = !_this.lockedRatio;
-                        if (_this.lockedRatio) {
+                    var $lockRatioButton = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.LockRatio, "lock-ratio " + (_this.eventBinder.lockedRatio ? "active" : ""), function () {
+                        _this.eventBinder.lockedRatio = !_this.eventBinder.lockedRatio;
+                        if (_this.eventBinder.lockedRatio) {
                             $lockRatioButton.addClass('active');
                             $widthInput.keyup();
                         }
@@ -969,7 +1139,7 @@ var PhotoEditor;
                         }
                     }));
                     var cancel = function () { _this.actions._disposeSubControls(); };
-                    var $cancelResize = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Cancel, 'resize-cancel', cancel));
+                    var $cancelResize = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Cancel, 'cancel', cancel));
                     var submit = function () {
                         var w = 0;
                         var h = 0;
@@ -982,28 +1152,118 @@ var PhotoEditor;
                             }
                         }
                     };
-                    var $submitResize = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Submit, 'resize-submit', submit));
-                    _this.BindResizeEventHandlers($widthInput, $heightInput, submit, cancel);
+                    var $submitResize = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Submit, 'submit', submit));
+                    _this.eventBinder.BindResizeEventHandlers($widthInput, $heightInput, submit, cancel);
                     _this.actions.init(_this.actions._disposeSubControls, function () {
                         _this.actions._createSubControls([$cancelResize, $widthInput, $lockRatioButton, $heightInput, $submitResize], $parent);
                     });
                 }));
                 var $fitToScreen = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.FitToScreen, 'fitToScreen', function () { _this.actions.TriggerFitToScreen(); }));
-                var $resetAll = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetAll', function () { _this.actions.Reset(); }));
-                return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetAll];
+                var $resetTab1 = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetTab1', function () { _this.actions.ResetPictureSettings(); }));
+                return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetTab1];
             };
             ImageEditor.prototype._getTab2Content = function ($parent) {
                 return this.actions.GenerateFilterIcons();
             };
             ImageEditor.prototype._getTab3Content = function ($parent) {
                 var _this = this;
-                var $brightness = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Brightness, 'brightness', function () { _this.actions.StartBrightness(); }));
-                var $saturation = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Saturation, 'saturation', function () { _this.actions.StartSaturation(); }));
-                var $contrast = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Contrast, 'contrast', function () { _this.actions.StartContrast(); }));
-                var $exposure = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Exposure, 'exposure', function () { _this.actions.StartExposure(); }));
-                var $shadows = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Shadows, 'shadows', function () { _this.actions.StartShadows(); }));
-                var $highlights = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Highlights, 'highlights', function () { _this.actions.StartHighlights(); }));
+                var instance = this;
+                var cancel = function (adjustmentType) {
+                    var adjustment = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
+                    _this.actions.Adjust(adjustmentType, parseFloat(adjustment.initial) / adjustment.multiplier);
+                    _this.actions._disposeSubControls();
+                };
+                var getCancelButton = function (adjustmentType) {
+                    var $cancel = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Cancel, 'cancel', function () {
+                        cancel(adjustmentType);
+                    }));
+                    return $cancel;
+                };
+                var getSubmitButton = function () {
+                    var $submit = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Submit, 'submit', function () {
+                        _this.actions.state.adjustStateSaved = true;
+                        _this.actions._disposeSubControls();
+                    }));
+                    return $submit;
+                };
+                var getSlider = function () {
+                    return $("<div id=\"photo-editor-ui_slider\"></div>");
+                };
+                var bindSlider = function (type, adjustment, bindValue) {
+                    $("#photo-editor-ui_slider").slider({
+                        range: "min",
+                        min: adjustment.min,
+                        max: adjustment.max,
+                        value: bindValue,
+                        slide: function (event, ui) {
+                            instance.actions.Adjust(type, parseFloat(ui.value) / adjustment.multiplier);
+                        }
+                    });
+                };
+                var getSubControls = function (type, bindValue) {
+                    _this.actions.init(function () {
+                        if (!_this.actions.state.adjustStateSaved) {
+                            cancel(type);
+                        }
+                        _this.actions._disposeSubControls();
+                    }, function () {
+                        _this.actions._createSubControls([
+                            getCancelButton(type),
+                            getSlider(),
+                            getSubmitButton()
+                        ], $parent, function () {
+                            _this.actions.state.adjustStateSaved = false;
+                            bindSlider(type, PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
+                        });
+                    });
+                };
+                var $brightness = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Brightness, 'brightness', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Brightness, _this.actions.state.brightnessValue); }));
+                var $saturation = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Saturation, 'saturation', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Saturation, _this.actions.state.saturationValue); }));
+                var $contrast = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Contrast, 'contrast', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Contrast, _this.actions.state.contrastValue); }));
+                var $exposure = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Exposure, 'exposure', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Exposure, _this.actions.state.exposureValue); }));
+                var $shadows = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Shadows, 'shadows', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Shadows, _this.actions.state.shadowsValue); }));
+                var $highlights = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Highlights, 'highlights', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Highlights, _this.actions.state.highlightsValue); }));
                 return [$brightness, $saturation, $contrast, $exposure, $shadows, $highlights];
+            };
+            ImageEditor.prototype._applySlickJS = function (tabId) {
+                $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ")").slick({
+                    slidesToShow: 9,
+                    slidesToScroll: 1,
+                    dots: true,
+                    touchMove: true,
+                    infinite: false,
+                    arrows: false,
+                    responsive: [
+                        {
+                            breakpoint: 1000,
+                            settings: {
+                                slidesToShow: 7,
+                                slidesToScroll: 7
+                            }
+                        },
+                        {
+                            breakpoint: 700,
+                            settings: {
+                                slidesToShow: 5,
+                                slidesToScroll: 5
+                            }
+                        },
+                        {
+                            breakpoint: 450,
+                            settings: {
+                                slidesToShow: 4,
+                                slidesToScroll: 4
+                            }
+                        },
+                        {
+                            breakpoint: 400,
+                            settings: {
+                                slidesToShow: 3,
+                                slidesToScroll: 3
+                            }
+                        }
+                    ]
+                });
             };
             return ImageEditor;
         })();
@@ -1011,157 +1271,5 @@ var PhotoEditor;
         ;
     })(Editor = PhotoEditor.Editor || (PhotoEditor.Editor = {}));
 })(PhotoEditor || (PhotoEditor = {}));
-
-
-var PhotoEditor;
-(function (PhotoEditor) {
-    var imageEditorContainerCssClass = "image-editor";
-    //just a test use-case scenario for multiple editors
-    //
-    var ImageContainer = (function () {
-        function ImageContainer(caller, options) {
-            this.editors = [];
-            this.imageSources = [];
-            this.intEditors = 0;
-            this.$container = $(caller);
-            this.appendEditorsToId = options.appendTo;
-            this.disposeOnSave = options.disposeOnSave || false;
-            this.$appendTo = $('#' + this.appendEditorsToId);
-            this.currentEditor = 0;
-        }
-        ImageContainer.prototype.GetImages = function () {
-            var _this = this;
-            return new Promise(function (resolve, reject) {
-                var $images = _this.$container.find('img');
-                $.each($images, function (i, v) {
-                    _this.imageSources.push($(v).attr('src'));
-                });
-                if (_this.imageSources.length > 0) {
-                    resolve();
-                }
-                else {
-                    reject();
-                }
-            });
-        };
-        ImageContainer.prototype.LoadEditors = function () {
-            var _this = this;
-            return new Promise(function (resolve, reject) {
-                _this.imageSources.forEach(function (v, i, o) {
-                    var newId = "editor-" + _this.$container.attr('id') + "-" + i;
-                    var activeClass = "";
-                    if (i == 0)
-                        activeClass = "active";
-                    var $editorContainer = $("<div class=\"" + imageEditorContainerCssClass + " " + activeClass + "\" id=\"" + newId + "\" data-id=\"" + i + "\"></div>");
-                    _this.$appendTo.append($editorContainer);
-                    var editor = new PhotoEditor.Editor.ImageEditor(newId, i, _this.imageSources[i]);
-                    editor.LoadEditor().then(function (actions) {
-                        _this.editors.push(editor);
-                        _this.intEditors++;
-                        if (_this.intEditors == _this.imageSources.length) {
-                            resolve();
-                        }
-                    });
-                });
-            });
-        };
-        ImageContainer.prototype.InitNavigationUI = function () {
-            var _this = this;
-            if (this.imageSources.length > 0) {
-                this.$navButtonContainer = $('<div class="photo-editor-ui_nav"></div>');
-                this.$navPagingContainer = $('<div class="photo-editor-ui_nav-paging"></div>');
-                var $backButton = $("<button>" + PhotoEditor.Globals.Texts.Nav.Back + "</button>").click(function () { _this.SwitchEditors(--_this.currentEditor); });
-                var $forwardButton = $("<button>" + PhotoEditor.Globals.Texts.Nav.EditNextPicture + "</button>").click(function () { _this.SwitchEditors(++_this.currentEditor); });
-                var $uploadAllButton = $("<button>" + PhotoEditor.Globals.Texts.Nav.UploadAll + "</button>").click(function () { _this.UploadAll(); });
-                //var pagingButtons = [];
-                //for (var i = 0; i < this.intEditors; i++) {
-                //    var $pg = $('<span class="photo-editor-ui_pg-item" data-id="' + i + '"></span>').click(() => {
-                //        this.SwitchEditors(currentEditor = i);
-                //    });
-                //    alert(i, this.intEditors);
-                //    if (i === this.intEditors - 1) {
-                //        $navPagingContainer.append(pagingButtons);
-                //        this.$appendTo.prepend($navPagingContainer);
-                //    }
-                //}
-                this.$navButtonContainer.append(/*$backButton, $forwardButton,*/ $uploadAllButton);
-                this.$appendTo.append(this.$navButtonContainer);
-            }
-        };
-        ImageContainer.prototype.SwitchEditors = function (index) {
-            if (index >= 0 && index < this.intEditors) {
-                $.each(this.editors, function (i, editor) {
-                    if (editor.dataId === index) {
-                        $("#" + editor.containerId).addClass('active');
-                    }
-                    else {
-                        $("#" + editor.containerId).removeClass('active');
-                        editor.actions.init(null, null);
-                    }
-                    if (index <= i) {
-                        $(".photo-editor-ui_pg-item[data-id=\"" + i + "\"]").addClass('done');
-                    }
-                    else {
-                        $(".photo-editor-ui_pg-item[data-id=\"" + i + "\"]").removeClass('done');
-                    }
-                });
-            }
-            else {
-                this.currentEditor = this.currentEditor < 0 ? 0 : this.intEditors - 1;
-            }
-        };
-        ImageContainer.prototype.UploadAll = function () {
-            var _this = this;
-            var items = [];
-            $.each(this.editors, function (i, editor) {
-                editor.actions.Export(PhotoEditorSDK.ImageFormat.JPEG, function (obj) {
-                    items.push(obj);
-                    if (i === _this.intEditors - 1)
-                        finalize(items);
-                }, _this.disposeOnSave //dispose
-                );
-            });
-            var finalize = function (items) {
-                $('#temp-preview').fadeIn(200);
-                setTimeout(function () {
-                    console.log(items);
-                    //TODO: upload `items` to server as JSON
-                    //TEST: temp display items
-                    $('#temp-preview > div').html('');
-                    $.each(items, function (i, v) {
-                        $('#temp-preview > div').append('<img src="' + v.image + '" alt="" />');
-                    });
-                    //
-                }, 1000);
-                if (_this.disposeOnSave) {
-                    _this.$navButtonContainer.remove();
-                    _this.$navButtonContainer.remove();
-                }
-            };
-        };
-        ImageContainer.prototype.CloseWithoutSave = function () {
-            $.each(this.editors, function (i, editor) {
-                editor.actions.DisposeEditor();
-            });
-            this.$navButtonContainer.remove();
-            this.$navButtonContainer.remove();
-        };
-        return ImageContainer;
-    })();
-    PhotoEditor.ImageContainer = ImageContainer;
-})(PhotoEditor || (PhotoEditor = {}));
-
-
-/* jQuery */
-(function ($) {
-    $.fn.ImageContainer = function (options) {
-        var imageContainer = new PhotoEditor.ImageContainer(this, options);
-        imageContainer.GetImages().then(function () {
-            imageContainer.LoadEditors().then(function () {
-                imageContainer.InitNavigationUI();
-            });
-        });
-    };
-})(jQuery);
 
 

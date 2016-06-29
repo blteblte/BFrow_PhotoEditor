@@ -90,27 +90,27 @@ namespace PhotoEditor.Actions.ReactUI {
             this._isInControl = false;
         }
 
-        GenerateFilterIcons() {
-            var filters = [];
-            $.each(PhotoEditorSDK.Filters, (i, filter) => {
-                if (
-                    filter.identifier !== 'k1'
-                    && filter.identifier !== 'k2'
-                    && filter.identifier !== 'k6'
-                    && filter.identifier !== 'kdynamic'
-                    && filter.identifier !== 'morning'
-                ) {
-                    var $filterContainer = $('<div class="photo-editor-filter-item"></div>').click(() => {
-                        this.StartFilter(filter.identifier);
-                    });
-                    var $image = $(`<img src="${this.getFilterImageByName(filter.name)}" alt="" />`);
-                    var $nameItem = $(`<div>${filter.displayName}</div>`);
+        //GenerateFilterIcons() {
+        //    var filters = [];
+        //    $.each(PhotoEditorSDK.Filters, (i, filter) => {
+        //        if (
+        //            filter.identifier !== 'k1'
+        //            && filter.identifier !== 'k2'
+        //            && filter.identifier !== 'k6'
+        //            && filter.identifier !== 'kdynamic'
+        //            && filter.identifier !== 'morning'
+        //        ) {
+        //            var $filterContainer = $('<div class="photo-editor-filter-item"></div>').click(() => {
+        //                this.StartFilter(filter.identifier);
+        //            });
+        //            var $image = $(`<img src="${this.getFilterImageByName(filter.name)}" alt="" />`);
+        //            var $nameItem = $(`<div>${filter.displayName}</div>`);
 
-                    $filterContainer.append($image, $nameItem);
-                    filters.push($filterContainer);
-                }
-            });
-            return filters;
-        }
+        //            $filterContainer.append($image, $nameItem);
+        //            filters.push($filterContainer);
+        //        }
+        //    });
+        //    return filters;
+        //}
     }
 }

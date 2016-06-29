@@ -32,7 +32,9 @@ namespace PhotoEditor.Globals {
             FitToScreen: "Fit To Page",
             LockRatio: "Lock Ratio",
             Cancel: "Cancel",
-            Submit: "Submit"
+            Submit: "Submit",
+            Back: "Back",
+            Done: "Done"
         },
         Inputs: {
             ResizeWidthPlch: "width...",

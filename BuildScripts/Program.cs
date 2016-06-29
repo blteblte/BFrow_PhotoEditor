@@ -13,6 +13,9 @@ namespace BuildScripts
             CombineFiles.Combine();
             Console.WriteLine(string.Format("done... Saved scripts into: {0}", CombineFiles.DESTINATION_FILE));
             Console.WriteLine(string.Format("done... Saved scripts into: {0}", CombineFiles.DESTINATION_FILE_MIN));
+
+            Build.BuildRelease();
+            Console.WriteLine("... release files built");
         }
     }
 }

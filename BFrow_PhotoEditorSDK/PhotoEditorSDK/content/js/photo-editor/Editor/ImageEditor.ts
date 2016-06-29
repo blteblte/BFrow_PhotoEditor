@@ -3,8 +3,7 @@ namespace PhotoEditor.Editor {
 
     export class ImageEditor {
         actions: Actions.SDKActions;
-        lockedRatio: boolean = true;
-
+        eventBinder: PhotoEditor.Html.EventBinder;
         /**
         * Creates new editor instance
         * @param {string} containerId
@@ -17,6 +16,11 @@ namespace PhotoEditor.Editor {
             public imageUrl: string
         ) {
             this.actions = null;
+            this.eventBinder = null;
+
+            if (typeof(Globals._editorDisposator) === 'function'){
+                Globals._editorDisposator();
+            }
         }
 
         LoadEditor() {
@@ -24,7 +28,7 @@ namespace PhotoEditor.Editor {
 
                 let containerparent = document.getElementById(this.containerId);
                 let containerselector = `${this.containerId}-editor`;
-                $(`#${this.containerId}`).append(`<div id="${containerselector}" style="width: 100%; height: 90%;"></div>`);
+                $(`#${this.containerId}`).append(`<div id="${containerselector}" class="photo-editor-instance-container" style="width: 100%;"></div>`);
                 let container = document.getElementById(containerselector);
                 let image = new Image();
                 let renderer = 'webgl'; //'webgl', 'canvas'
@@ -36,7 +40,6 @@ namespace PhotoEditor.Editor {
                 image.onload = () => {
                     console.log(`loading image: "${this.imageUrl}" into: "#${this.containerId}"`);
 
-                    //TODO: TYPE + extend this
                     const editor = new PhotoEditorSDK.UI.ReactUI({
                         pixelRatio: 1,
                         container: container,
@@ -63,78 +66,17 @@ namespace PhotoEditor.Editor {
                     });
 
                     this.actions = new Actions.SDKActions(editor, editor.setImage(image)/*edited source code*/, this.containerId, image);
+                    this.eventBinder = new PhotoEditor.Html.EventBinder(this.actions);
                     this._initializeUI($(`#${this.containerId}`));
 
+                    Globals._editorDisposator = () => {
+                        this.actions.DisposeEditor();
+                    };
                     resolve(this.actions);
                 };
                 image.src = this.imageUrl;
+
             });
-        }
-
-        //TODO: this doesnt belong here
-        //TODO: obj
-        private prevResizeValues = { w: 0, h: 0 };
-        private HandleRatioInputKeyUp($caller: JQuery, $target: JQuery, dimension: string, e: JQueryKeyEventObject
-            , submit: () => void
-            , cancel: () => void
-        ) {
-            let inputValue = $caller.val()
-            let value: number = inputValue.replace(/[^0-9.]/g, '');
-            let prevVal = dimension === "w" ? this.prevResizeValues.w : this.prevResizeValues.h;
-
-            if (inputValue != prevVal) {
-                $caller.val(value);
-                if (dimension === "w") this.prevResizeValues.w = parseInt(<string><any>value);
-                else this.prevResizeValues.h = parseInt(<string><any>value);
-            }
-
-            if (this.lockedRatio) {
-                $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
-            }
-
-            if (e.which === 13) submit();
-            if (e.which === 27) cancel();
-        }
-
-        //TODO: this doesnt belong here
-        private HandleRatioInputBlur($caller: JQuery, $target: JQuery, dimension: string) {
-            //todo: -> settings/options
-            const minRatio = 5;
-            let value: number = $caller.val();
-            let initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
-
-            value = value > initialDimensionSize
-                ? initialDimensionSize
-                : value >= initialDimensionSize / minRatio
-                    ? value
-                    : initialDimensionSize / minRatio;
-            $caller.val(value);
-
-            if (this.lockedRatio) {
-                $target.val(Math.round(value * this.actions.state.getImageRatio(dimension, true)));
-            }
-        }
-
-        //TODO: this doesnt belong here
-        private BindResizeEventHandlers($w: JQuery, $h: JQuery, submit: () => void, cancel: () => void) {
-            var _instance = this;
-            this.prevResizeValues = { w: this.actions.state.imageW, h: this.actions.state.imageH };
-
-            $w
-                .keyup(function (e) {
-                    _instance.HandleRatioInputKeyUp($(this), $h, Globals.ImageDimension.W, e, submit, cancel);
-                })
-                .blur(function () {
-                    _instance.HandleRatioInputBlur($(this), $h, Globals.ImageDimension.W);
-                });
-
-            $h
-                .keyup(function (e) {
-                    _instance.HandleRatioInputKeyUp($(this), $w, Globals.ImageDimension.H, e, submit, cancel);
-                })
-                .blur(function () {
-                    _instance.HandleRatioInputBlur($(this), $w, Globals.ImageDimension.H);
-                });
         }
 
         _initializeUI($container: JQuery) {
@@ -164,11 +106,23 @@ namespace PhotoEditor.Editor {
             $tab2.append(this._getTab2Content($tab2));
             $tab3.append(this._getTab3Content($tab3));
 
+            let $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
+            let $disposeEditorButton = $(`<span>${Globals.Texts.Buttons.Back}</span>`).click(() => { this.actions.DisposeEditor(true); });
+            let $saveImageButton = $(`<span>${Globals.Texts.Buttons.Done}</span>`).click(() => {
+                this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, (exportedImage) => {
+                    if (typeof (Handlers.onSaveHandler) === 'function') Handlers.onSaveHandler(exportedImage);
+                }, true);
+            });
+
             $tabContainer.append($tab1, $tab2, $tab3);
             $tabControlContainer.append($tabControl1, $tabControl2, $tabControl3);
-            $uiContainer.append($tabControlContainer, $tabContainer);
+            $buttonContainer.append($disposeEditorButton, $saveImageButton);
+            $uiContainer.append($tabControlContainer, $tabContainer, $buttonContainer);
 
             $container.append($uiContainer);
+            this._applySlickJS(1);
+            this._applySlickJS(2);
+            this._applySlickJS(3);
         }
 
         _getTab1Content($parent: JQuery) {
@@ -191,27 +145,27 @@ namespace PhotoEditor.Editor {
             let $crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop, 'crop',
                 () => {
                     this.actions.StartCropping(() => {
-                        let $cancelCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Cancel, 'crop-cancel',
+                        let $cancelCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Cancel, 'cancel',
                             () => { this.actions._disposeSubControls(); this.actions.CancelCrop(); }
                         ));
-                        let $submitCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Submit, 'crop-submit',
+                        let $submitCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Submit, 'submit',
                             () => { this.actions._disposeSubControls(); this.actions.SubmitCrop(); }
                         ));
-                        let $customCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropCustom, 'crop-custom',
-                            ($caller) => { this.actions.CropCustom(); }
-                        ));
-                        let $squareCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropSquare, 'crop-square',
-                            ($caller) => { this.actions.CropSquare(); }
-                        ));
-                        let $4to3Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop4to3, 'crop-4to3',
-                            ($caller) => { this.actions.Crop4to3(); }
-                        ));
-                        let $16to9Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop16to9, 'crop-16to9',
-                            ($caller) => { this.actions.Crop16to6(); }
-                        ));
+                        //let $customCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropCustom, 'crop-custom',
+                        //    ($caller) => { this.actions.CropCustom(); }
+                        //));
+                        //let $squareCrop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.CropSquare, 'crop-square',
+                        //    ($caller) => { this.actions.CropSquare(); }
+                        //));
+                        //let $4to3Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop4to3, 'crop-4to3',
+                        //    ($caller) => { this.actions.Crop4to3(); }
+                        //));
+                        //let $16to9Crop = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Crop16to9, 'crop-16to9',
+                        //    ($caller) => { this.actions.Crop16to6(); }
+                        //));
 
                         this.actions.init(() => { this.actions._disposeSubControls(); this.actions.CancelCrop(); }, () => {
-                            this.actions._createSubControls([$cancelCrop, $customCrop, $squareCrop, $4to3Crop, $16to9Crop, $submitCrop], $parent);
+                            this.actions._createSubControls([$cancelCrop, /*$customCrop, $squareCrop, $4to3Crop, $16to9Crop,*/ $submitCrop], $parent);
                         });
                     })
                 }
@@ -222,10 +176,10 @@ namespace PhotoEditor.Editor {
                     let $widthInput = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(<string>(<any>this.actions.state.imageW), 'input-width', () => { }, 'input', Globals.Texts.Inputs.ResizeWidthPlch));
                     let $heightInput = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(<string>(<any>this.actions.state.imageH), 'input-height', () => { }, 'input', Globals.Texts.Inputs.ResizeHeightPlch));
 
-                    var $lockRatioButton = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.LockRatio, `lock-ratio ${this.lockedRatio ? "active" : ""}`,
+                    var $lockRatioButton = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.LockRatio, `lock-ratio ${this.eventBinder.lockedRatio ? "active" : ""}`,
                         () => {
-                            this.lockedRatio = !this.lockedRatio;
-                            if (this.lockedRatio) {
+                            this.eventBinder.lockedRatio = !this.eventBinder.lockedRatio;
+                            if (this.eventBinder.lockedRatio) {
                                 $lockRatioButton.addClass('active');
                                 $widthInput.keyup();
                             }
@@ -236,7 +190,7 @@ namespace PhotoEditor.Editor {
                     ));
 
                     let cancel = () => { this.actions._disposeSubControls(); }
-                    let $cancelResize = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Cancel, 'resize-cancel',
+                    let $cancelResize = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Cancel, 'cancel',
                         cancel
                     ));
 
@@ -254,12 +208,12 @@ namespace PhotoEditor.Editor {
                             }
                         }
                     };
-                    let $submitResize = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Submit, 'resize-submit',
+                    let $submitResize = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Submit, 'submit',
                         submit
                     ));
 
 
-                    this.BindResizeEventHandlers($widthInput, $heightInput, submit, cancel);
+                    this.eventBinder.BindResizeEventHandlers($widthInput, $heightInput, submit, cancel);
 
                     this.actions.init(this.actions._disposeSubControls, () => {
                         this.actions._createSubControls([$cancelResize, $widthInput, $lockRatioButton, $heightInput, $submitResize], $parent);
@@ -271,11 +225,11 @@ namespace PhotoEditor.Editor {
                 () => { this.actions.TriggerFitToScreen() }
             ));
 
-            let $resetAll = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Resset, 'resetAll',
-                () => { this.actions.Reset() }
+            let $resetTab1 = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Resset, 'resetTab1',
+                () => { this.actions.ResetPictureSettings() }
             ));
 
-            return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetAll];
+            return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetTab1];
         }
 
         _getTab2Content($parent: JQuery) {
@@ -284,31 +238,134 @@ namespace PhotoEditor.Editor {
 
         _getTab3Content($parent: JQuery) {
 
+            let instance = this;
+
+            let cancel = (adjustmentType: Globals.AdjustmentTypes) => {
+                let adjustment = Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
+                this.actions.Adjust(adjustmentType, parseFloat(<string><any>adjustment.initial) / adjustment.multiplier);
+                this.actions._disposeSubControls();
+            };
+
+            let getCancelButton = (adjustmentType: Globals.AdjustmentTypes): JQuery => {
+                var $cancel = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Cancel, 'cancel', () => {
+                    cancel(adjustmentType);
+                }));
+                return $cancel;
+            };
+
+            let getSubmitButton = (): JQuery => {
+                var $submit = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Submit, 'submit', () => {
+                    this.actions.state.adjustStateSaved = true;
+                    this.actions._disposeSubControls();
+                }));
+                return $submit;
+            };
+
+            let getSlider = (): JQuery => {
+                return $(`<div id="photo-editor-ui_slider"></div>`);
+            };
+
+            let bindSlider = (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number): void => {
+                $( "#photo-editor-ui_slider" ).slider({
+                    range: "min",
+                    min: adjustment.min,
+                    max: adjustment.max,
+                    value: bindValue,
+                    slide: function( event, ui ) {
+                        instance.actions.Adjust(type, parseFloat(<string><any>ui.value) / adjustment.multiplier);
+                    }
+                });
+            }
+
+            let getSubControls = (type: Globals.AdjustmentTypes, bindValue: number) => {
+                this.actions.init(() => {
+                    if (!this.actions.state.adjustStateSaved){
+                        cancel(type);
+                    }
+                    this.actions._disposeSubControls();
+                }
+                    , () => {
+                    this.actions._createSubControls(
+                        [
+                            getCancelButton(type),
+                            getSlider(),
+                            getSubmitButton()
+                        ]
+                        , $parent, () => {
+                        this.actions.state.adjustStateSaved = false;
+                        bindSlider(type, Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
+                    });
+                });
+            };
+
             let $brightness = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Brightness, 'brightness',
-                () => { this.actions.StartBrightness() }
+                () => { getSubControls(Globals.AdjustmentTypes.Brightness, this.actions.state.brightnessValue); }
             ));
 
             let $saturation = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Saturation, 'saturation',
-                () => { this.actions.StartSaturation() }
+                () => { getSubControls(Globals.AdjustmentTypes.Saturation, this.actions.state.saturationValue); }
             ));
 
             let $contrast = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Contrast, 'contrast',
-                () => { this.actions.StartContrast() }
+                () => { getSubControls(Globals.AdjustmentTypes.Contrast, this.actions.state.contrastValue); }
             ));
 
             let $exposure = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Exposure, 'exposure',
-                () => { this.actions.StartExposure() }
+                () => { getSubControls(Globals.AdjustmentTypes.Exposure, this.actions.state.exposureValue); }
             ));
 
             let $shadows = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Shadows, 'shadows',
-                () => { this.actions.StartShadows() }
+                () => { getSubControls(Globals.AdjustmentTypes.Shadows, this.actions.state.shadowsValue); }
             ));
 
             let $highlights = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Highlights, 'highlights',
-                () => { this.actions.StartHighlights() }
+                () => { getSubControls(Globals.AdjustmentTypes.Highlights, this.actions.state.highlightsValue); }
             ));
 
             return [$brightness, $saturation, $contrast, $exposure, $shadows, $highlights];
+        }
+
+        _applySlickJS(tabId: number) {
+
+            $(`#${this.containerId} .photo-editor-ui_tab-container > div:nth-child(${tabId})`).slick({
+                slidesToShow: 9,
+                slidesToScroll: 1,
+                dots: true,
+                touchMove: true,
+                infinite: false,
+                arrows: false,
+                responsive: [
+                    {
+                        breakpoint: 1000,
+                        settings: {
+                            slidesToShow: 7,
+                            slidesToScroll: 7
+                        }
+                    },
+                    {
+                        breakpoint: 700,
+                        settings: {
+                            slidesToShow: 5,
+                            slidesToScroll: 5
+                        }
+                    },
+                    {
+                        breakpoint: 450,
+                        settings: {
+                            slidesToShow: 4,
+                            slidesToScroll: 4
+                        }
+                    },
+                    {
+                        breakpoint: 400,
+                        settings: {
+                            slidesToShow: 3,
+                            slidesToScroll: 3
+                        }
+                    }
+                ]
+            });
+
         }
     };
 }
