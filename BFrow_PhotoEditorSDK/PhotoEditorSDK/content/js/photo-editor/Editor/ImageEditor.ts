@@ -70,7 +70,7 @@ namespace PhotoEditor.Editor {
                     this._initializeUI($(`#${this.containerId}`));
 
                     Globals._editorDisposator = () => {
-                        this.actions.DisposeEditor();
+                        this.actions.DisposeEditor(true);
                     };
                     resolve(this.actions);
                 };
@@ -322,7 +322,7 @@ namespace PhotoEditor.Editor {
                 () => { getSubControls(Globals.AdjustmentTypes.Highlights, this.actions.state.highlightsValue); }
             ));
 
-            return [$brightness, $saturation, $contrast, $exposure, $shadows, $highlights];
+            return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
         }
 
         _applySlickJS(tabId: number) {

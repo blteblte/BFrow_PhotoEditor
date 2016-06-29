@@ -106,12 +106,13 @@ var PhotoEditor;
                 };
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
-                    if (disposeSdk)
-                        this.sdk.dispose();
+                    //todo: dispose ReactUi instance instead!!!!!
+                    //if (disposeSdk) this.sdk.dispose();
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
                     console.log(id + " disposed");
+                    PhotoEditor.Globals._editorDisposator = null;
                 };
                 /**
                 * Executes any exit functions and assigns new one if any

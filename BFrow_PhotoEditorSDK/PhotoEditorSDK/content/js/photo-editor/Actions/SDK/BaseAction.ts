@@ -105,11 +105,13 @@ namespace PhotoEditor.Actions.SDK {
         }
 
         DisposeEditor(disposeSdk: boolean = false) {
-            if (disposeSdk) this.sdk.dispose();
+            //todo: dispose ReactUi instance instead!!!!!
+            //if (disposeSdk) this.sdk.dispose();
             var id = `#${this.containerId}-editor`;
             $(id).remove();
             $('.photo-editor-ui_container').remove();
             console.log(`${id} disposed`);
+            Globals._editorDisposator = null;
         }
 
         /**

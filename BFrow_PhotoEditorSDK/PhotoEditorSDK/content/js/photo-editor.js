@@ -461,12 +461,13 @@ var PhotoEditor;
                 };
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
-                    if (disposeSdk)
-                        this.sdk.dispose();
+                    //todo: dispose ReactUi instance instead!!!!!
+                    //if (disposeSdk) this.sdk.dispose();
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
                     console.log(id + " disposed");
+                    PhotoEditor.Globals._editorDisposator = null;
                 };
                 /**
                 * Executes any exit functions and assigns new one if any
@@ -1051,7 +1052,7 @@ var PhotoEditor;
                         _this.eventBinder = new PhotoEditor.Html.EventBinder(_this.actions);
                         _this._initializeUI($("#" + _this.containerId));
                         PhotoEditor.Globals._editorDisposator = function () {
-                            _this.actions.DisposeEditor();
+                            _this.actions.DisposeEditor(true);
                         };
                         resolve(_this.actions);
                     };
@@ -1223,7 +1224,7 @@ var PhotoEditor;
                 var $exposure = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Exposure, 'exposure', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Exposure, _this.actions.state.exposureValue); }));
                 var $shadows = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Shadows, 'shadows', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Shadows, _this.actions.state.shadowsValue); }));
                 var $highlights = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Highlights, 'highlights', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Highlights, _this.actions.state.highlightsValue); }));
-                return [$brightness, $saturation, $contrast, $exposure, $shadows, $highlights];
+                return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
             };
             ImageEditor.prototype._applySlickJS = function (tabId) {
                 $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ")").slick({
