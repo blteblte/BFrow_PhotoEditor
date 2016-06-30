@@ -212,15 +212,24 @@ var PhotoEditor;
                     return $("<div id=\"photo-editor-ui_slider\"></div>");
                 };
                 var bindSlider = function (type, adjustment, bindValue) {
+                    var getDisplayValue = function (value) {
+                        var mid = (adjustment.max - adjustment.min) / 2;
+                        var normalized = mid === 0 ? 0 : (value * adjustment.multiplier) / mid;
+                        return Math.round(normalized * 100);
+                    };
+                    var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
                     $("#photo-editor-ui_slider").slider({
                         range: "min",
                         min: adjustment.min,
                         max: adjustment.max,
                         value: bindValue,
                         slide: function (event, ui) {
-                            instance.actions.Adjust(type, parseFloat(ui.value) / adjustment.multiplier);
+                            var value = parseFloat(ui.value) / adjustment.multiplier;
+                            $numBox.text(getDisplayValue(value));
+                            instance.actions.Adjust(type, value);
                         }
                     });
+                    $(".ui-slider-handle").append($numBox);
                 };
                 var getSubControls = function (type, bindValue) {
                     _this.actions.init(function () {

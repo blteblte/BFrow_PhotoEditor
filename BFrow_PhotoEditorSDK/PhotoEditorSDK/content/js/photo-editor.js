@@ -172,6 +172,28 @@ var PhotoEditor;
                     this.FilterOperation = null;
                     this.AdjustmentOperation = null;
                     this._originalZoom = null;
+                    //private _wToHRatio: number = null;
+                    //get wToHRatio(): number {
+                    //    if (this._wToHRatio === null && this.sdk !== null) {
+                    //        let outputDimensions = this.sdk.getOutputDimensions();
+                    //        this._wToHRatio = outputDimensions.x / outputDimensions.y;
+                    //    }
+                    //    return this._wToHRatio;
+                    //}
+                    //set wToHRatio(value: number) {
+                    //    this._wToHRatio = value;
+                    //}
+                    //private _hToWRatio: number = null;
+                    //get hToWRatio(): number {
+                    //    if (this._hToWRatio === null && this.sdk !== null) {
+                    //        let outputDimensions = this.sdk.getOutputDimensions();
+                    //        this._hToWRatio = outputDimensions.y / outputDimensions.x;
+                    //    }
+                    //    return this._hToWRatio;
+                    //}
+                    //set hToWRatio(value: number) {
+                    //    this._hToWRatio = value;
+                    //}
                     this._wToHRatio = null;
                     this._hToWRatio = null;
                     this._initialImageW = null;
@@ -207,7 +229,7 @@ var PhotoEditor;
                 Object.defineProperty(ActionState.prototype, "wToHRatio", {
                     get: function () {
                         if (this._wToHRatio === null && this.sdk !== null) {
-                            var outputDimensions = this.sdk.getOutputDimensions();
+                            var outputDimensions = this.sdk.getInputDimensions();
                             this._wToHRatio = outputDimensions.x / outputDimensions.y;
                         }
                         return this._wToHRatio;
@@ -221,7 +243,7 @@ var PhotoEditor;
                 Object.defineProperty(ActionState.prototype, "hToWRatio", {
                     get: function () {
                         if (this._hToWRatio === null && this.sdk !== null) {
-                            var outputDimensions = this.sdk.getOutputDimensions();
+                            var outputDimensions = this.sdk.getInputDimensions();
                             this._hToWRatio = outputDimensions.y / outputDimensions.x;
                         }
                         return this._hToWRatio;
@@ -1224,15 +1246,24 @@ var PhotoEditor;
                     return $("<div id=\"photo-editor-ui_slider\"></div>");
                 };
                 var bindSlider = function (type, adjustment, bindValue) {
+                    var getDisplayValue = function (value) {
+                        var mid = (adjustment.max - adjustment.min) / 2;
+                        var normalized = mid === 0 ? 0 : (value * adjustment.multiplier) / mid;
+                        return Math.round(normalized * 100);
+                    };
+                    var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
                     $("#photo-editor-ui_slider").slider({
                         range: "min",
                         min: adjustment.min,
                         max: adjustment.max,
                         value: bindValue,
                         slide: function (event, ui) {
-                            instance.actions.Adjust(type, parseFloat(ui.value) / adjustment.multiplier);
+                            var value = parseFloat(ui.value) / adjustment.multiplier;
+                            $numBox.text(getDisplayValue(value));
+                            instance.actions.Adjust(type, value);
                         }
                     });
+                    $(".ui-slider-handle").append($numBox);
                 };
                 var getSubControls = function (type, bindValue) {
                     _this.actions.init(function () {

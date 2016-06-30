@@ -18,7 +18,7 @@ namespace PhotoEditor.Editor {
             this.actions = null;
             this.eventBinder = null;
 
-            if (typeof(Globals._editorDisposator) === 'function'){
+            if (typeof(Globals._editorDisposator) === 'function') {
                 Globals._editorDisposator();
             }
         }
@@ -278,15 +278,28 @@ namespace PhotoEditor.Editor {
             };
 
             let bindSlider = (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number): void => {
-                $( "#photo-editor-ui_slider" ).slider({
+
+                var getDisplayValue = (value) => {
+                    let mid = (adjustment.max - adjustment.min) / 2;
+                    let normalized = mid === 0 ? 0 : (value * adjustment.multiplier) / mid;
+                    return Math.round(normalized * 100);
+                }
+
+                var $numBox = $(`<span class="ui-slider-numbox">${getDisplayValue(bindValue / adjustment.multiplier)}</span>`);
+
+                $("#photo-editor-ui_slider").slider({
                     range: "min",
                     min: adjustment.min,
                     max: adjustment.max,
                     value: bindValue,
-                    slide: function( event, ui ) {
-                        instance.actions.Adjust(type, parseFloat(<string><any>ui.value) / adjustment.multiplier);
+                    slide: function (event, ui) {
+                        var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
+                        $numBox.text(getDisplayValue(value));
+                        instance.actions.Adjust(type, value);
                     }
                 });
+
+                $(".ui-slider-handle").append($numBox);
             }
 
             let getSubControls = (type: Globals.AdjustmentTypes, bindValue: number) => {
