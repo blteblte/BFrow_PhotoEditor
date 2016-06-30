@@ -45,6 +45,10 @@
                 console.log(exportedImage);
             };
 
+            PhotoEditor.Handlers.onEditorLoaded = function (actions) {
+                console.log("editor loaded");
+            };
+
             $('#btn1').click(function () {
                 var editorInstance = new PhotoEditor.Editor.ImageEditor("photo-editor", 0, "content/images/car.jpg");
                 editorInstance.LoadEditor();

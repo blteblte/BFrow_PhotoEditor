@@ -12,8 +12,9 @@ var PhotoEditor;
         (function (ReactUI) {
             var ReactUIBase = (function (_super) {
                 __extends(ReactUIBase, _super);
-                function ReactUIBase(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function ReactUIBase(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                     this._isInControl = false;
                     this._controlContainer = "#" + containerId + " .pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row .pesdk-react-controls__table > .pesdk-react-controls__cell.pesdk-react-controls__cell--list";
                     this._buttonContainer = "#" + containerId + "-editor > div > div:nth-child(3) > div.pesdk-react-editorScreen > div.pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row > div > div > div";

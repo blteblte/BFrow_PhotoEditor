@@ -5,8 +5,9 @@ var PhotoEditor;
         var SDK;
         (function (SDK) {
             var BaseAction = (function () {
-                function BaseAction(sdk, editor, containerId, image) {
+                function BaseAction(reactUI, sdk, editor, containerId, image) {
                     var _this = this;
+                    this.reactUI = reactUI;
                     this.sdk = sdk;
                     this.editor = editor;
                     this.containerId = containerId;
@@ -107,7 +108,9 @@ var PhotoEditor;
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
                     //todo: dispose ReactUi instance instead!!!!!
-                    //if (disposeSdk) this.sdk.dispose();
+                    $('.pesdk-react-modals__button').click();
+                    if (disposeSdk)
+                        this.reactUI.dispose();
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
@@ -134,6 +137,7 @@ var PhotoEditor;
                     if (render === void 0) { render = true; }
                     this.ResetOrientation(function () {
                         _this.init(null, function () {
+                            _this.RemoveCrop();
                             _this.state.imageW = w;
                             _this.state.imageH = h;
                             var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
@@ -150,16 +154,19 @@ var PhotoEditor;
                     this.init(null, function () {
                         _this.ResetOrientation(function () {
                             _this.ResizeImage(_this.state.initialImageW, _this.state.initialImageH, function () {
-                                console.log(_this.editor);
-                                var operationStack = _this.editor.getOperationsStack();
-                                operationStack.forEach(function (v, i) {
-                                    if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
-                                        _this.editor.removeOperation(v);
-                                    }
-                                });
+                                _this.RemoveCrop();
                                 _this.TriggerFitToScreen();
                             }, false);
                         }, false);
+                    });
+                };
+                BaseAction.prototype.RemoveCrop = function () {
+                    var _this = this;
+                    var operationStack = this.editor.getOperationsStack();
+                    operationStack.forEach(function (v) {
+                        if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
+                            _this.editor.removeOperation(v);
+                        }
                     });
                 };
                 /**

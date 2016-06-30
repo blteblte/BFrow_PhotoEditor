@@ -14,8 +14,9 @@ var PhotoEditor;
         (function (ReactUI) {
             var ReactUIBase_reactids = (function (_super) {
                 __extends(ReactUIBase_reactids, _super);
-                function ReactUIBase_reactids(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function ReactUIBase_reactids(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                     this._isInControl = false;
                     this._AdjustInitButtonSelector = '#' + containerId +
                         ' .pesdk-react-controls__button__icon[data-reactid=".'

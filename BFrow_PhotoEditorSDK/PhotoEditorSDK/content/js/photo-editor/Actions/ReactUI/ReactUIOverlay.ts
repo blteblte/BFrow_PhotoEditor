@@ -2,18 +2,18 @@
 namespace PhotoEditor.Actions.ReactUI {
 
     export class ReactUIOverlay extends ReactUIBase {
-        constructor(sdk: any, editor: any, containerId: string, image: HTMLImageElement) { super(sdk, editor, containerId, image) }
+        constructor(public reactUI: any, sdk: any, editor: any, containerId: string, image: HTMLImageElement) { super(reactUI, sdk, editor, containerId, image) }
 
         StartCropping(initSubControls) {
             if (typeof (initSubControls) === 'function') initSubControls();
             else this.init(this.SubmitCrop, null);
 
-            this.ResetOrientation(() => {
+            //this.ResetOrientation(() => {
                 setTimeout(() => {
                     $(this._CropInitButtonSelector).click();
                     this._isInControl = true;
                 }, 200);
-            });
+            //});
         }
 
         CancelCrop() {

@@ -360,8 +360,9 @@ var PhotoEditor;
         var SDK;
         (function (SDK) {
             var BaseAction = (function () {
-                function BaseAction(sdk, editor, containerId, image) {
+                function BaseAction(reactUI, sdk, editor, containerId, image) {
                     var _this = this;
+                    this.reactUI = reactUI;
                     this.sdk = sdk;
                     this.editor = editor;
                     this.containerId = containerId;
@@ -462,7 +463,9 @@ var PhotoEditor;
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
                     //todo: dispose ReactUi instance instead!!!!!
-                    //if (disposeSdk) this.sdk.dispose();
+                    $('.pesdk-react-modals__button').click();
+                    if (disposeSdk)
+                        this.reactUI.dispose();
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
@@ -489,6 +492,7 @@ var PhotoEditor;
                     if (render === void 0) { render = true; }
                     this.ResetOrientation(function () {
                         _this.init(null, function () {
+                            _this.RemoveCrop();
                             _this.state.imageW = w;
                             _this.state.imageH = h;
                             var dimensions = new PhotoEditorSDK.Math.Vector2(w, h);
@@ -505,16 +509,19 @@ var PhotoEditor;
                     this.init(null, function () {
                         _this.ResetOrientation(function () {
                             _this.ResizeImage(_this.state.initialImageW, _this.state.initialImageH, function () {
-                                console.log(_this.editor);
-                                var operationStack = _this.editor.getOperationsStack();
-                                operationStack.forEach(function (v, i) {
-                                    if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
-                                        _this.editor.removeOperation(v);
-                                    }
-                                });
+                                _this.RemoveCrop();
                                 _this.TriggerFitToScreen();
                             }, false);
                         }, false);
+                    });
+                };
+                BaseAction.prototype.RemoveCrop = function () {
+                    var _this = this;
+                    var operationStack = this.editor.getOperationsStack();
+                    operationStack.forEach(function (v) {
+                        if (v instanceof PhotoEditorSDK.Operations.CropOperation) {
+                            _this.editor.removeOperation(v);
+                        }
                     });
                 };
                 /**
@@ -547,41 +554,53 @@ var PhotoEditor;
         (function (SDK) {
             var BasicActions = (function (_super) {
                 __extends(BasicActions, _super);
-                function BasicActions(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function BasicActions(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                 }
                 BasicActions.prototype.Rotate = function (direction) {
                     var _this = this;
                     this.init(null, function () {
                         if (_this.state.OrientationOperation == null) {
                             _this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(_this.sdk, {});
-                            _this.sdk.addOperation(_this.state.OrientationOperation);
+                            //this.sdk.addOperation(this.state.OrientationOperation);
+                            _this.editor.addOperation(_this.state.OrientationOperation);
                         }
                         var rotateTo = direction === PhotoEditor.Globals.RotateDirection.Left ? -90 : 90;
-                        _this.state.OrientationOperation.setRotation(_this.state._getRotation(rotateTo));
+                        var newRotation = _this.state._getRotation(rotateTo);
+                        _this.state.OrientationOperation.setRotation(newRotation);
                         //console.log(this.state.OrientationOperation);
                         _this.FitToScreen(null);
                     });
                 };
                 BasicActions.prototype.Flip = function (dir) {
+                    var _this = this;
                     if (this.state.OrientationOperation == null) {
                         this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
-                        this.sdk.addOperation(this.state.OrientationOperation);
+                        this.editor.addOperation(this.state.OrientationOperation);
                     }
-                    if (dir === PhotoEditor.Globals.FlipDirection.Horizontal) {
-                        this.state.flippedH = !this.state.flippedH;
-                        this.state.OrientationOperation.setFlipHorizontally(this.state.flippedH);
-                    }
-                    else {
-                        this.state.flippedV = !this.state.flippedV;
-                        this.state.OrientationOperation.setFlipVertically(this.state.flippedV);
-                    }
+                    var flipH = function () {
+                        _this.state.flippedH = !_this.state.flippedH;
+                        _this.state.OrientationOperation.setFlipHorizontally(_this.state.flippedH);
+                    };
+                    var flipV = function () {
+                        _this.state.flippedV = !_this.state.flippedV;
+                        _this.state.OrientationOperation.setFlipVertically(_this.state.flippedV);
+                    };
+                    if (dir === PhotoEditor.Globals.FlipDirection.Horizontal && (this.state.rotation === 0 || this.state.rotation == 180))
+                        flipH();
+                    else if (dir === PhotoEditor.Globals.FlipDirection.Horizontal)
+                        flipV();
+                    if (dir === PhotoEditor.Globals.FlipDirection.Vertical && (this.state.rotation === 90 || this.state.rotation == 270))
+                        flipH();
+                    else if (dir === PhotoEditor.Globals.FlipDirection.Vertical)
+                        flipV();
                     this.sdk.render();
                 };
                 BasicActions.prototype.Adjust = function (adjustmentType, value) {
                     if (this.state.AdjustmentOperation == null) {
                         this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
-                        this.sdk.addOperation(this.state.AdjustmentOperation);
+                        this.editor.addOperation(this.state.AdjustmentOperation);
                     }
                     var settings = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
                     switch (adjustmentType) {
@@ -625,7 +644,7 @@ var PhotoEditor;
                             var $filterContainer = $("<div class=\"photo-editor-filter-item " + filter.identifier + "\"></div>").click(function () {
                                 if (_this.state.FilterOperation == null) {
                                     _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
-                                    _this.sdk.addOperation(_this.state.FilterOperation);
+                                    _this.editor.addOperation(_this.state.FilterOperation);
                                 }
                                 _this.state.FilterOperation.setFilter(new filter());
                                 _this.sdk.render();
@@ -660,8 +679,9 @@ var PhotoEditor;
         (function (ReactUI) {
             var ReactUIBase = (function (_super) {
                 __extends(ReactUIBase, _super);
-                function ReactUIBase(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function ReactUIBase(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                     this._isInControl = false;
                     this._controlContainer = "#" + containerId + " .pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row .pesdk-react-controls__table > .pesdk-react-controls__cell.pesdk-react-controls__cell--list";
                     this._buttonContainer = "#" + containerId + "-editor > div > div:nth-child(3) > div.pesdk-react-editorScreen > div.pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row > div > div > div";
@@ -753,8 +773,9 @@ var PhotoEditor;
         (function (ReactUI) {
             var ReactUIOverlay = (function (_super) {
                 __extends(ReactUIOverlay, _super);
-                function ReactUIOverlay(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function ReactUIOverlay(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                 }
                 ReactUIOverlay.prototype.StartCropping = function (initSubControls) {
                     var _this = this;
@@ -762,12 +783,12 @@ var PhotoEditor;
                         initSubControls();
                     else
                         this.init(this.SubmitCrop, null);
-                    this.ResetOrientation(function () {
-                        setTimeout(function () {
-                            $(_this._CropInitButtonSelector).click();
-                            _this._isInControl = true;
-                        }, 200);
-                    });
+                    //this.ResetOrientation(() => {
+                    setTimeout(function () {
+                        $(_this._CropInitButtonSelector).click();
+                        _this._isInControl = true;
+                    }, 200);
+                    //});
                 };
                 ReactUIOverlay.prototype.CancelCrop = function () {
                     $(this._CropCancelSelector).click();
@@ -860,8 +881,7 @@ var PhotoEditor;
                 //console.log(editor);
                 //console.log(_internalEditor);
                 //console.log(_sdk);
-                _super.call(this, _sdk, _internalEditor, containerId, image);
-                this.reactEditor = _editor;
+                _super.call(this, _editor, _sdk, _internalEditor, containerId, image);
             }
             return SDKActions;
         })(Actions.ReactUI.ReactUIOverlay);
@@ -1020,9 +1040,6 @@ var PhotoEditor;
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
-                    //test ONLY -> remove this later
-                    renderer = $('#renderer-select').val();
-                    //
                     image.onload = function () {
                         console.log("loading image: \"" + _this.imageUrl + "\" into: \"#" + _this.containerId + "\"");
                         var editor = new PhotoEditorSDK.UI.ReactUI({
@@ -1054,7 +1071,23 @@ var PhotoEditor;
                         PhotoEditor.Globals._editorDisposator = function () {
                             _this.actions.DisposeEditor(true);
                         };
-                        resolve(_this.actions);
+                        //try get the ready state
+                        var getReadyState = function () {
+                            try {
+                                //console.log("getting ready state");
+                                _this.actions.sdk.getInputDimensions();
+                                resolve(_this.actions);
+                                if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
+                                    PhotoEditor.Handlers.onEditorLoaded(_this.actions);
+                                }
+                                ;
+                            }
+                            catch (e) {
+                                setTimeout(function () { getReadyState(); }, 100);
+                            }
+                        };
+                        //
+                        getReadyState();
                     };
                     image.src = _this.imageUrl;
                 });
@@ -1083,8 +1116,8 @@ var PhotoEditor;
                 $tab2.append(this._getTab2Content($tab2));
                 $tab3.append(this._getTab3Content($tab3));
                 var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
-                var $disposeEditorButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
-                var $saveImageButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
+                var $disposeEditorButton = $("<span class=\"photo-editor-ui_btn-dispose\">" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
+                var $saveImageButton = $("<span class=\"photo-editor-ui_btn-save\">" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
                     _this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, function (exportedImage) {
                         if (typeof (PhotoEditor.Handlers.onSaveHandler) === 'function')
                             PhotoEditor.Handlers.onSaveHandler(exportedImage);
@@ -1209,8 +1242,8 @@ var PhotoEditor;
                         _this.actions._disposeSubControls();
                     }, function () {
                         _this.actions._createSubControls([
-                            getCancelButton(type),
                             getSlider(),
+                            getCancelButton(type),
                             getSubmitButton()
                         ], $parent, function () {
                             _this.actions.state.adjustStateSaved = false;
@@ -1229,7 +1262,7 @@ var PhotoEditor;
             ImageEditor.prototype._applySlickJS = function (tabId) {
                 $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ")").slick({
                     slidesToShow: 9,
-                    slidesToScroll: 1,
+                    slidesToScroll: 9,
                     dots: true,
                     touchMove: true,
                     infinite: false,

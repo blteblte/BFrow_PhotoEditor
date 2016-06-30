@@ -22,8 +22,7 @@ namespace PhotoEditor.Actions {
             //console.log(_internalEditor);
             //console.log(_sdk);
 
-            super(_sdk, _internalEditor, containerId, image);
-            this.reactEditor = _editor;
+            super(_editor, _sdk, _internalEditor, containerId, image);
         }
     }
 

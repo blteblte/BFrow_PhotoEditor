@@ -3,17 +3,20 @@ namespace PhotoEditor.Actions.SDK {
 
     export class BasicActions extends BaseAction {
 
-        constructor(sdk: any, editor: any, containerId: string, image: HTMLImageElement) { super(sdk, editor, containerId, image) }
+        constructor(public reactUI: any, sdk: any, editor: any, containerId: string, image: HTMLImageElement) { super(reactUI, sdk, editor, containerId, image) }
 
         Rotate(direction: Globals.RotateDirection) {
             this.init(null, () => {
                 if (this.state.OrientationOperation == null) {
                     this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
-                    this.sdk.addOperation(this.state.OrientationOperation);
+                    //this.sdk.addOperation(this.state.OrientationOperation);
+                    this.editor.addOperation(this.state.OrientationOperation);
                 }
 
-                var rotateTo = direction === Globals.RotateDirection.Left ? -90 : 90;
-                this.state.OrientationOperation.setRotation(this.state._getRotation(rotateTo));
+                let rotateTo = direction === Globals.RotateDirection.Left ? -90 : 90;
+                let newRotation = this.state._getRotation(rotateTo);
+
+                this.state.OrientationOperation.setRotation(newRotation);
 
                 //console.log(this.state.OrientationOperation);
 
@@ -24,17 +27,26 @@ namespace PhotoEditor.Actions.SDK {
         Flip(dir: Globals.FlipDirection) {
             if (this.state.OrientationOperation == null) {
                 this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
-                this.sdk.addOperation(this.state.OrientationOperation);
+                this.editor.addOperation(this.state.OrientationOperation);
             }
 
-            if (dir === Globals.FlipDirection.Horizontal) {
+            let flipH = () => {
                 this.state.flippedH = !this.state.flippedH;
                 this.state.OrientationOperation.setFlipHorizontally(this.state.flippedH);
-            }
-            else {
+            };
+
+            let flipV = () => {
                 this.state.flippedV = !this.state.flippedV;
                 this.state.OrientationOperation.setFlipVertically(this.state.flippedV);
-            }
+            };
+
+            if (dir === Globals.FlipDirection.Horizontal && (this.state.rotation === 0 || this.state.rotation == 180))
+                flipH();
+            else if (dir === Globals.FlipDirection.Horizontal) flipV();
+
+            if (dir === Globals.FlipDirection.Vertical && (this.state.rotation === 90 || this.state.rotation == 270))
+                flipH();
+            else if (dir === Globals.FlipDirection.Vertical) flipV();
 
             this.sdk.render();
         }
@@ -43,7 +55,7 @@ namespace PhotoEditor.Actions.SDK {
 
             if (this.state.AdjustmentOperation == null) {
                 this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
-                this.sdk.addOperation(this.state.AdjustmentOperation);
+                this.editor.addOperation(this.state.AdjustmentOperation);
             }
 
             let settings = Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
@@ -91,8 +103,8 @@ namespace PhotoEditor.Actions.SDK {
                 ) {
                     var $filterContainer = $(`<div class="photo-editor-filter-item ${filter.identifier}"></div>`).click(() => {
                         if (this.state.FilterOperation == null) {
-                            this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(this.sdk, {  });
-                            this.sdk.addOperation(this.state.FilterOperation);
+                            this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(this.sdk, {});
+                            this.editor.addOperation(this.state.FilterOperation);
                         }
 
                         this.state.FilterOperation.setFilter(new filter());

@@ -21,8 +21,7 @@ var PhotoEditor;
                 //console.log(editor);
                 //console.log(_internalEditor);
                 //console.log(_sdk);
-                _super.call(this, _sdk, _internalEditor, containerId, image);
-                this.reactEditor = _editor;
+                _super.call(this, _editor, _sdk, _internalEditor, containerId, image);
             }
             return SDKActions;
         })(Actions.ReactUI.ReactUIOverlay);

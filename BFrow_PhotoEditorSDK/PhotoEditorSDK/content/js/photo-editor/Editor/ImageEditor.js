@@ -28,9 +28,6 @@ var PhotoEditor;
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
-                    //test ONLY -> remove this later
-                    renderer = $('#renderer-select').val();
-                    //
                     image.onload = function () {
                         console.log("loading image: \"" + _this.imageUrl + "\" into: \"#" + _this.containerId + "\"");
                         var editor = new PhotoEditorSDK.UI.ReactUI({
@@ -62,7 +59,23 @@ var PhotoEditor;
                         PhotoEditor.Globals._editorDisposator = function () {
                             _this.actions.DisposeEditor(true);
                         };
-                        resolve(_this.actions);
+                        //try get the ready state
+                        var getReadyState = function () {
+                            try {
+                                //console.log("getting ready state");
+                                _this.actions.sdk.getInputDimensions();
+                                resolve(_this.actions);
+                                if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
+                                    PhotoEditor.Handlers.onEditorLoaded(_this.actions);
+                                }
+                                ;
+                            }
+                            catch (e) {
+                                setTimeout(function () { getReadyState(); }, 100);
+                            }
+                        };
+                        //
+                        getReadyState();
                     };
                     image.src = _this.imageUrl;
                 });
@@ -91,8 +104,8 @@ var PhotoEditor;
                 $tab2.append(this._getTab2Content($tab2));
                 $tab3.append(this._getTab3Content($tab3));
                 var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
-                var $disposeEditorButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
-                var $saveImageButton = $("<span>" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
+                var $disposeEditorButton = $("<span class=\"photo-editor-ui_btn-dispose\">" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
+                var $saveImageButton = $("<span class=\"photo-editor-ui_btn-save\">" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
                     _this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, function (exportedImage) {
                         if (typeof (PhotoEditor.Handlers.onSaveHandler) === 'function')
                             PhotoEditor.Handlers.onSaveHandler(exportedImage);
@@ -217,8 +230,8 @@ var PhotoEditor;
                         _this.actions._disposeSubControls();
                     }, function () {
                         _this.actions._createSubControls([
-                            getCancelButton(type),
                             getSlider(),
+                            getCancelButton(type),
                             getSubmitButton()
                         ], $parent, function () {
                             _this.actions.state.adjustStateSaved = false;
@@ -237,7 +250,7 @@ var PhotoEditor;
             ImageEditor.prototype._applySlickJS = function (tabId) {
                 $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ")").slick({
                     slidesToShow: 9,
-                    slidesToScroll: 1,
+                    slidesToScroll: 9,
                     dots: true,
                     touchMove: true,
                     infinite: false,

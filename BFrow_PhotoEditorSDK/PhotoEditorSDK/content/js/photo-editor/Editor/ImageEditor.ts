@@ -33,10 +33,6 @@ namespace PhotoEditor.Editor {
                 let image = new Image();
                 let renderer = 'webgl'; //'webgl', 'canvas'
 
-                //test ONLY -> remove this later
-                renderer = $('#renderer-select').val();
-                //
-
                 image.onload = () => {
                     console.log(`loading image: "${this.imageUrl}" into: "#${this.containerId}"`);
 
@@ -72,7 +68,23 @@ namespace PhotoEditor.Editor {
                     Globals._editorDisposator = () => {
                         this.actions.DisposeEditor(true);
                     };
-                    resolve(this.actions);
+
+                    //try get the ready state
+                    let getReadyState = () => {
+                        try {
+                            //console.log("getting ready state");
+                            this.actions.sdk.getInputDimensions();
+
+                            resolve(this.actions);
+                            if (typeof (Handlers.onEditorLoaded) === 'function') { Handlers.onEditorLoaded(this.actions) };
+                        }
+                        catch (e) {
+                            setTimeout(() => { getReadyState(); }, 100);
+                        }
+                    };
+                    //
+                    getReadyState();
+
                 };
                 image.src = this.imageUrl;
 
@@ -107,8 +119,8 @@ namespace PhotoEditor.Editor {
             $tab3.append(this._getTab3Content($tab3));
 
             let $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
-            let $disposeEditorButton = $(`<span>${Globals.Texts.Buttons.Back}</span>`).click(() => { this.actions.DisposeEditor(true); });
-            let $saveImageButton = $(`<span>${Globals.Texts.Buttons.Done}</span>`).click(() => {
+            let $disposeEditorButton = $(`<span class="photo-editor-ui_btn-dispose">${Globals.Texts.Buttons.Back}</span>`).click(() => { this.actions.DisposeEditor(true); });
+            let $saveImageButton = $(`<span class="photo-editor-ui_btn-save">${Globals.Texts.Buttons.Done}</span>`).click(() => {
                 this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, (exportedImage) => {
                     if (typeof (Handlers.onSaveHandler) === 'function') Handlers.onSaveHandler(exportedImage);
                 }, true);
@@ -287,8 +299,8 @@ namespace PhotoEditor.Editor {
                     , () => {
                     this.actions._createSubControls(
                         [
-                            getCancelButton(type),
                             getSlider(),
+                            getCancelButton(type),
                             getSubmitButton()
                         ]
                         , $parent, () => {
@@ -329,7 +341,7 @@ namespace PhotoEditor.Editor {
 
             $(`#${this.containerId} .photo-editor-ui_tab-container > div:nth-child(${tabId})`).slick({
                 slidesToShow: 9,
-                slidesToScroll: 1,
+                slidesToScroll: 9,
                 dots: true,
                 touchMove: true,
                 infinite: false,

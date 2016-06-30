@@ -11,8 +11,9 @@ var PhotoEditor;
         (function (ReactUI) {
             var ReactUIOverlay = (function (_super) {
                 __extends(ReactUIOverlay, _super);
-                function ReactUIOverlay(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function ReactUIOverlay(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                 }
                 ReactUIOverlay.prototype.StartCropping = function (initSubControls) {
                     var _this = this;
@@ -20,12 +21,12 @@ var PhotoEditor;
                         initSubControls();
                     else
                         this.init(this.SubmitCrop, null);
-                    this.ResetOrientation(function () {
-                        setTimeout(function () {
-                            $(_this._CropInitButtonSelector).click();
-                            _this._isInControl = true;
-                        }, 200);
-                    });
+                    //this.ResetOrientation(() => {
+                    setTimeout(function () {
+                        $(_this._CropInitButtonSelector).click();
+                        _this._isInControl = true;
+                    }, 200);
+                    //});
                 };
                 ReactUIOverlay.prototype.CancelCrop = function () {
                     $(this._CropCancelSelector).click();

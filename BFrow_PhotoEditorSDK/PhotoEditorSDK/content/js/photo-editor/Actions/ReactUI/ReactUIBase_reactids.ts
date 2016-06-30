@@ -14,8 +14,8 @@ namespace PhotoEditor.Actions.ReactUI {
         protected _CropCancelSelector: string;
         protected _CropSubmitSelector: string;
 
-        constructor(sdk: any, editor: any, containerId: string, image: HTMLImageElement) {
-            super(sdk, editor, containerId, image);
+        constructor(public reactUI: any, sdk: any, editor: any, containerId: string, image: HTMLImageElement) {
+            super(reactUI, sdk, editor, containerId, image);
             this._isInControl = false;
             this._AdjustInitButtonSelector = '#' + containerId +
                 ' .pesdk-react-controls__button__icon[data-reactid=".'

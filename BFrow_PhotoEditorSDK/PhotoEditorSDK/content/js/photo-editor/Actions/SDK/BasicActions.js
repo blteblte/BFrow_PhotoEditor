@@ -11,41 +11,53 @@ var PhotoEditor;
         (function (SDK) {
             var BasicActions = (function (_super) {
                 __extends(BasicActions, _super);
-                function BasicActions(sdk, editor, containerId, image) {
-                    _super.call(this, sdk, editor, containerId, image);
+                function BasicActions(reactUI, sdk, editor, containerId, image) {
+                    _super.call(this, reactUI, sdk, editor, containerId, image);
+                    this.reactUI = reactUI;
                 }
                 BasicActions.prototype.Rotate = function (direction) {
                     var _this = this;
                     this.init(null, function () {
                         if (_this.state.OrientationOperation == null) {
                             _this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(_this.sdk, {});
-                            _this.sdk.addOperation(_this.state.OrientationOperation);
+                            //this.sdk.addOperation(this.state.OrientationOperation);
+                            _this.editor.addOperation(_this.state.OrientationOperation);
                         }
                         var rotateTo = direction === PhotoEditor.Globals.RotateDirection.Left ? -90 : 90;
-                        _this.state.OrientationOperation.setRotation(_this.state._getRotation(rotateTo));
+                        var newRotation = _this.state._getRotation(rotateTo);
+                        _this.state.OrientationOperation.setRotation(newRotation);
                         //console.log(this.state.OrientationOperation);
                         _this.FitToScreen(null);
                     });
                 };
                 BasicActions.prototype.Flip = function (dir) {
+                    var _this = this;
                     if (this.state.OrientationOperation == null) {
                         this.state.OrientationOperation = new PhotoEditorSDK.Operations.OrientationOperation(this.sdk, {});
-                        this.sdk.addOperation(this.state.OrientationOperation);
+                        this.editor.addOperation(this.state.OrientationOperation);
                     }
-                    if (dir === PhotoEditor.Globals.FlipDirection.Horizontal) {
-                        this.state.flippedH = !this.state.flippedH;
-                        this.state.OrientationOperation.setFlipHorizontally(this.state.flippedH);
-                    }
-                    else {
-                        this.state.flippedV = !this.state.flippedV;
-                        this.state.OrientationOperation.setFlipVertically(this.state.flippedV);
-                    }
+                    var flipH = function () {
+                        _this.state.flippedH = !_this.state.flippedH;
+                        _this.state.OrientationOperation.setFlipHorizontally(_this.state.flippedH);
+                    };
+                    var flipV = function () {
+                        _this.state.flippedV = !_this.state.flippedV;
+                        _this.state.OrientationOperation.setFlipVertically(_this.state.flippedV);
+                    };
+                    if (dir === PhotoEditor.Globals.FlipDirection.Horizontal && (this.state.rotation === 0 || this.state.rotation == 180))
+                        flipH();
+                    else if (dir === PhotoEditor.Globals.FlipDirection.Horizontal)
+                        flipV();
+                    if (dir === PhotoEditor.Globals.FlipDirection.Vertical && (this.state.rotation === 90 || this.state.rotation == 270))
+                        flipH();
+                    else if (dir === PhotoEditor.Globals.FlipDirection.Vertical)
+                        flipV();
                     this.sdk.render();
                 };
                 BasicActions.prototype.Adjust = function (adjustmentType, value) {
                     if (this.state.AdjustmentOperation == null) {
                         this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
-                        this.sdk.addOperation(this.state.AdjustmentOperation);
+                        this.editor.addOperation(this.state.AdjustmentOperation);
                     }
                     var settings = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(adjustmentType);
                     switch (adjustmentType) {
@@ -89,7 +101,7 @@ var PhotoEditor;
                             var $filterContainer = $("<div class=\"photo-editor-filter-item " + filter.identifier + "\"></div>").click(function () {
                                 if (_this.state.FilterOperation == null) {
                                     _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
-                                    _this.sdk.addOperation(_this.state.FilterOperation);
+                                    _this.editor.addOperation(_this.state.FilterOperation);
                                 }
                                 _this.state.FilterOperation.setFilter(new filter());
                                 _this.sdk.render();

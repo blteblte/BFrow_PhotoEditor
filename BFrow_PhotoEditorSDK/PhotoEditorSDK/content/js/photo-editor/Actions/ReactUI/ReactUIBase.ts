@@ -15,8 +15,8 @@ namespace PhotoEditor.Actions.ReactUI {
         private _controlContainer: string;
         private _buttonContainer: string;
 
-        constructor(sdk: any, editor: any, containerId: string, image: HTMLImageElement) {
-            super(sdk, editor, containerId, image);
+        constructor(public reactUI: any, sdk: any, editor: any, containerId: string, image: HTMLImageElement) {
+            super(reactUI, sdk, editor, containerId, image);
             this._isInControl = false;
 
             this._controlContainer = `#${containerId} .pesdk-react-controls.pesdk-react-controls__container.pesdk-react-controls__container__row .pesdk-react-controls__table > .pesdk-react-controls__cell.pesdk-react-controls__cell--list`;
