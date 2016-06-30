@@ -123,3 +123,10 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .ui-widget-content{background: #e1e4e9;}
 .ui-slider .ui-widget-header{background: #9097a4;}
 .ui-slider .ui-slider-handle{width: 26px;height: 26px;top: -8px;margin-left: -13px;border: none;background: #9097a4;border-radius:13px;outline:none;}
+
+/* Slider Dots */
+
+.slick-dots{display: block;width: 100%;padding: 0;list-style: none;text-align: center;line-height: 0;margin: 12px 0 8px;}
+.slick-dots li{position: relative;display: inline-block;width: 20px;height: 20px;margin: 0 0.5%;padding: 0;cursor: pointer;}
+.slick-dots li button{display: block;width: 20px;height: 20px;font-size: 0;line-height: 0;color: transparent;padding: 5px;cursor: pointer;border: 0;outline: none;background: #8c8678;border-radius:10px;}
+.slick-dots li.slick-active button{background:#787888;}
