@@ -15,6 +15,28 @@ var PhotoEditor;
                     this.FilterOperation = null;
                     this.AdjustmentOperation = null;
                     this._originalZoom = null;
+                    //private _wToHRatio: number = null;
+                    //get wToHRatio(): number {
+                    //    if (this._wToHRatio === null && this.sdk !== null) {
+                    //        let outputDimensions = this.sdk.getOutputDimensions();
+                    //        this._wToHRatio = outputDimensions.x / outputDimensions.y;
+                    //    }
+                    //    return this._wToHRatio;
+                    //}
+                    //set wToHRatio(value: number) {
+                    //    this._wToHRatio = value;
+                    //}
+                    //private _hToWRatio: number = null;
+                    //get hToWRatio(): number {
+                    //    if (this._hToWRatio === null && this.sdk !== null) {
+                    //        let outputDimensions = this.sdk.getOutputDimensions();
+                    //        this._hToWRatio = outputDimensions.y / outputDimensions.x;
+                    //    }
+                    //    return this._hToWRatio;
+                    //}
+                    //set hToWRatio(value: number) {
+                    //    this._hToWRatio = value;
+                    //}
                     this._wToHRatio = null;
                     this._hToWRatio = null;
                     this._initialImageW = null;
@@ -50,7 +72,7 @@ var PhotoEditor;
                 Object.defineProperty(ActionState.prototype, "wToHRatio", {
                     get: function () {
                         if (this._wToHRatio === null && this.sdk !== null) {
-                            var outputDimensions = this.sdk.getOutputDimensions();
+                            var outputDimensions = this.sdk.getInputDimensions();
                             this._wToHRatio = outputDimensions.x / outputDimensions.y;
                         }
                         return this._wToHRatio;
@@ -64,7 +86,7 @@ var PhotoEditor;
                 Object.defineProperty(ActionState.prototype, "hToWRatio", {
                     get: function () {
                         if (this._hToWRatio === null && this.sdk !== null) {
-                            var outputDimensions = this.sdk.getOutputDimensions();
+                            var outputDimensions = this.sdk.getInputDimensions();
                             this._hToWRatio = outputDimensions.y / outputDimensions.x;
                         }
                         return this._hToWRatio;

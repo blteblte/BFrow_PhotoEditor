@@ -24,10 +24,34 @@
             this._originalZoom = value;
         }
 
+        //private _wToHRatio: number = null;
+        //get wToHRatio(): number {
+        //    if (this._wToHRatio === null && this.sdk !== null) {
+        //        let outputDimensions = this.sdk.getOutputDimensions();
+        //        this._wToHRatio = outputDimensions.x / outputDimensions.y;
+        //    }
+        //    return this._wToHRatio;
+        //}
+        //set wToHRatio(value: number) {
+        //    this._wToHRatio = value;
+        //}
+
+        //private _hToWRatio: number = null;
+        //get hToWRatio(): number {
+        //    if (this._hToWRatio === null && this.sdk !== null) {
+        //        let outputDimensions = this.sdk.getOutputDimensions();
+        //        this._hToWRatio = outputDimensions.y / outputDimensions.x;
+        //    }
+        //    return this._hToWRatio;
+        //}
+        //set hToWRatio(value: number) {
+        //    this._hToWRatio = value;
+        //}
+
         private _wToHRatio: number = null;
         get wToHRatio(): number {
             if (this._wToHRatio === null && this.sdk !== null) {
-                let outputDimensions = this.sdk.getOutputDimensions();
+                let outputDimensions = this.sdk.getInputDimensions();
                 this._wToHRatio = outputDimensions.x / outputDimensions.y;
             }
             return this._wToHRatio;
@@ -39,7 +63,7 @@
         private _hToWRatio: number = null;
         get hToWRatio(): number {
             if (this._hToWRatio === null && this.sdk !== null) {
-                let outputDimensions = this.sdk.getOutputDimensions();
+                let outputDimensions = this.sdk.getInputDimensions();
                 this._hToWRatio = outputDimensions.y / outputDimensions.x;
             }
             return this._hToWRatio;
