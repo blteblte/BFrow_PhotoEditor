@@ -129,7 +129,7 @@ var PhotoEditor;
             AdjustmentSettings._adjustmentSettings = [
                 new Adjustments(AdjustmentTypes.Brightness, -50, 50, 0, 100),
                 new Adjustments(AdjustmentTypes.Saturation, 0, 200, 100, 100),
-                new Adjustments(AdjustmentTypes.Contrast, 0, 200, 100, 100),
+                new Adjustments(AdjustmentTypes.Contrast, 50, 150, 100, 100),
                 new Adjustments(AdjustmentTypes.Exposure, -100, 100, 0, 100),
                 new Adjustments(AdjustmentTypes.Shadows, 0, 100, 0, 100),
                 new Adjustments(AdjustmentTypes.Highlights, 0, 100, 100, 100)
@@ -1247,9 +1247,11 @@ var PhotoEditor;
                 };
                 var bindSlider = function (type, adjustment, bindValue) {
                     var getDisplayValue = function (value) {
-                        var mid = (adjustment.max - adjustment.min) / 2;
-                        var normalized = mid === 0 ? 0 : (value * adjustment.multiplier) / mid;
-                        return Math.round(normalized * 100);
+                        var sliderRange = 200;
+                        var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
+                        var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                        var normalized = (value * normalizeMultiplier) * 100 - overflow;
+                        return Math.round(normalized);
                     };
                     var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
                     $("#photo-editor-ui_slider").slider({
@@ -1257,6 +1259,7 @@ var PhotoEditor;
                         min: adjustment.min,
                         max: adjustment.max,
                         value: bindValue,
+                        step: 0.01,
                         slide: function (event, ui) {
                             var value = parseFloat(ui.value) / adjustment.multiplier;
                             $numBox.text(getDisplayValue(value));
