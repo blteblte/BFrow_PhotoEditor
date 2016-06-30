@@ -28,7 +28,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 
 /* custom */
 
-.image-editor{width: 100%;padding:0 2% 10px;}
+.image-editor{width: 100%;padding:0 2% 115px;position: relative;}
 .image-editor .photo-editor-instance-container{height: 600px;}
 .image-editor:not(.active){visibility: hidden;}
 
@@ -38,7 +38,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .photo-editor-ui_nav-paging .photo-editor-ui_pg-item {cursor: pointer; margin: 4px; width: 20px;}
 
 /* photo editor ui */
-.photo-editor-ui_container{position: relative; width: 100%;margin-top: -84px;}
+.photo-editor-ui_container{width: 100%;margin-top: -84px;}
 .photo-editor-ui_container > .photo-editor-ui_tab-contrll-container{}
 .photo-editor-ui_container > .photo-editor-ui_tab-control-container > span{display: inline-block; width: 33%; text-align: center; cursor: pointer;padding: 18px 0px 13px;position:relative;border-bottom: 5px solid transparent;}
 .photo-editor-ui_container > .photo-editor-ui_tab-control-container > span.active{color: #787888;border-bottom: 5px solid #b4b4bc;}
@@ -82,13 +82,13 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_contrast{}
 
 /* filter item */
-.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item{ display: inline-block; margin: 4px; cursor: pointer; width: 60px; height: 100px; text-align: center;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item{ display: inline-block; margin: 4px; cursor: pointer; text-align: center;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item img{width: 80%;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item div{color: gray;}
 
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-ui_sub-controls-container{}
 
-.photo-editor-ui_tab-control-container{background: #f4f4f4;color: #8c8678;margin-bottom: 10px;}
+.photo-editor-ui_tab-control-container{background: #f4f4f4;color: #8c8678;margin-bottom: 10px;position: relative;}
 
 .photo-editor-ui_sub-controls-container{display:table;margin:0 auto;}
 .photo-editor-ui_sub-controls-container .main-controls-button{float:left;margin:0 5px;}
@@ -96,8 +96,25 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 
 .pesdk-react-editor .pesdk-react-splashScreen{background:none;}
 
+/* Buttons */
 
-
-
-
-
+.photo-editor-ui_buttons{position: absolute;bottom: 0;width: 100%;left: 0;text-align:right;padding: 2.5%;border-radius: 0 0 5px 5px;
+    background: #f2f0ed;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YyZjBlZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjMlIiBzdG9wLWNvbG9yPSIjZmFmYWY5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iNiUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZmZmZmIiBzdG9wLW9wYWNpdHk9IjEiLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+    background: -moz-linear-gradient(top,  #f2f0ed 0%, #fafaf9 3%, #ffffff 6%, #ffffff 100%);
+    background: -webkit-linear-gradient(top,  #f2f0ed 0%,#fafaf9 3%,#ffffff 6%,#ffffff 100%);
+    background: linear-gradient(to bottom,  #f2f0ed 0%,#fafaf9 3%,#ffffff 6%,#ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f0ed', endColorstr='#ffffff',GradientType=0 );
+}
+.photo-editor-ui_buttons span{    margin-left: 1%;cursor:pointer;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;}
+.photo-editor-ui_buttons span:first-child{background: #c0b9a8;margin-left:0;
+    border-bottom: 1px solid #b1aba4;float:left;}
+.photo-editor-ui_buttons span:last-child{    background: #3c3d4d;
+    border-bottom: 1px solid #494c78;float: right;}
