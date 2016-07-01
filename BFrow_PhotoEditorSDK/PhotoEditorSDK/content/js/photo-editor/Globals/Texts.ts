@@ -14,8 +14,8 @@ namespace PhotoEditor.Globals {
         Buttons: {
             RotateLeft: "Rotate Left",
             RotateRight: "Rotate Right",
-            FlipH: "Flip Horizontal",
-            FlipV: "Flip Vertical",
+            FlipH: "Flip Hor",
+            FlipV: "Flip Ver",
             Crop: "Crop",
             CropCustom: "Custom",
             CropSquare: "Square",

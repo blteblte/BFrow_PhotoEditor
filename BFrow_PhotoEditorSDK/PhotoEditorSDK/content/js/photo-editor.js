@@ -26,8 +26,8 @@ var PhotoEditor;
             Buttons: {
                 RotateLeft: "Rotate Left",
                 RotateRight: "Rotate Right",
-                FlipH: "Flip Horizontal",
-                FlipV: "Flip Vertical",
+                FlipH: "Flip Hor",
+                FlipV: "Flip Ver",
                 Crop: "Crop",
                 CropCustom: "Custom",
                 CropSquare: "Square",
@@ -1287,7 +1287,7 @@ var PhotoEditor;
                 }));
                 var $fitToScreen = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.FitToScreen, 'fitToScreen', function () { _this.actions.TriggerFitToScreen(); }));
                 var $resetTab1 = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetTab1', function () { _this.actions.ResetPictureSettings(); }));
-                return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetTab1];
+                return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $fitToScreen, $resetTab1];
             };
             ImageEditor.prototype._getTab2Content = function ($parent) {
                 return this.actions.GenerateFilterIcons();

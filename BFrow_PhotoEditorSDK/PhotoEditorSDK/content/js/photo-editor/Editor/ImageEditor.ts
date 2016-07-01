@@ -255,7 +255,7 @@ namespace PhotoEditor.Editor {
                 () => { this.actions.ResetPictureSettings() }
             ));
 
-            return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $resize, $fitToScreen, $resetTab1];
+            return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, /*$resize,*/ $fitToScreen, $resetTab1];
         }
 
         private _getTab2Content($parent: JQuery) {
