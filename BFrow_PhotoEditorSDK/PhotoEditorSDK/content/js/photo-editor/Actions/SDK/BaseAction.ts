@@ -32,14 +32,21 @@ namespace PhotoEditor.Actions.SDK {
         FitToScreen(callback) {
             var _outputDimensions = this.sdk.getOutputDimensions();
             var _canvas = this.sdk.getCanvas();
+            //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
+            //let _canvas = { height: $inner.height(), width: $inner.width() };
 
             var ratio = 1;
             if (_outputDimensions.y > _canvas.height) {
-                ratio = _canvas.height / _outputDimensions.y
+                ratio = parseFloat(<string><any>_canvas.height) / _outputDimensions.y;
+                console.log(ratio);
             }
+
             if (_outputDimensions.x > _canvas.width) {
-                ratio = _canvas.width / _outputDimensions.x
+                var assignable = parseFloat(<string><any>_canvas.width) / _outputDimensions.x;
+                ratio = assignable < ratio ? assignable : ratio;
+                console.log(assignable, ratio);
             }
+
 
             var zoomRatioToSet = ratio == 1
                 ? this.state.originalZoom

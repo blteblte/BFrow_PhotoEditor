@@ -48,7 +48,7 @@ namespace PhotoEditor.Editor {
             console.log(`loading image: "${this.imageUrl}" into: "#${this.containerId}"`);
 
             const editor = new PhotoEditorSDK.UI.ReactUI({
-                //pixelRatio: 1,
+                pixelRatio: 1,
                 container: container,
                 assets: {
                     baseUrl: `${Settings.APP_ROOT_PATH}js/PhotoEditorSDK/${Globals.sdkVersionFolder}/assets` // <-- This should be the absolute path to your `assets` directory
