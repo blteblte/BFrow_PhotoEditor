@@ -26,7 +26,7 @@ namespace PhotoEditor.Html {
         }
 
         static GetEditorContainer(containerselector: string) {
-            return $(`<div id="${containerselector}" class="photo-editor-instance-container" style="width: 100%;"></div>`);
+            return $(`<div id="${containerselector}" class="photo-editor-instance-container"></div>`);
         }
 
         static GetSlider (): JQuery {

@@ -18,7 +18,7 @@ var PhotoEditor;
                 }
             };
             HTMLControls.GetEditorContainer = function (containerselector) {
-                return $("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
+                return $("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\"></div>");
             };
             HTMLControls.GetSlider = function () {
                 return $("<div id=\"photo-editor-ui_slider\"></div>");
