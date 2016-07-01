@@ -280,9 +280,12 @@ namespace PhotoEditor.Editor {
             let bindSlider = (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number): void => {
 
                 var getDisplayValue = (value) => {
-                    let mid = (adjustment.max - adjustment.min) / 2;
-                    let normalized = mid === 0 ? 0 : (value * adjustment.multiplier) / mid;
-                    return Math.round(normalized * 100);
+                    const sliderRange = 200;
+                    let normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
+                    let overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                    let normalized = (value * normalizeMultiplier) * 100 - overflow;
+
+                    return Math.round(normalized);
                 }
 
                 var $numBox = $(`<span class="ui-slider-numbox">${getDisplayValue(bindValue / adjustment.multiplier)}</span>`);
@@ -292,6 +295,7 @@ namespace PhotoEditor.Editor {
                     min: adjustment.min,
                     max: adjustment.max,
                     value: bindValue,
+                    step: 0.01,
                     slide: function (event, ui) {
                         var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
                         $numBox.text(getDisplayValue(value));

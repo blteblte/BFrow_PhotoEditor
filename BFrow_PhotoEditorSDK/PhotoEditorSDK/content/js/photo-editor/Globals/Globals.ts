@@ -41,7 +41,7 @@ namespace PhotoEditor.Globals {
         [
             new Adjustments(AdjustmentTypes.Brightness, -50, 50, 0, 100),
             new Adjustments(AdjustmentTypes.Saturation, 0, 200, 100, 100),
-            new Adjustments(AdjustmentTypes.Contrast, 0, 200, 100, 100),
+            new Adjustments(AdjustmentTypes.Contrast, 50, 150, 100, 100),
             new Adjustments(AdjustmentTypes.Exposure, -100, 100, 0, 100),
             new Adjustments(AdjustmentTypes.Shadows, 0, 100, 0, 100),
             new Adjustments(AdjustmentTypes.Highlights, 0, 100, 100, 100)
