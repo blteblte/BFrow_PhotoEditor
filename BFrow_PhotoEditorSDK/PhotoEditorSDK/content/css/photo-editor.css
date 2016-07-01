@@ -68,7 +68,6 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .photo-editor-ui_container .slick-track > div{position:relative;color: #777675;font-style: italic;font-size: 14px;cursor: pointer;outline:none;}
 .photo-editor-ui_container .slick-track > div img{margin: 0 auto;width: 85%;}
 .photo-editor-ui_container .slick-track > div span{position: absolute;display: inline-block;width: 100%;left: 0;top: 52%;}
-.photo-editor-ui_container .slick-track > div:hover{color:#c0b9a8;}
 
 /* picture settings */
 
