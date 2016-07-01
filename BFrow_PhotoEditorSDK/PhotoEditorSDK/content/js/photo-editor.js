@@ -1188,9 +1188,9 @@ var PhotoEditor;
                     $(caller).addClass('active');
                 };
                 var $tabControlContainer = $('<div class="photo-editor-ui_tab-control-container"></div>');
-                var $tabControl1 = $("<span data-id=\"1\" class=\"active\">" + PhotoEditor.Globals.Texts.EditorNav.PictureSettings + "</span>").click(function () { switchTabs(this); });
-                var $tabControl2 = $("<span data-id=\"2\">" + PhotoEditor.Globals.Texts.EditorNav.FilterGalery + "</span>").click(function () { switchTabs(this); });
-                var $tabControl3 = $("<span data-id=\"3\">" + PhotoEditor.Globals.Texts.EditorNav.ColorSettings + "</span>").click(function () { switchTabs(this); });
+                var $tabControl1 = $("<span data-id=\"1\" class=\"active\"><span>" + PhotoEditor.Globals.Texts.EditorNav.PictureSettings + "</span></span>").click(function () { switchTabs(this); });
+                var $tabControl2 = $("<span data-id=\"2\"><span>" + PhotoEditor.Globals.Texts.EditorNav.FilterGalery + "</span></span>").click(function () { switchTabs(this); });
+                var $tabControl3 = $("<span data-id=\"3\"><span>" + PhotoEditor.Globals.Texts.EditorNav.ColorSettings + "</span></span>").click(function () { switchTabs(this); });
                 var getControlsContainer = function ($content) {
                     return $('<div class="photo-editor-ui_controls-container"></div>')
                         .append($content);

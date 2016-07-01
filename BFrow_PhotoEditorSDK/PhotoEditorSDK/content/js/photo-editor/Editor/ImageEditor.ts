@@ -113,9 +113,9 @@ namespace PhotoEditor.Editor {
             };
 
             let $tabControlContainer = $('<div class="photo-editor-ui_tab-control-container"></div>');
-            let $tabControl1 = $(`<span data-id="1" class="active">${Globals.Texts.EditorNav.PictureSettings}</span>`).click(function () { switchTabs(this) });
-            let $tabControl2 = $(`<span data-id="2">${Globals.Texts.EditorNav.FilterGalery}</span>`).click(function () { switchTabs(this) });
-            let $tabControl3 = $(`<span data-id="3">${Globals.Texts.EditorNav.ColorSettings}</span>`).click(function () { switchTabs(this) });
+            let $tabControl1 = $(`<span data-id="1" class="active"><span>${Globals.Texts.EditorNav.PictureSettings}</span></span>`).click(function () { switchTabs(this) });
+            let $tabControl2 = $(`<span data-id="2"><span>${Globals.Texts.EditorNav.FilterGalery}</span></span>`).click(function () { switchTabs(this) });
+            let $tabControl3 = $(`<span data-id="3"><span>${Globals.Texts.EditorNav.ColorSettings}</span></span>`).click(function () { switchTabs(this) });
 
             let getControlsContainer = ($content: JQuery[]) => {
                 return $('<div class="photo-editor-ui_controls-container"></div>')
