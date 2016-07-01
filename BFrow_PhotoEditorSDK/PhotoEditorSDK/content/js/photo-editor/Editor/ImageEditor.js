@@ -35,6 +35,7 @@ var PhotoEditor;
                     var renderer = 'webgl'; //'webgl', 'canvas'
                     image.onload = function () { _this._imageOnLoad(container, renderer, image, resolve); };
                     image.src = _this.imageUrl;
+                    console.log(image.src);
                 });
             };
             ImageEditor.prototype._imageOnLoad = function (container, renderer, image, resolve) {
@@ -115,6 +116,9 @@ var PhotoEditor;
                 var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
                 var $disposeEditorButton = $("<span class=\"photo-editor-ui_btn-dispose\">" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
                 var $saveImageButton = $("<span class=\"photo-editor-ui_btn-save\">" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
+                    var format = _this.imageUrl.indexOf(".png") > -1
+                        ? PhotoEditorSDK.ImageFormat.PNG
+                        : PhotoEditorSDK.ImageFormat.JPEG;
                     _this.actions.Export(PhotoEditorSDK.ImageFormat.PNG, function (exportedImage) {
                         if (typeof (PhotoEditor.Handlers.onSaveHandler) === 'function')
                             PhotoEditor.Handlers.onSaveHandler(exportedImage);
