@@ -13,9 +13,12 @@ var PhotoEditor;
                         .click(function () { buttonControl.onclick($(this)); });
                 }
                 else {
-                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + " main-controls-button\">\n    <img src=\"content/img/buttons/" + buttonControl.cssClass + ".png\" alt=\"\" />\n    <span>" + buttonControl.text + "</span>\n</" + tag + ">")
+                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + " main-controls-button\">\n    <img src=\"" + PhotoEditor.Settings.APP_ROOT_PATH + "img/buttons/" + buttonControl.cssClass + ".png\" alt=\"\" />\n    <span>" + buttonControl.text + "</span>\n</" + tag + ">")
                         .click(function () { buttonControl.onclick($(this)); });
                 }
+            };
+            HTMLControls.GetEditorContainer = function (containerselector) {
+                return $("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
             };
             HTMLControls.GetSlider = function () {
                 return $("<div id=\"photo-editor-ui_slider\"></div>");

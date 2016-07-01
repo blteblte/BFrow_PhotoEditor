@@ -48,10 +48,11 @@ var PhotoEditor;
                     if (callback === void 0) { callback = null; }
                     $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "0", height: "0" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
+                    var $inner = $("<div class=\"photo-editor-ui_sub-controls-inner\"></div>");
                     buttonControls.forEach(function (v, i) {
-                        $subActionsContainer.append(v);
+                        $inner.append(v);
                     });
-                    $target.append($subActionsContainer);
+                    $target.append($subActionsContainer.append($inner));
                     if (typeof (callback) === 'function')
                         callback();
                 };

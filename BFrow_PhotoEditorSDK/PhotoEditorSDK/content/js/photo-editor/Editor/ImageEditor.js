@@ -25,7 +25,7 @@ var PhotoEditor;
                     PhotoEditor.Html.HTMLControls.ShowLoader($("#" + _this.containerId), "loading...");
                     var containerparent = document.getElementById(_this.containerId);
                     var containerselector = _this.containerId + "-editor";
-                    $("#" + _this.containerId).append("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
+                    $("#" + _this.containerId).append(PhotoEditor.Html.HTMLControls.GetEditorContainer(containerselector));
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
@@ -35,7 +35,7 @@ var PhotoEditor;
                             pixelRatio: 1,
                             container: container,
                             assets: {
-                                baseUrl: "content/js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
+                                baseUrl: PhotoEditor.Settings.APP_ROOT_PATH + "js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
                             },
                             showNewButton: false,
                             showCloseButton: false,
@@ -45,12 +45,10 @@ var PhotoEditor;
                             enableZoom: true,
                             webcam: true,
                             forcePOT: false,
-                            tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights" /*, "radial-focus", "linear-focus"*/],
-                            controlsOrder: [
-                                ["crop", "orientation"],
-                                ["filter"],
-                                ["adjustments", "focus"]
-                            ],
+                            //tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights"/*, "radial-focus", "linear-focus"*/],
+                            //controlsOrder: [["crop", "orientation"],["filter"],["adjustments", "focus"]],
+                            tools: ["crop"],
+                            controlsOrder: [["crop"]],
                             maxMegaPixels: { desktop: 10, mobile: 5 },
                             export: { type: PhotoEditorSDK.RenderType.DATAURL, download: false },
                         });

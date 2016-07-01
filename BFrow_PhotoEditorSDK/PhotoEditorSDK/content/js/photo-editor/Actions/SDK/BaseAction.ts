@@ -172,7 +172,7 @@ namespace PhotoEditor.Actions.SDK {
         * @return {string}
         */
         getFilterImageByName(filterName) {
-            var path = `content/img/filters/`;
+            var path = `${Settings.APP_ROOT_PATH}img/filters/`;
             return path + filterName + '.png';
         }
 

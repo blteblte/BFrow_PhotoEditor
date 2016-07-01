@@ -175,7 +175,7 @@ var PhotoEditor;
                 * @return {string}
                 */
                 BaseAction.prototype.getFilterImageByName = function (filterName) {
-                    var path = "content/img/filters/";
+                    var path = PhotoEditor.Settings.APP_ROOT_PATH + "img/filters/";
                     return path + filterName + '.png';
                 };
                 return BaseAction;

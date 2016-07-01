@@ -67,6 +67,18 @@ var PhotoEditor;
 
 var PhotoEditor;
 (function (PhotoEditor) {
+    var Settings = (function () {
+        function Settings() {
+        }
+        Settings.APP_ROOT_PATH = "content/";
+        return Settings;
+    })();
+    PhotoEditor.Settings = Settings;
+})(PhotoEditor || (PhotoEditor = {}));
+
+
+var PhotoEditor;
+(function (PhotoEditor) {
     var Globals;
     (function (Globals) {
         var FlipDirection = (function () {
@@ -552,7 +564,7 @@ var PhotoEditor;
                 * @return {string}
                 */
                 BaseAction.prototype.getFilterImageByName = function (filterName) {
-                    var path = "content/img/filters/";
+                    var path = PhotoEditor.Settings.APP_ROOT_PATH + "img/filters/";
                     return path + filterName + '.png';
                 };
                 return BaseAction;
@@ -737,10 +749,11 @@ var PhotoEditor;
                     if (callback === void 0) { callback = null; }
                     $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "0", height: "0" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
+                    var $inner = $("<div class=\"photo-editor-ui_sub-controls-inner\"></div>");
                     buttonControls.forEach(function (v, i) {
-                        $subActionsContainer.append(v);
+                        $inner.append(v);
                     });
-                    $target.append($subActionsContainer);
+                    $target.append($subActionsContainer.append($inner));
                     if (typeof (callback) === 'function')
                         callback();
                 };
@@ -950,9 +963,12 @@ var PhotoEditor;
                         .click(function () { buttonControl.onclick($(this)); });
                 }
                 else {
-                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + " main-controls-button\">\n    <img src=\"content/img/buttons/" + buttonControl.cssClass + ".png\" alt=\"\" />\n    <span>" + buttonControl.text + "</span>\n</" + tag + ">")
+                    return $("<" + tag + " class=\"" + this.CSS_PREFIX + buttonControl.cssClass + " main-controls-button\">\n    <img src=\"" + PhotoEditor.Settings.APP_ROOT_PATH + "img/buttons/" + buttonControl.cssClass + ".png\" alt=\"\" />\n    <span>" + buttonControl.text + "</span>\n</" + tag + ">")
                         .click(function () { buttonControl.onclick($(this)); });
                 }
+            };
+            HTMLControls.GetEditorContainer = function (containerselector) {
+                return $("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
             };
             HTMLControls.GetSlider = function () {
                 return $("<div id=\"photo-editor-ui_slider\"></div>");
@@ -1099,7 +1115,7 @@ var PhotoEditor;
                     PhotoEditor.Html.HTMLControls.ShowLoader($("#" + _this.containerId), "loading...");
                     var containerparent = document.getElementById(_this.containerId);
                     var containerselector = _this.containerId + "-editor";
-                    $("#" + _this.containerId).append("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
+                    $("#" + _this.containerId).append(PhotoEditor.Html.HTMLControls.GetEditorContainer(containerselector));
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
@@ -1109,7 +1125,7 @@ var PhotoEditor;
                             pixelRatio: 1,
                             container: container,
                             assets: {
-                                baseUrl: "content/js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
+                                baseUrl: PhotoEditor.Settings.APP_ROOT_PATH + "js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
                             },
                             showNewButton: false,
                             showCloseButton: false,
@@ -1119,12 +1135,10 @@ var PhotoEditor;
                             enableZoom: true,
                             webcam: true,
                             forcePOT: false,
-                            tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights" /*, "radial-focus", "linear-focus"*/],
-                            controlsOrder: [
-                                ["crop", "orientation"],
-                                ["filter"],
-                                ["adjustments", "focus"]
-                            ],
+                            //tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights"/*, "radial-focus", "linear-focus"*/],
+                            //controlsOrder: [["crop", "orientation"],["filter"],["adjustments", "focus"]],
+                            tools: ["crop"],
+                            controlsOrder: [["crop"]],
                             maxMegaPixels: { desktop: 10, mobile: 5 },
                             export: { type: PhotoEditorSDK.RenderType.DATAURL, download: false },
                         });

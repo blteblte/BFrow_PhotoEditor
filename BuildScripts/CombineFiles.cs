@@ -18,6 +18,7 @@ namespace BuildScripts
                      @"\js\photo-editor\Globals\Version.js"
                     ,@"\js\photo-editor\Globals\Texts.js"
                     ,@"\js\photo-editor\Handlers.js"
+                    ,@"\js\photo-editor\Settings.js"
                     ,@"\js\photo-editor\Globals\Globals.js"
                     ,@"\js\photo-editor\ExportedImage.js"
                     ,@"\js\photo-editor\Actions\SDK\ActionsState.js"

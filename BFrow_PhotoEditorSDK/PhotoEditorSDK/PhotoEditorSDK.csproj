@@ -624,11 +624,11 @@
     <Content Include="packages.config" />
     <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\fonts\montserrat-light.woff" />
     <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\fonts\montserrat-regular.woff" />
-    <TypeScriptCompile Include="content\js\photo-editor\Actions\ReactUI\ReactUIBase_reactids.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Actions\SDK\ActionsState.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\ExportedImage.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Handlers.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Html\EventBinder.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\Settings.ts" />
     <TypeScriptCompile Include="content\js\typings\jqueryui.d.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Globals\Globals.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Actions\SDKActions.ts" />

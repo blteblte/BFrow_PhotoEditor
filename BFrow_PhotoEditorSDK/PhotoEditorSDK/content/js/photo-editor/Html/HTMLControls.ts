@@ -17,12 +17,16 @@ namespace PhotoEditor.Html {
             else {
                 return $(
 `<${tag} class="${this.CSS_PREFIX}${buttonControl.cssClass} main-controls-button">
-    <img src="content/img/buttons/${buttonControl.cssClass}.png" alt="" />
+    <img src="${Settings.APP_ROOT_PATH}img/buttons/${buttonControl.cssClass}.png" alt="" />
     <span>${buttonControl.text}</span>
 </${tag}>`
                 )
                     .click(function () { buttonControl.onclick($(this)); });
             }
+        }
+
+        static GetEditorContainer(containerselector: string) {
+            return $(`<div id="${containerselector}" class="photo-editor-instance-container" style="width: 100%;"></div>`);
         }
 
         static GetSlider (): JQuery {
