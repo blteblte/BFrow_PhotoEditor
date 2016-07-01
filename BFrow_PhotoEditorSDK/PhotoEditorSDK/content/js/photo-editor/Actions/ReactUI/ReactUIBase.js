@@ -46,7 +46,7 @@ var PhotoEditor;
                 }
                 ReactUIBase.prototype._createSubControls = function (buttonControls, $target, callback) {
                     if (callback === void 0) { callback = null; }
-                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").hide();
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "hidden" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
                     buttonControls.forEach(function (v, i) {
                         $subActionsContainer.append(v);
@@ -56,7 +56,7 @@ var PhotoEditor;
                         callback();
                 };
                 ReactUIBase.prototype._disposeSubControls = function () {
-                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").show();
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "visible" });
                     $("#" + this.containerId + " .photo-editor-ui_sub-controls-container").remove();
                 };
                 ReactUIBase.prototype._launchControl = function (operation, intitSelector) {

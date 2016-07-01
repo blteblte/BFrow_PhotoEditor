@@ -735,7 +735,7 @@ var PhotoEditor;
                 }
                 ReactUIBase.prototype._createSubControls = function (buttonControls, $target, callback) {
                     if (callback === void 0) { callback = null; }
-                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").hide();
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "hidden" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
                     buttonControls.forEach(function (v, i) {
                         $subActionsContainer.append(v);
@@ -745,7 +745,7 @@ var PhotoEditor;
                         callback();
                 };
                 ReactUIBase.prototype._disposeSubControls = function () {
-                    $("#" + this.containerId + " .main-controls-button, #" + this.containerId + " .slick-dots").show();
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "visible" });
                     $("#" + this.containerId + " .photo-editor-ui_sub-controls-container").remove();
                 };
                 ReactUIBase.prototype._launchControl = function (operation, intitSelector) {
@@ -1176,9 +1176,13 @@ var PhotoEditor;
                 var $tabControl1 = $("<span data-id=\"1\" class=\"active\">" + PhotoEditor.Globals.Texts.EditorNav.PictureSettings + "</span>").click(function () { switchTabs(this); });
                 var $tabControl2 = $("<span data-id=\"2\">" + PhotoEditor.Globals.Texts.EditorNav.FilterGalery + "</span>").click(function () { switchTabs(this); });
                 var $tabControl3 = $("<span data-id=\"3\">" + PhotoEditor.Globals.Texts.EditorNav.ColorSettings + "</span>").click(function () { switchTabs(this); });
-                $tab1.append(this._getTab1Content($tab1));
-                $tab2.append(this._getTab2Content($tab2));
-                $tab3.append(this._getTab3Content($tab3));
+                var getControlsContainer = function ($content) {
+                    return $('<div class="photo-editor-ui_controls-container"></div>')
+                        .append($content);
+                };
+                $tab1.append(getControlsContainer(this._getTab1Content($tab1)));
+                $tab2.append(getControlsContainer(this._getTab2Content($tab2)));
+                $tab3.append(getControlsContainer(this._getTab3Content($tab3)));
                 var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
                 var $disposeEditorButton = $("<span class=\"photo-editor-ui_btn-dispose\">" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
                 var $saveImageButton = $("<span class=\"photo-editor-ui_btn-save\">" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
@@ -1311,7 +1315,7 @@ var PhotoEditor;
                 return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
             };
             ImageEditor.prototype._applySlickJS = function (tabId) {
-                $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ")").slick({
+                $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ") > .photo-editor-ui_controls-container").slick({
                     slidesToShow: 9,
                     slidesToScroll: 9,
                     dots: true,

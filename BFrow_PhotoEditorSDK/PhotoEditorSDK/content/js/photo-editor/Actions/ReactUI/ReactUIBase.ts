@@ -52,7 +52,7 @@ namespace PhotoEditor.Actions.ReactUI {
         }
 
         _createSubControls(buttonControls: JQuery[], $target: JQuery, callback: () => void = null) {
-            $(`#${this.containerId} .main-controls-button, #${this.containerId} .slick-dots`).hide();
+            $(`#${this.containerId} .photo-editor-ui_controls-container, #${this.containerId} .slick-dots`).css({visibility: "hidden"});
             var $subActionsContainer = $(`<div class="photo-editor-ui_sub-controls-container"></div>`);
             buttonControls.forEach((v, i) => {
                 $subActionsContainer.append(v);
@@ -62,7 +62,7 @@ namespace PhotoEditor.Actions.ReactUI {
         }
 
         _disposeSubControls() {
-            $(`#${this.containerId} .main-controls-button, #${this.containerId} .slick-dots`).show();
+            $(`#${this.containerId} .photo-editor-ui_controls-container, #${this.containerId} .slick-dots`).css({ visibility: "visible" });
             $(`#${this.containerId} .photo-editor-ui_sub-controls-container`).remove();
         }
 

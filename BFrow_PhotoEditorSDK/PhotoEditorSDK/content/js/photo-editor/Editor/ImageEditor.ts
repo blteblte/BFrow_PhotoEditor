@@ -117,9 +117,14 @@ namespace PhotoEditor.Editor {
             let $tabControl2 = $(`<span data-id="2">${Globals.Texts.EditorNav.FilterGalery}</span>`).click(function () { switchTabs(this) });
             let $tabControl3 = $(`<span data-id="3">${Globals.Texts.EditorNav.ColorSettings}</span>`).click(function () { switchTabs(this) });
 
-            $tab1.append(this._getTab1Content($tab1));
-            $tab2.append(this._getTab2Content($tab2));
-            $tab3.append(this._getTab3Content($tab3));
+            let getControlsContainer = ($content: JQuery[]) => {
+                return $('<div class="photo-editor-ui_controls-container"></div>')
+                    .append($content);
+            }
+
+            $tab1.append(getControlsContainer(this._getTab1Content($tab1)));
+            $tab2.append(getControlsContainer(this._getTab2Content($tab2)));
+            $tab3.append(getControlsContainer(this._getTab3Content($tab3)));
 
             let $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
             let $disposeEditorButton = $(`<span class="photo-editor-ui_btn-dispose">${Globals.Texts.Buttons.Back}</span>`).click(() => { this.actions.DisposeEditor(true); });
@@ -327,7 +332,7 @@ namespace PhotoEditor.Editor {
 
         _applySlickJS(tabId: number) {
 
-            $(`#${this.containerId} .photo-editor-ui_tab-container > div:nth-child(${tabId})`).slick({
+            $(`#${this.containerId} .photo-editor-ui_tab-container > div:nth-child(${tabId}) > .photo-editor-ui_controls-container`).slick({
                 slidesToShow: 9,
                 slidesToScroll: 9,
                 dots: true,

@@ -8,6 +8,16 @@
     box-sizing: border-box;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
 /* random shit */
 .image-container{}
 .image-container img{width: 200px; box-shadow: 0 0 2px gray;}
@@ -132,3 +142,5 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .slick-dots li{position: relative;display: inline-block;width: 20px;height: 20px;margin: 0 0.5%;padding: 0;cursor: pointer;}
 .slick-dots li button{display: block;width: 20px;height: 20px;font-size: 0;line-height: 0;color: transparent;padding: 5px;cursor: pointer;border: 0;outline: none;background: #8c8678;border-radius:10px;}
 .slick-dots li.slick-active button{background:#787888;}
+
+.photo-editor-ui_loader{position: absolute; padding-top: 40%; background-color: #ffffff; color: #464646; width: 100%; height: 100%; text-align: center; z-index: 99; }
