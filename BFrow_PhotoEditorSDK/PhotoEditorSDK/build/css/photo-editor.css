@@ -70,7 +70,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .photo-editor-ui_container > .photo-editor-ui_tab-control-container > span:after{content: "";height: 24px;width: 1px;background: #d3d3d3;right: 0;position: absolute;}
 .photo-editor-ui_container > .photo-editor-ui_tab-control-container > span:last-child:after{display:none;}
 
-.photo-editor-ui_container > .photo-editor-ui_tab-container{width: 100%;overflow: hidden;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container{width: 100%;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div{text-align: center;opacity: 0;height: 0px;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div.active{opacity: 1;height: auto;}
 

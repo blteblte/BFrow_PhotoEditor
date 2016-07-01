@@ -61,6 +61,7 @@ var PhotoEditor;
                 });
             };
             EventBinder.prototype.BindSlider = function (type, adjustment, bindValue) {
+                var $slider = $("#photo-editor-ui_slider");
                 var getDisplayValue = function (value) {
                     var sliderRange = 200;
                     var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
@@ -69,7 +70,7 @@ var PhotoEditor;
                     return Math.round(normalized);
                 };
                 var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
-                $("#photo-editor-ui_slider").slider({
+                $slider.slider({
                     range: "min",
                     min: adjustment.min,
                     max: adjustment.max,
@@ -81,7 +82,8 @@ var PhotoEditor;
                         this.actions.Adjust(type, value);
                     }
                 });
-                $(".ui-slider-handle").append($numBox);
+                $slider.find(".ui-slider-handle").append($numBox);
+                $slider.prepend('<span class="photo-editor-ui_slider-static-box">0</span>');
             };
             return EventBinder;
         })();

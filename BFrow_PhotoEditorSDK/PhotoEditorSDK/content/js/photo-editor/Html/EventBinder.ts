@@ -70,7 +70,9 @@
 
         BindSlider (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number) {
 
-            var getDisplayValue = (value) => {
+            let $slider = $("#photo-editor-ui_slider");
+
+            let getDisplayValue = (value) => {
                 const sliderRange = 200;
                 let normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
                 let overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
@@ -81,7 +83,7 @@
 
             var $numBox = $(`<span class="ui-slider-numbox">${getDisplayValue(bindValue / adjustment.multiplier)}</span>`);
 
-            $("#photo-editor-ui_slider").slider({
+            $slider.slider({
                 range: "min",
                 min: adjustment.min,
                 max: adjustment.max,
@@ -94,7 +96,8 @@
                 }
             });
 
-            $(".ui-slider-handle").append($numBox);
+            $slider.find(".ui-slider-handle").append($numBox);
+            $slider.prepend('<span class="photo-editor-ui_slider-static-box">0</span>');
         }
 
     }
