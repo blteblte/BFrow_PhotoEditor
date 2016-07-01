@@ -6,6 +6,7 @@ namespace PhotoEditor.Html {
 
         private static DEFAULT_DOM_ELEMENT: string = 'div';
         private static CSS_PREFIX: string = 'photo-editor-ui_';
+        private static $loader: JQuery;
 
         static GetButtonContol(buttonControl: HTMLButtonControl): JQuery {
             var tag: string = buttonControl.tagName === null ? this.DEFAULT_DOM_ELEMENT : buttonControl.tagName;
@@ -22,6 +23,22 @@ namespace PhotoEditor.Html {
                 )
                     .click(function () { buttonControl.onclick($(this)); });
             }
+        }
+
+        static GetSlider (): JQuery {
+            return $(`<div id="photo-editor-ui_slider"></div>`);
+        }
+
+        static ShowLoader($appendTo: JQuery, text: string) {
+            $appendTo.append(this._getLoader(text));
+        }
+
+        static HideLoader() {
+            this.$loader.remove();
+        }
+
+        private static _getLoader(text) {
+            return this.$loader = $(`<div class="photo-editor-ui_loader noselect"><span class="photo-editor-ui_loader-text">${text}</span></div>`);
         }
     }
 }

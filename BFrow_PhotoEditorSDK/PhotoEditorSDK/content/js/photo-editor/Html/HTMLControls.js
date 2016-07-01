@@ -17,6 +17,18 @@ var PhotoEditor;
                         .click(function () { buttonControl.onclick($(this)); });
                 }
             };
+            HTMLControls.GetSlider = function () {
+                return $("<div id=\"photo-editor-ui_slider\"></div>");
+            };
+            HTMLControls.ShowLoader = function ($appendTo, text) {
+                $appendTo.append(this._getLoader(text));
+            };
+            HTMLControls.HideLoader = function () {
+                this.$loader.remove();
+            };
+            HTMLControls._getLoader = function (text) {
+                return this.$loader = $("<div class=\"photo-editor-ui_loader noselect\"><span class=\"photo-editor-ui_loader-text\">" + text + "</span></div>");
+            };
             HTMLControls.DEFAULT_DOM_ELEMENT = 'div';
             HTMLControls.CSS_PREFIX = 'photo-editor-ui_';
             return HTMLControls;

@@ -60,6 +60,29 @@ var PhotoEditor;
                     _instance.HandleRatioInputBlur($(this), $w, PhotoEditor.Globals.ImageDimension.H);
                 });
             };
+            EventBinder.prototype.BindSlider = function (type, adjustment, bindValue) {
+                var getDisplayValue = function (value) {
+                    var sliderRange = 200;
+                    var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
+                    var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                    var normalized = (value * normalizeMultiplier) * 100 - overflow;
+                    return Math.round(normalized);
+                };
+                var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
+                $("#photo-editor-ui_slider").slider({
+                    range: "min",
+                    min: adjustment.min,
+                    max: adjustment.max,
+                    value: bindValue,
+                    step: 0.01,
+                    slide: function (event, ui) {
+                        var value = parseFloat(ui.value) / adjustment.multiplier;
+                        $numBox.text(getDisplayValue(value));
+                        this.actions.Adjust(type, value);
+                    }
+                });
+                $(".ui-slider-handle").append($numBox);
+            };
             return EventBinder;
         })();
         Html.EventBinder = EventBinder;

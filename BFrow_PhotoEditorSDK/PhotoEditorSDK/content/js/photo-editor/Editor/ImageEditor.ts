@@ -26,6 +26,8 @@ namespace PhotoEditor.Editor {
         LoadEditor() {
             return new Promise((resolve, reject) => {
 
+                Html.HTMLControls.ShowLoader($(`#${this.containerId}`), "loading...");
+
                 let containerparent = document.getElementById(this.containerId);
                 let containerselector = `${this.containerId}-editor`;
                 $(`#${this.containerId}`).append(`<div id="${containerselector}" class="photo-editor-instance-container" style="width: 100%;"></div>`);
@@ -77,6 +79,7 @@ namespace PhotoEditor.Editor {
 
                             resolve(this.actions);
                             if (typeof (Handlers.onEditorLoaded) === 'function') { Handlers.onEditorLoaded(this.actions) };
+                            Html.HTMLControls.HideLoader();
                         }
                         catch (e) {
                             setTimeout(() => { getReadyState(); }, 100);
@@ -273,39 +276,6 @@ namespace PhotoEditor.Editor {
                 return $submit;
             };
 
-            let getSlider = (): JQuery => {
-                return $(`<div id="photo-editor-ui_slider"></div>`);
-            };
-
-            let bindSlider = (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number): void => {
-
-                var getDisplayValue = (value) => {
-                    const sliderRange = 200;
-                    let normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
-                    let overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
-                    let normalized = (value * normalizeMultiplier) * 100 - overflow;
-
-                    return Math.round(normalized);
-                }
-
-                var $numBox = $(`<span class="ui-slider-numbox">${getDisplayValue(bindValue / adjustment.multiplier)}</span>`);
-
-                $("#photo-editor-ui_slider").slider({
-                    range: "min",
-                    min: adjustment.min,
-                    max: adjustment.max,
-                    value: bindValue,
-                    step: 0.01,
-                    slide: function (event, ui) {
-                        var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
-                        $numBox.text(getDisplayValue(value));
-                        instance.actions.Adjust(type, value);
-                    }
-                });
-
-                $(".ui-slider-handle").append($numBox);
-            }
-
             let getSubControls = (type: Globals.AdjustmentTypes, bindValue: number) => {
                 this.actions.init(() => {
                     if (!this.actions.state.adjustStateSaved){
@@ -316,13 +286,13 @@ namespace PhotoEditor.Editor {
                     , () => {
                     this.actions._createSubControls(
                         [
-                            getSlider(),
+                            Html.HTMLControls.GetSlider(),
                             getCancelButton(type),
                             getSubmitButton()
                         ]
                         , $parent, () => {
-                        this.actions.state.adjustStateSaved = false;
-                        bindSlider(type, Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
+                            this.actions.state.adjustStateSaved = false;
+                            this.eventBinder.BindSlider(type, Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
                     });
                 });
             };

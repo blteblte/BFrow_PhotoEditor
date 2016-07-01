@@ -954,6 +954,18 @@ var PhotoEditor;
                         .click(function () { buttonControl.onclick($(this)); });
                 }
             };
+            HTMLControls.GetSlider = function () {
+                return $("<div id=\"photo-editor-ui_slider\"></div>");
+            };
+            HTMLControls.ShowLoader = function ($appendTo, text) {
+                $appendTo.append(this._getLoader(text));
+            };
+            HTMLControls.HideLoader = function () {
+                this.$loader.remove();
+            };
+            HTMLControls._getLoader = function (text) {
+                return this.$loader = $("<div class=\"photo-editor-ui_loader noselect\"><span class=\"photo-editor-ui_loader-text\">" + text + "</span></div>");
+            };
             HTMLControls.DEFAULT_DOM_ELEMENT = 'div';
             HTMLControls.CSS_PREFIX = 'photo-editor-ui_';
             return HTMLControls;
@@ -1025,6 +1037,29 @@ var PhotoEditor;
                     _instance.HandleRatioInputBlur($(this), $w, PhotoEditor.Globals.ImageDimension.H);
                 });
             };
+            EventBinder.prototype.BindSlider = function (type, adjustment, bindValue) {
+                var getDisplayValue = function (value) {
+                    var sliderRange = 200;
+                    var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
+                    var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                    var normalized = (value * normalizeMultiplier) * 100 - overflow;
+                    return Math.round(normalized);
+                };
+                var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
+                $("#photo-editor-ui_slider").slider({
+                    range: "min",
+                    min: adjustment.min,
+                    max: adjustment.max,
+                    value: bindValue,
+                    step: 0.01,
+                    slide: function (event, ui) {
+                        var value = parseFloat(ui.value) / adjustment.multiplier;
+                        $numBox.text(getDisplayValue(value));
+                        this.actions.Adjust(type, value);
+                    }
+                });
+                $(".ui-slider-handle").append($numBox);
+            };
             return EventBinder;
         })();
         Html.EventBinder = EventBinder;
@@ -1056,6 +1091,7 @@ var PhotoEditor;
             ImageEditor.prototype.LoadEditor = function () {
                 var _this = this;
                 return new Promise(function (resolve, reject) {
+                    PhotoEditor.Html.HTMLControls.ShowLoader($("#" + _this.containerId), "loading...");
                     var containerparent = document.getElementById(_this.containerId);
                     var containerselector = _this.containerId + "-editor";
                     $("#" + _this.containerId).append("<div id=\"" + containerselector + "\" class=\"photo-editor-instance-container\" style=\"width: 100%;\"></div>");
@@ -1103,6 +1139,7 @@ var PhotoEditor;
                                     PhotoEditor.Handlers.onEditorLoaded(_this.actions);
                                 }
                                 ;
+                                PhotoEditor.Html.HTMLControls.HideLoader();
                             }
                             catch (e) {
                                 setTimeout(function () { getReadyState(); }, 100);
@@ -1242,32 +1279,6 @@ var PhotoEditor;
                     }));
                     return $submit;
                 };
-                var getSlider = function () {
-                    return $("<div id=\"photo-editor-ui_slider\"></div>");
-                };
-                var bindSlider = function (type, adjustment, bindValue) {
-                    var getDisplayValue = function (value) {
-                        var sliderRange = 200;
-                        var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
-                        var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
-                        var normalized = (value * normalizeMultiplier) * 100 - overflow;
-                        return Math.round(normalized);
-                    };
-                    var $numBox = $("<span class=\"ui-slider-numbox\">" + getDisplayValue(bindValue / adjustment.multiplier) + "</span>");
-                    $("#photo-editor-ui_slider").slider({
-                        range: "min",
-                        min: adjustment.min,
-                        max: adjustment.max,
-                        value: bindValue,
-                        step: 0.01,
-                        slide: function (event, ui) {
-                            var value = parseFloat(ui.value) / adjustment.multiplier;
-                            $numBox.text(getDisplayValue(value));
-                            instance.actions.Adjust(type, value);
-                        }
-                    });
-                    $(".ui-slider-handle").append($numBox);
-                };
                 var getSubControls = function (type, bindValue) {
                     _this.actions.init(function () {
                         if (!_this.actions.state.adjustStateSaved) {
@@ -1276,12 +1287,12 @@ var PhotoEditor;
                         _this.actions._disposeSubControls();
                     }, function () {
                         _this.actions._createSubControls([
-                            getSlider(),
+                            PhotoEditor.Html.HTMLControls.GetSlider(),
                             getCancelButton(type),
                             getSubmitButton()
                         ], $parent, function () {
                             _this.actions.state.adjustStateSaved = false;
-                            bindSlider(type, PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
+                            _this.eventBinder.BindSlider(type, PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(type), bindValue);
                         });
                     });
                 };

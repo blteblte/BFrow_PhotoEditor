@@ -66,6 +66,37 @@
                     _instance.HandleRatioInputBlur($(this), $w, Globals.ImageDimension.H);
                 });
         }
+
+
+        BindSlider (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number) {
+
+            var getDisplayValue = (value) => {
+                const sliderRange = 200;
+                let normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
+                let overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                let normalized = (value * normalizeMultiplier) * 100 - overflow;
+
+                return Math.round(normalized);
+            }
+
+            var $numBox = $(`<span class="ui-slider-numbox">${getDisplayValue(bindValue / adjustment.multiplier)}</span>`);
+
+            $("#photo-editor-ui_slider").slider({
+                range: "min",
+                min: adjustment.min,
+                max: adjustment.max,
+                value: bindValue,
+                step: 0.01,
+                slide: function (event, ui) {
+                    var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
+                    $numBox.text(getDisplayValue(value));
+                    this.actions.Adjust(type, value);
+                }
+            });
+
+            $(".ui-slider-handle").append($numBox);
+        }
+
     }
 
 }
