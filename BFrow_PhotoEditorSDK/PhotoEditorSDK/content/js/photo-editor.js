@@ -1356,6 +1356,13 @@ var PhotoEditor;
                             }
                         },
                         {
+                            breakpoint: 800,
+                            settings: {
+                                slidesToShow: 6,
+                                slidesToScroll: 6
+                            }
+                        },
+                        {
                             breakpoint: 700,
                             settings: {
                                 slidesToShow: 5,
@@ -1363,17 +1370,10 @@ var PhotoEditor;
                             }
                         },
                         {
-                            breakpoint: 450,
+                            breakpoint: 550,
                             settings: {
                                 slidesToShow: 4,
                                 slidesToScroll: 4
-                            }
-                        },
-                        {
-                            breakpoint: 400,
-                            settings: {
-                                slidesToShow: 3,
-                                slidesToScroll: 3
                             }
                         }
                     ]

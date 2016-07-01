@@ -51,13 +51,11 @@
             };
 
             $('#btn1').click(function () {
-                var editorInstance = new BfrowPhotoEditor("photo-editor", "content/images/car.jpg");
-                editorInstance.LoadEditor();
+                (new BfrowPhotoEditor("photo-editor", "content/images/car.jpg")).LoadEditor();
             });
 
             $('#btn2').click(function () {
-                var editorInstance = new BfrowPhotoEditor("photo-editor", "content/images/nomanssky.jpg");
-                editorInstance.LoadEditor();
+                (new BfrowPhotoEditor("photo-editor", "content/images/nomanssky.jpg")).LoadEditor();
             });
 
         });
