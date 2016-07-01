@@ -2,7 +2,6 @@ var PhotoEditor;
 (function (PhotoEditor) {
     var Html;
     (function (Html) {
-        //TODO: make this one generic + interface
         var HTMLButtonControl = (function () {
             function HTMLButtonControl(text, cssClass, onclick, tagName, placeholder) {
                 if (text === void 0) { text = ''; }

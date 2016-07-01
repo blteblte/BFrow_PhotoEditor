@@ -4,6 +4,7 @@ var PhotoEditor;
         function Settings() {
         }
         Settings.APP_ROOT_PATH = "content/";
+        Settings.MIN_RESIZE_RATE = 5;
         return Settings;
     })();
     PhotoEditor.Settings = Settings;

@@ -71,6 +71,7 @@ var PhotoEditor;
         function Settings() {
         }
         Settings.APP_ROOT_PATH = "content/";
+        Settings.MIN_RESIZE_RATE = 5;
         return Settings;
     })();
     PhotoEditor.Settings = Settings;
@@ -474,7 +475,6 @@ var PhotoEditor;
                     var _this = this;
                     this.init(null, function () {
                         _this.state.ResetState();
-                        //TODO: -> buggy with combination with ReactUI - check on next release
                         _this.sdk.reset();
                         _this.sdk.setImage(_this.image);
                         window.dispatchEvent(new Event('resize'));
@@ -496,7 +496,6 @@ var PhotoEditor;
                 };
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
-                    //todo: dispose ReactUi instance instead!!!!!
                     $('.pesdk-react-modals__button').click();
                     if (disposeSdk)
                         this.reactUI.dispose();
@@ -929,7 +928,6 @@ var PhotoEditor;
 (function (PhotoEditor) {
     var Html;
     (function (Html) {
-        //TODO: make this one generic + interface
         var HTMLButtonControl = (function () {
             function HTMLButtonControl(text, cssClass, onclick, tagName, placeholder) {
                 if (text === void 0) { text = ''; }
@@ -1024,8 +1022,7 @@ var PhotoEditor;
                     cancel();
             };
             EventBinder.prototype.HandleRatioInputBlur = function ($caller, $target, dimension) {
-                //todo: -> settings/options
-                var minRatio = 5;
+                var minRatio = PhotoEditor.Settings.MIN_RESIZE_RATE;
                 var value = $caller.val();
                 var initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
                 value = value > initialDimensionSize
@@ -1094,7 +1091,7 @@ var PhotoEditor;
     (function (Editor) {
         var ImageEditor = (function () {
             /**
-            * Creates new editor instance
+            * Creates new BfrowPhotoEditor instance
             * @param {string} containerId
             * @param {string} imageUrl
             */
@@ -1103,10 +1100,16 @@ var PhotoEditor;
                 this.imageUrl = imageUrl;
                 this.actions = null;
                 this.eventBinder = null;
+                //dispose previous editor if any
                 if (typeof (PhotoEditor.Globals._editorDisposator) === 'function') {
                     PhotoEditor.Globals._editorDisposator();
                 }
             }
+            /**
+            * Loads the editor into DOM.
+            * Calls "PhotoEditor.Handlers.onEditorLoaded" handler on ready state
+            * Calls "PhotoEditor.Handlers.onSaveHandler" handler on save
+            */
             ImageEditor.prototype.LoadEditor = function () {
                 var _this = this;
                 return new Promise(function (resolve, reject) {
@@ -1117,56 +1120,56 @@ var PhotoEditor;
                     var container = document.getElementById(containerselector);
                     var image = new Image();
                     var renderer = 'webgl'; //'webgl', 'canvas'
-                    image.onload = function () {
-                        console.log("loading image: \"" + _this.imageUrl + "\" into: \"#" + _this.containerId + "\"");
-                        var editor = new PhotoEditorSDK.UI.ReactUI({
-                            pixelRatio: 1,
-                            container: container,
-                            assets: {
-                                baseUrl: PhotoEditor.Settings.APP_ROOT_PATH + "js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
-                            },
-                            showNewButton: false,
-                            showCloseButton: false,
-                            preferredRenderer: renderer,
-                            responsive: true,
-                            enableDrag: false,
-                            enableZoom: true,
-                            webcam: true,
-                            forcePOT: false,
-                            //tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights"/*, "radial-focus", "linear-focus"*/],
-                            //controlsOrder: [["crop", "orientation"],["filter"],["adjustments", "focus"]],
-                            tools: ["crop"],
-                            controlsOrder: [["crop"]],
-                            maxMegaPixels: { desktop: 10, mobile: 5 },
-                            export: { type: PhotoEditorSDK.RenderType.DATAURL, download: false },
-                        });
-                        _this.actions = new PhotoEditor.Actions.SDKActions(editor, editor.setImage(image) /*edited source code*/, _this.containerId, image);
-                        _this.eventBinder = new PhotoEditor.Html.EventBinder(_this.actions);
-                        _this._initializeUI($("#" + _this.containerId));
-                        PhotoEditor.Globals._editorDisposator = function () {
-                            _this.actions.DisposeEditor(true);
-                        };
-                        //try get the ready state
-                        var getReadyState = function () {
-                            try {
-                                //console.log("getting ready state");
-                                _this.actions.sdk.getInputDimensions();
-                                resolve(_this.actions);
-                                if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
-                                    PhotoEditor.Handlers.onEditorLoaded(_this.actions);
-                                }
-                                ;
-                                PhotoEditor.Html.HTMLControls.HideLoader();
-                            }
-                            catch (e) {
-                                setTimeout(function () { getReadyState(); }, 100);
-                            }
-                        };
-                        //
-                        getReadyState();
-                    };
+                    image.onload = function () { _this._imageOnLoad(container, renderer, image, resolve); };
                     image.src = _this.imageUrl;
                 });
+            };
+            ImageEditor.prototype._imageOnLoad = function (container, renderer, image, resolve) {
+                var _this = this;
+                console.log("loading image: \"" + this.imageUrl + "\" into: \"#" + this.containerId + "\"");
+                var editor = new PhotoEditorSDK.UI.ReactUI({
+                    pixelRatio: 1,
+                    container: container,
+                    assets: {
+                        baseUrl: PhotoEditor.Settings.APP_ROOT_PATH + "js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory
+                    },
+                    showNewButton: false,
+                    showCloseButton: false,
+                    preferredRenderer: renderer,
+                    responsive: true,
+                    enableDrag: false,
+                    enableZoom: true,
+                    webcam: true,
+                    forcePOT: false,
+                    //tools: ["crop", "rotation", "flip", "filter", "brightness", "saturation", "contrast", "exposure", "shadows", "highlights"/*, "radial-focus", "linear-focus"*/],
+                    //controlsOrder: [["crop", "orientation"],["filter"],["adjustments", "focus"]],
+                    tools: ["crop"],
+                    controlsOrder: [["crop"]],
+                    maxMegaPixels: { desktop: 10, mobile: 5 },
+                    export: { type: PhotoEditorSDK.RenderType.DATAURL, download: false },
+                });
+                this.actions = new PhotoEditor.Actions.SDKActions(editor, editor.setImage(image) /*edited source code*/, this.containerId, image);
+                this.eventBinder = new PhotoEditor.Html.EventBinder(this.actions);
+                this._initializeUI($("#" + this.containerId));
+                PhotoEditor.Globals._editorDisposator = function () {
+                    _this.actions.DisposeEditor(true);
+                };
+                this._getReadyState(resolve);
+            };
+            ImageEditor.prototype._getReadyState = function (resolve) {
+                var _this = this;
+                try {
+                    this.actions.sdk.getInputDimensions();
+                    resolve(this.actions);
+                    if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
+                        PhotoEditor.Handlers.onEditorLoaded(this.actions);
+                    }
+                    ;
+                    PhotoEditor.Html.HTMLControls.HideLoader();
+                }
+                catch (e) {
+                    setTimeout(function () { _this._getReadyState(resolve); }, 100);
+                }
             };
             ImageEditor.prototype._initializeUI = function ($container) {
                 var _this = this;

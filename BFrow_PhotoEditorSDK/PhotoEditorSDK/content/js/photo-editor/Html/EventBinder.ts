@@ -29,8 +29,7 @@
         }
 
         private HandleRatioInputBlur($caller: JQuery, $target: JQuery, dimension: string) {
-            //todo: -> settings/options
-            const minRatio = 5;
+            const minRatio = Settings.MIN_RESIZE_RATE;
             let value: number = $caller.val();
             let initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
 

@@ -1,6 +1,5 @@
 ﻿namespace PhotoEditor.Html {
 
-    //TODO: make this one generic + interface
     export class HTMLButtonControl {
         constructor(
             public text: string = '',

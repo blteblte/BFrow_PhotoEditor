@@ -28,8 +28,7 @@ var PhotoEditor;
                     cancel();
             };
             EventBinder.prototype.HandleRatioInputBlur = function ($caller, $target, dimension) {
-                //todo: -> settings/options
-                var minRatio = 5;
+                var minRatio = PhotoEditor.Settings.MIN_RESIZE_RATE;
                 var value = $caller.val();
                 var initialDimensionSize = this.actions.state.getImageInitialSize(dimension);
                 value = value > initialDimensionSize

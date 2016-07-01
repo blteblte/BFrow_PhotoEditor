@@ -85,7 +85,6 @@ var PhotoEditor;
                     var _this = this;
                     this.init(null, function () {
                         _this.state.ResetState();
-                        //TODO: -> buggy with combination with ReactUI - check on next release
                         _this.sdk.reset();
                         _this.sdk.setImage(_this.image);
                         window.dispatchEvent(new Event('resize'));
@@ -107,7 +106,6 @@ var PhotoEditor;
                 };
                 BaseAction.prototype.DisposeEditor = function (disposeSdk) {
                     if (disposeSdk === void 0) { disposeSdk = false; }
-                    //todo: dispose ReactUi instance instead!!!!!
                     $('.pesdk-react-modals__button').click();
                     if (disposeSdk)
                         this.reactUI.dispose();

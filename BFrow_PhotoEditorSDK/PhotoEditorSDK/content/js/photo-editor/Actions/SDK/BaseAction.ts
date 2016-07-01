@@ -83,7 +83,6 @@ namespace PhotoEditor.Actions.SDK {
         Reset() {
             this.init(null, () => {
                 this.state.ResetState();
-                //TODO: -> buggy with combination with ReactUI - check on next release
                 this.sdk.reset();
                 this.sdk.setImage(this.image);
                 window.dispatchEvent(new Event('resize'));
@@ -105,7 +104,6 @@ namespace PhotoEditor.Actions.SDK {
         }
 
         DisposeEditor(disposeSdk: boolean = false) {
-            //todo: dispose ReactUi instance instead!!!!!
             $('.pesdk-react-modals__button').click();
             if (disposeSdk) this.reactUI.dispose();
             var id = `#${this.containerId}-editor`;
