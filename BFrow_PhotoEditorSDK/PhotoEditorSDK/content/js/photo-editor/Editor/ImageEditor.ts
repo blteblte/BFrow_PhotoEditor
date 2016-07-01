@@ -286,6 +286,7 @@ namespace PhotoEditor.Editor {
                     , () => {
                     this.actions._createSubControls(
                         [
+                            Html.HTMLControls.GetSliderStaticBox(),
                             Html.HTMLControls.GetSlider(),
                             getCancelButton(type),
                             getSubmitButton()

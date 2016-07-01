@@ -957,6 +957,9 @@ var PhotoEditor;
             HTMLControls.GetSlider = function () {
                 return $("<div id=\"photo-editor-ui_slider\"></div>");
             };
+            HTMLControls.GetSliderStaticBox = function () {
+                return $('<span class="photo-editor-ui_slider-static-box">0</span>');
+            };
             HTMLControls.ShowLoader = function ($appendTo, text) {
                 $appendTo.append(this._getLoader(text));
             };
@@ -1038,6 +1041,7 @@ var PhotoEditor;
                 });
             };
             EventBinder.prototype.BindSlider = function (type, adjustment, bindValue) {
+                var instance = this;
                 var $slider = $("#photo-editor-ui_slider");
                 var getDisplayValue = function (value) {
                     var sliderRange = 200;
@@ -1056,11 +1060,10 @@ var PhotoEditor;
                     slide: function (event, ui) {
                         var value = parseFloat(ui.value) / adjustment.multiplier;
                         $numBox.text(getDisplayValue(value));
-                        this.actions.Adjust(type, value);
+                        instance.actions.Adjust(type, value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);
-                $slider.prepend('<span class="photo-editor-ui_slider-static-box">0</span>');
             };
             return EventBinder;
         })();
@@ -1289,6 +1292,7 @@ var PhotoEditor;
                         _this.actions._disposeSubControls();
                     }, function () {
                         _this.actions._createSubControls([
+                            PhotoEditor.Html.HTMLControls.GetSliderStaticBox(),
                             PhotoEditor.Html.HTMLControls.GetSlider(),
                             getCancelButton(type),
                             getSubmitButton()

@@ -20,6 +20,9 @@ var PhotoEditor;
             HTMLControls.GetSlider = function () {
                 return $("<div id=\"photo-editor-ui_slider\"></div>");
             };
+            HTMLControls.GetSliderStaticBox = function () {
+                return $('<span class="photo-editor-ui_slider-static-box">0</span>');
+            };
             HTMLControls.ShowLoader = function ($appendTo, text) {
                 $appendTo.append(this._getLoader(text));
             };

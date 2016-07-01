@@ -29,6 +29,10 @@ namespace PhotoEditor.Html {
             return $(`<div id="photo-editor-ui_slider"></div>`);
         }
 
+        static GetSliderStaticBox(): JQuery {
+            return $('<span class="photo-editor-ui_slider-static-box">0</span>');
+        }
+
         static ShowLoader($appendTo: JQuery, text: string) {
             $appendTo.append(this._getLoader(text));
         }

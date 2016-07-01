@@ -61,6 +61,7 @@ var PhotoEditor;
                 });
             };
             EventBinder.prototype.BindSlider = function (type, adjustment, bindValue) {
+                var instance = this;
                 var $slider = $("#photo-editor-ui_slider");
                 var getDisplayValue = function (value) {
                     var sliderRange = 200;
@@ -79,11 +80,10 @@ var PhotoEditor;
                     slide: function (event, ui) {
                         var value = parseFloat(ui.value) / adjustment.multiplier;
                         $numBox.text(getDisplayValue(value));
-                        this.actions.Adjust(type, value);
+                        instance.actions.Adjust(type, value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);
-                $slider.prepend('<span class="photo-editor-ui_slider-static-box">0</span>');
             };
             return EventBinder;
         })();

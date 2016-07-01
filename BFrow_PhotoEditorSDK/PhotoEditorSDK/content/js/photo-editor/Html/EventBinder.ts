@@ -70,6 +70,8 @@
 
         BindSlider (type: Globals.AdjustmentTypes, adjustment: Globals.Adjustments, bindValue: number) {
 
+            let instance = this;
+
             let $slider = $("#photo-editor-ui_slider");
 
             let getDisplayValue = (value) => {
@@ -92,12 +94,11 @@
                 slide: function (event, ui) {
                     var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
                     $numBox.text(getDisplayValue(value));
-                    this.actions.Adjust(type, value);
+                    instance.actions.Adjust(type, value);
                 }
             });
 
             $slider.find(".ui-slider-handle").append($numBox);
-            $slider.prepend('<span class="photo-editor-ui_slider-static-box">0</span>');
         }
 
     }

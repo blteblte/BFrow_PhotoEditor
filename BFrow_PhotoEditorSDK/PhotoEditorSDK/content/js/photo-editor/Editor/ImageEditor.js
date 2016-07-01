@@ -218,6 +218,7 @@ var PhotoEditor;
                         _this.actions._disposeSubControls();
                     }, function () {
                         _this.actions._createSubControls([
+                            PhotoEditor.Html.HTMLControls.GetSliderStaticBox(),
                             PhotoEditor.Html.HTMLControls.GetSlider(),
                             getCancelButton(type),
                             getSubmitButton()
