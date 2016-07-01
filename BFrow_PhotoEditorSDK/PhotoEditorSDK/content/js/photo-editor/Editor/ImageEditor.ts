@@ -132,6 +132,7 @@ namespace PhotoEditor.Editor {
             let $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
             let $disposeEditorButton = $(`<span class="photo-editor-ui_btn-dispose">${Globals.Texts.Buttons.Back}</span>`).click(() => { this.actions.DisposeEditor(true); });
             let $saveImageButton = $(`<span class="photo-editor-ui_btn-save">${Globals.Texts.Buttons.Done}</span>`).click(() => {
+                Html.HTMLControls.ShowLoader($(`#${this.containerId}`), "saving...");
                 let format = this.imageUrl.indexOf(".png") > -1
                     ? PhotoEditorSDK.ImageFormat.PNG
                     : PhotoEditorSDK.ImageFormat.JPEG;

@@ -117,6 +117,7 @@ var PhotoEditor;
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
+                    PhotoEditor.Html.HTMLControls.HideLoader();
                     console.log(id + " disposed");
                     PhotoEditor.Globals._editorDisposator = null;
                 };

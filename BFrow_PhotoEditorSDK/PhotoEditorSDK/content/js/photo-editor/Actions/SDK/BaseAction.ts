@@ -116,6 +116,7 @@ namespace PhotoEditor.Actions.SDK {
             var id = `#${this.containerId}-editor`;
             $(id).remove();
             $('.photo-editor-ui_container').remove();
+            Html.HTMLControls.HideLoader();
             console.log(`${id} disposed`);
             Globals._editorDisposator = null;
         }

@@ -507,6 +507,7 @@ var PhotoEditor;
                     var id = "#" + this.containerId + "-editor";
                     $(id).remove();
                     $('.photo-editor-ui_container').remove();
+                    PhotoEditor.Html.HTMLControls.HideLoader();
                     console.log(id + " disposed");
                     PhotoEditor.Globals._editorDisposator = null;
                 };
@@ -1208,6 +1209,7 @@ var PhotoEditor;
                 var $buttonContainer = $('<div class="photo-editor-ui_buttons"></div>');
                 var $disposeEditorButton = $("<span class=\"photo-editor-ui_btn-dispose\">" + PhotoEditor.Globals.Texts.Buttons.Back + "</span>").click(function () { _this.actions.DisposeEditor(true); });
                 var $saveImageButton = $("<span class=\"photo-editor-ui_btn-save\">" + PhotoEditor.Globals.Texts.Buttons.Done + "</span>").click(function () {
+                    PhotoEditor.Html.HTMLControls.ShowLoader($("#" + _this.containerId), "saving...");
                     var format = _this.imageUrl.indexOf(".png") > -1
                         ? PhotoEditorSDK.ImageFormat.PNG
                         : PhotoEditorSDK.ImageFormat.JPEG;

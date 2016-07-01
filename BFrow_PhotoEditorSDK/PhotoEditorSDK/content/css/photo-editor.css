@@ -144,7 +144,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .slick-dots li button{display: block;width: 20px;height: 20px;font-size: 0;line-height: 0;color: transparent;padding: 5px;cursor: pointer;border: 0;outline: none;background: #8c8678;border-radius:10px;}
 .slick-dots li.slick-active button{background:#787888;}
 
-.photo-editor-ui_loader{position: absolute; padding-top: 40%; background-color: #ffffff; color: #464646; width: 100%; height: 100%; text-align: center; z-index: 99; }
+.photo-editor-ui_loader{position: absolute; padding-top: 40%; background-color: #ffffff; color: #464646; width: 100%; height: 100%; text-align: center; z-index: 99; top: 0; }
 
 
 /* Media Queries */
