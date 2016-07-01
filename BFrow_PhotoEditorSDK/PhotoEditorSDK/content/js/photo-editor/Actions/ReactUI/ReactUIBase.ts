@@ -52,7 +52,7 @@ namespace PhotoEditor.Actions.ReactUI {
         }
 
         _createSubControls(buttonControls: JQuery[], $target: JQuery, callback: () => void = null) {
-            $(`#${this.containerId} .photo-editor-ui_controls-container, #${this.containerId} .slick-dots`).css({opacity: "0", height: "auto"});
+            $(`#${this.containerId} .photo-editor-ui_controls-container, #${this.containerId} .slick-dots`).css({opacity: "0", height: "0"});
             var $subActionsContainer = $(`<div class="photo-editor-ui_sub-controls-container"></div>`);
             buttonControls.forEach((v, i) => {
                 $subActionsContainer.append(v);

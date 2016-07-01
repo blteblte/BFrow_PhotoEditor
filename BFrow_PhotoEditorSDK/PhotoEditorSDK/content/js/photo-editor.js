@@ -735,7 +735,7 @@ var PhotoEditor;
                 }
                 ReactUIBase.prototype._createSubControls = function (buttonControls, $target, callback) {
                     if (callback === void 0) { callback = null; }
-                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "0", height: "auto" });
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "0", height: "0" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
                     buttonControls.forEach(function (v, i) {
                         $subActionsContainer.append(v);
@@ -1167,7 +1167,7 @@ var PhotoEditor;
                 var switchTabs = function (caller) {
                     _this.actions.init();
                     var tabId = $(caller).attr('data-id');
-                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").css({ opacity: "0", height: "auto" }).removeClass('active');
+                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").css({ opacity: "0", height: "0" }).removeClass('active');
                     $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div[data-id=\"" + tabId + "\"]").css({ opacity: "1", height: "auto" }).addClass('active');
                     $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-control-container > span").removeClass('active');
                     $(caller).addClass('active');
