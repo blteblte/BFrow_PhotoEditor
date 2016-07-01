@@ -106,7 +106,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 
 .photo-editor-ui_sub-controls-container{text-align:center;}
 .photo-editor-ui_sub-controls-container .photo-editor-ui_sub-controls-inner{}
-.photo-editor-ui_sub-controls-container .main-controls-button{display:inline-block;margin:0 5px;position:relative;z-index:9;}
+.photo-editor-ui_sub-controls-container .main-controls-button{display:inline-block;margin:0 5px;position:relative;z-index:9;cursor: pointer;}
 .photo-editor-ui_sub-controls-container .main-controls-button span{display:none;}
 
 .pesdk-react-editor .pesdk-react-splashScreen{background:none;}
