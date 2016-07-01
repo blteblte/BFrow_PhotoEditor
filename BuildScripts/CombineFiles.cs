@@ -31,6 +31,7 @@ namespace BuildScripts
                     ,@"\js\photo-editor\Html\HTMLControls.js"
                     ,@"\js\photo-editor\Html\EventBinder.js"
                     ,@"\js\photo-editor\Editor\ImageEditor.js"
+                    ,@"\js\photo-editor\BfrowPhotoEditor.js"
                 };
             }
         }

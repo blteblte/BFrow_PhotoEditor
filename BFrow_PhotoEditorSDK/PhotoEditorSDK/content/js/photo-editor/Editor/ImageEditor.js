@@ -6,12 +6,10 @@ var PhotoEditor;
             /**
             * Creates new editor instance
             * @param {string} containerId
-            * @param {number} dataId
             * @param {string} imageUrl
             */
-            function ImageEditor(containerId, dataId, imageUrl) {
+            function ImageEditor(containerId, imageUrl) {
                 this.containerId = containerId;
-                this.dataId = dataId;
                 this.imageUrl = imageUrl;
                 this.actions = null;
                 this.eventBinder = null;

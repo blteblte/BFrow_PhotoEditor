@@ -628,6 +628,7 @@
     <TypeScriptCompile Include="content\js\photo-editor\ExportedImage.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Handlers.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Html\EventBinder.ts" />
+    <TypeScriptCompile Include="content\js\photo-editor\BfrowPhotoEditor.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Settings.ts" />
     <TypeScriptCompile Include="content\js\typings\jqueryui.d.ts" />
     <TypeScriptCompile Include="content\js\photo-editor\Globals\Globals.ts" />

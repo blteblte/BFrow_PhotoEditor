@@ -7,12 +7,10 @@ namespace PhotoEditor.Editor {
         /**
         * Creates new editor instance
         * @param {string} containerId
-        * @param {number} dataId
         * @param {string} imageUrl
         */
         constructor(
             public containerId: string,
-            public dataId: number,
             public imageUrl: string
         ) {
             this.actions = null;
