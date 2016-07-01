@@ -93,8 +93,8 @@ var PhotoEditor;
                 var switchTabs = function (caller) {
                     _this.actions.init();
                     var tabId = $(caller).attr('data-id');
-                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").hide().removeClass('active');
-                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div[data-id=\"" + tabId + "\"]").show().addClass('active');
+                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").css({ opacity: "0", height: "auto" }).removeClass('active');
+                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div[data-id=\"" + tabId + "\"]").css({ opacity: "1", height: "auto" }).addClass('active');
                     $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-control-container > span").removeClass('active');
                     $(caller).addClass('active');
                 };

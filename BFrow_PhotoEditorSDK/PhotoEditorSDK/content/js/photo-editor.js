@@ -735,7 +735,7 @@ var PhotoEditor;
                 }
                 ReactUIBase.prototype._createSubControls = function (buttonControls, $target, callback) {
                     if (callback === void 0) { callback = null; }
-                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "hidden" });
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "0", height: "auto" });
                     var $subActionsContainer = $("<div class=\"photo-editor-ui_sub-controls-container\"></div>");
                     buttonControls.forEach(function (v, i) {
                         $subActionsContainer.append(v);
@@ -745,7 +745,7 @@ var PhotoEditor;
                         callback();
                 };
                 ReactUIBase.prototype._disposeSubControls = function () {
-                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ visibility: "visible" });
+                    $("#" + this.containerId + " .photo-editor-ui_controls-container, #" + this.containerId + " .slick-dots").css({ opacity: "1", height: "auto" });
                     $("#" + this.containerId + " .photo-editor-ui_sub-controls-container").remove();
                 };
                 ReactUIBase.prototype._launchControl = function (operation, intitSelector) {
@@ -1167,8 +1167,8 @@ var PhotoEditor;
                 var switchTabs = function (caller) {
                     _this.actions.init();
                     var tabId = $(caller).attr('data-id');
-                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").hide().removeClass('active');
-                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div[data-id=\"" + tabId + "\"]").show().addClass('active');
+                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div").css({ opacity: "0", height: "auto" }).removeClass('active');
+                    $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-container > div[data-id=\"" + tabId + "\"]").css({ opacity: "1", height: "auto" }).addClass('active');
                     $(".photo-editor-ui_container." + parentId + " .photo-editor-ui_tab-control-container > span").removeClass('active');
                     $(caller).addClass('active');
                 };
