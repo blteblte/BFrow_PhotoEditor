@@ -78,11 +78,12 @@ namespace PhotoEditor.Editor {
                 this.actions.DisposeEditor(true);
             };
 
-            this._getReadyState(resolve);
+            this._getReadyState(resolve, 1);
         }
 
-        private _getReadyState(resolve) {
+        private _getReadyState(resolve, inc: number) {
             try {
+                console.log(100 * inc);
                 this.actions.sdk.getInputDimensions();
 
                 resolve(this.actions);
@@ -90,7 +91,7 @@ namespace PhotoEditor.Editor {
                 Html.HTMLControls.HideLoader();
             }
             catch (e) {
-                setTimeout(() => { this._getReadyState(resolve); }, 100);
+                setTimeout(() => { this._getReadyState(resolve, ++inc); }, 100 * inc);
             }
         }
 

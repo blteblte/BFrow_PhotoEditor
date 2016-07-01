@@ -412,7 +412,10 @@ var PhotoEditor;
                         var inresize = false;
                         window.onresize = function () {
                             if (!inresize)
-                                setTimeout(function () { _this.state.originalZoom = sdk.getZoom(); inresize = false; }, 800);
+                                setTimeout(function () {
+                                    _this.state.originalZoom = sdk.getZoom();
+                                    inresize = false;
+                                }, 1000);
                             inresize = true;
                         };
                     }
@@ -429,19 +432,16 @@ var PhotoEditor;
                     var _canvas = this.sdk.getCanvas();
                     //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
                     //let _canvas = { height: $inner.height(), width: $inner.width() };
+                    console.log(this.state.originalZoom);
                     var ratio = 1;
                     if (_outputDimensions.y > _canvas.height) {
                         ratio = parseFloat(_canvas.height) / _outputDimensions.y;
-                        console.log(ratio);
                     }
                     if (_outputDimensions.x > _canvas.width) {
                         var assignable = parseFloat(_canvas.width) / _outputDimensions.x;
                         ratio = assignable < ratio ? assignable : ratio;
-                        console.log(assignable, ratio);
                     }
-                    var zoomRatioToSet = ratio == 1
-                        ? this.state.originalZoom
-                        : this.state.originalZoom * ratio;
+                    var zoomRatioToSet = this.state.originalZoom * ratio;
                     this.sdk.setZoom(zoomRatioToSet);
                     this.sdk.render();
                     //window.dispatchEvent(new Event('resize'));
@@ -1159,11 +1159,12 @@ var PhotoEditor;
                 PhotoEditor.Globals._editorDisposator = function () {
                     _this.actions.DisposeEditor(true);
                 };
-                this._getReadyState(resolve);
+                this._getReadyState(resolve, 1);
             };
-            ImageEditor.prototype._getReadyState = function (resolve) {
+            ImageEditor.prototype._getReadyState = function (resolve, inc) {
                 var _this = this;
                 try {
+                    console.log(100 * inc);
                     this.actions.sdk.getInputDimensions();
                     resolve(this.actions);
                     if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
@@ -1173,7 +1174,7 @@ var PhotoEditor;
                     PhotoEditor.Html.HTMLControls.HideLoader();
                 }
                 catch (e) {
-                    setTimeout(function () { _this._getReadyState(resolve); }, 100);
+                    setTimeout(function () { _this._getReadyState(resolve, ++inc); }, 100 * inc);
                 }
             };
             ImageEditor.prototype._initializeUI = function ($container) {

@@ -67,11 +67,12 @@ var PhotoEditor;
                 PhotoEditor.Globals._editorDisposator = function () {
                     _this.actions.DisposeEditor(true);
                 };
-                this._getReadyState(resolve);
+                this._getReadyState(resolve, 1);
             };
-            ImageEditor.prototype._getReadyState = function (resolve) {
+            ImageEditor.prototype._getReadyState = function (resolve, inc) {
                 var _this = this;
                 try {
+                    console.log(100 * inc);
                     this.actions.sdk.getInputDimensions();
                     resolve(this.actions);
                     if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {
@@ -81,7 +82,7 @@ var PhotoEditor;
                     PhotoEditor.Html.HTMLControls.HideLoader();
                 }
                 catch (e) {
-                    setTimeout(function () { _this._getReadyState(resolve); }, 100);
+                    setTimeout(function () { _this._getReadyState(resolve, ++inc); }, 100 * inc);
                 }
             };
             ImageEditor.prototype._initializeUI = function ($container) {
