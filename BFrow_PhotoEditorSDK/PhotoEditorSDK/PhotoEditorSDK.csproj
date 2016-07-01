@@ -390,6 +390,7 @@
     <Content Include="content\js\PhotoEditorSDK\pre_3.4.0\js\PhotoEditorReactUI.min.js" />
     <Content Include="content\js\PhotoEditorSDK\pre_3.4.0\js\PhotoEditorSDK.js" />
     <Content Include="content\js\PhotoEditorSDK\pre_3.4.0\js\PhotoEditorSDK.min.js" />
+    <Content Include="content\js\vendor\jquery-ui-touch-punch.js" />
     <Content Include="content\js\vendor\jquery-ui.min.js" />
     <Content Include="content\js\vendor\slick.min.js" />
     <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\controls\filters\metal%402x.png" />
