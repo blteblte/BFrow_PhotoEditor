@@ -26,6 +26,7 @@ var PhotoEditor;
                         var rotateTo = direction === PhotoEditor.Globals.RotateDirection.Left ? -90 : 90;
                         var newRotation = _this.state._getRotation(rotateTo);
                         _this.state.OrientationOperation.setRotation(newRotation);
+                        console.log("Canvas W = " + _this.sdk.getCanvas().width, "Canvas H = " + _this.sdk.getCanvas().height);
                         //console.log(this.state.OrientationOperation);
                         _this.FitToScreen(null);
                     });

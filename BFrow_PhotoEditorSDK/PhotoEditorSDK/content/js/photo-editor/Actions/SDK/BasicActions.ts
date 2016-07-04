@@ -18,6 +18,7 @@ namespace PhotoEditor.Actions.SDK {
 
                 this.state.OrientationOperation.setRotation(newRotation);
 
+                console.log(`Canvas W = ${this.sdk.getCanvas().width}`, `Canvas H = ${this.sdk.getCanvas().height}`);
                 //console.log(this.state.OrientationOperation);
 
                 this.FitToScreen(null);

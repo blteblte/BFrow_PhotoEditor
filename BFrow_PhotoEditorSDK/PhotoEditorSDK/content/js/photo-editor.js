@@ -608,6 +608,7 @@ var PhotoEditor;
                         var rotateTo = direction === PhotoEditor.Globals.RotateDirection.Left ? -90 : 90;
                         var newRotation = _this.state._getRotation(rotateTo);
                         _this.state.OrientationOperation.setRotation(newRotation);
+                        console.log("Canvas W = " + _this.sdk.getCanvas().width, "Canvas H = " + _this.sdk.getCanvas().height);
                         //console.log(this.state.OrientationOperation);
                         _this.FitToScreen(null);
                     });
@@ -1137,6 +1138,7 @@ var PhotoEditor;
                 console.log("loading image: \"" + this.imageUrl + "\" into: \"#" + this.containerId + "\"");
                 var editor = new PhotoEditorSDK.UI.ReactUI({
                     //pixelRatio: 1,
+                    //pixelRatio: window.devicePixelRatio,
                     container: container,
                     assets: {
                         baseUrl: PhotoEditor.Settings.APP_ROOT_PATH + "js/PhotoEditorSDK/" + PhotoEditor.Globals.sdkVersionFolder + "/assets" // <-- This should be the absolute path to your `assets` directory

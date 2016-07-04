@@ -51,6 +51,7 @@ namespace PhotoEditor.Editor {
 
             const editor = new PhotoEditorSDK.UI.ReactUI({
                 //pixelRatio: 1,
+                //pixelRatio: window.devicePixelRatio,
                 container: container,
                 assets: {
                     baseUrl: `${Settings.APP_ROOT_PATH}js/PhotoEditorSDK/${Globals.sdkVersionFolder}/assets` // <-- This should be the absolute path to your `assets` directory

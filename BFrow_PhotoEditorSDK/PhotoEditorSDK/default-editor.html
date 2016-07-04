@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Bfrow photo editor</title>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="format-detection" content="telephone=no">
+
+    <script src="build/js/PhotoEditorSDK/pre_3.4.0/js/PhotoEditorSDK.js"></script>
+    <script src="build/js/PhotoEditorSDK/pre_3.4.0/js/PhotoEditorReactUI.js"></script>
+    <link href="build/js/PhotoEditorSDK/pre_3.4.0/css/PhotoEditorReactUI.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="editor" style="width: 640px; height: 480px;"></div>
+    <script>
+
+        var image = new Image();
+
+        image.onload = function () {
+            var container = document.getElementById('editor')
+            var editor = new PhotoEditorSDK.UI.ReactUI({
+                container: container,
+                assets: {
+                    baseUrl: 'content/js/PhotoEditorSDK/pre_3.4.0/assets' // <-- This should be the absolute path to your `assets` directory
+                }
+            });
+
+            editor.setImage(image);
+        };
+
+      image.src = "/content/images/car.jpg";
+    </script>
+</body>
+</html>

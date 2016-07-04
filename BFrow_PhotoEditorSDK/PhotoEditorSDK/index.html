@@ -51,7 +51,10 @@
             };
 
             $('#btn1').click(function () {
-                (new BfrowPhotoEditor("photo-editor", "content/images/car.jpg")).LoadEditor();
+                (new BfrowPhotoEditor("photo-editor", "content/images/car.jpg")).LoadEditor().then(function () {
+                    //var h = $('.image-editor .photo-editor-instance-container').height();
+                    //$('.image-editor .photo-editor-instance-container').height(Math.round(parseFloat(h) / parseFloat(window.devicePixelRatio)));
+                });
             });
 
             $('#btn2').click(function () {

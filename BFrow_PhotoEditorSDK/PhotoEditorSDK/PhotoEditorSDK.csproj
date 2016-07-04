@@ -621,6 +621,7 @@
     <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorReactUI.min.js" />
     <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorSDK.js" />
     <Content Include="content\js\PhotoEditorSDK\3.3.0\js\PhotoEditorSDK.min.js" />
+    <Content Include="default-editor.html" />
     <Content Include="index-basic.html" />
     <Content Include="packages.config" />
     <Content Include="content\js\PhotoEditorSDK\3.2.0\assets\ui\react\fonts\montserrat-light.woff" />
