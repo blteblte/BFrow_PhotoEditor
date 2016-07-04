@@ -127,7 +127,9 @@ var PhotoEditor;
                                     _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
                                     _this.editor.addOperation(_this.state.FilterOperation);
                                 }
+                                //console.log(filter.name);
                                 if (_this.state.CurrentFilter === null || _this.state.CurrentFilter.name !== filter.name) {
+                                    //console.log("in");
                                     _this.state.CurrentFilter = filter;
                                     _this.state.FilterOperation.setFilter(new filter());
                                     _this.sdk.render();

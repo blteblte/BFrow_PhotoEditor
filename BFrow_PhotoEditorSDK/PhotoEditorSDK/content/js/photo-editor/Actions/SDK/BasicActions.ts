@@ -127,7 +127,9 @@ namespace PhotoEditor.Actions.SDK {
                             this.editor.addOperation(this.state.FilterOperation);
                         }
 
+                        //console.log(filter.name);
                         if (this.state.CurrentFilter === null || this.state.CurrentFilter.name !== filter.name) {
+                            //console.log("in");
                             this.state.CurrentFilter = filter;
                             this.state.FilterOperation.setFilter(new filter());
                             this.sdk.render();
