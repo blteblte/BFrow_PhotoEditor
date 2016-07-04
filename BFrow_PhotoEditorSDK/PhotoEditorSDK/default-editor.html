@@ -15,24 +15,28 @@
     <link href="build/js/PhotoEditorSDK/pre_3.4.0/css/PhotoEditorReactUI.min.css" rel="stylesheet" />
 </head>
 <body>
+    <p>pre 3.4.0</p>
     <div id="editor" style="width: 640px; height: 480px;"></div>
     <script>
 
-        var image = new Image();
+        window.onload = function () {
+            var image = new Image();
 
-        image.onload = function () {
-            var container = document.getElementById('editor')
-            var editor = new PhotoEditorSDK.UI.ReactUI({
-                container: container,
-                assets: {
-                    baseUrl: 'content/js/PhotoEditorSDK/pre_3.4.0/assets' // <-- This should be the absolute path to your `assets` directory
-                }
-            });
+            image.onload = function () {
+                var container = document.getElementById('editor')
+                var editor = new PhotoEditorSDK.UI.ReactUI({
+                    container: container,
+                    assets: {
+                        baseUrl: 'content/js/PhotoEditorSDK/pre_3.4.0/assets' // <-- This should be the absolute path to your `assets` directory
+                    }
+                });
 
-            editor.setImage(image);
-        };
+                editor.setImage(image);
+            };
 
-      image.src = "/content/images/car.jpg";
+            image.src = "/content/images/car.jpg";
+        }
+
     </script>
 </body>
 </html>
