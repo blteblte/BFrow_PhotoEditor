@@ -74,9 +74,9 @@
             let $slider = $("#photo-editor-ui_slider");
 
             let getDisplayValue = (value) => {
-                const sliderRange = 200;
-                let normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
-                let overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                const sliderRange = parseFloat(<string><any>200);
+                let normalizeMultiplier = sliderRange / parseFloat(<string><any>((adjustment.max) - (adjustment.min)));
+                let overflow = (adjustment.max + adjustment.min) * (parseFloat(<string><any>normalizeMultiplier) / parseFloat(<string><any>(sliderRange / 100)));
                 let normalized = (value * normalizeMultiplier) * 100 - overflow;
 
                 return Math.round(normalized);
@@ -91,9 +91,10 @@
                 value: bindValue,
                 step: 0.01,
                 slide: function (event, ui) {
-                    var value = parseFloat(<string><any>ui.value) / adjustment.multiplier;
+                    var value = parseFloat(<string><any>(parseFloat(<string><any>ui.value) / parseFloat(<string><any>adjustment.multiplier))).toPrecision(4);
                     $numBox.text(getDisplayValue(value));
-                    instance.actions.Adjust(type, value);
+                    instance.actions.Adjust(type, parseFloat(value));
+                    console.log(value);
                 }
             });
 

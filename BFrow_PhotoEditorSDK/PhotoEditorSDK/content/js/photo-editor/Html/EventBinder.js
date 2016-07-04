@@ -63,9 +63,9 @@ var PhotoEditor;
                 var instance = this;
                 var $slider = $("#photo-editor-ui_slider");
                 var getDisplayValue = function (value) {
-                    var sliderRange = 200;
-                    var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
-                    var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                    var sliderRange = parseFloat(200);
+                    var normalizeMultiplier = sliderRange / parseFloat(((adjustment.max) - (adjustment.min)));
+                    var overflow = (adjustment.max + adjustment.min) * (parseFloat(normalizeMultiplier) / parseFloat((sliderRange / 100)));
                     var normalized = (value * normalizeMultiplier) * 100 - overflow;
                     return Math.round(normalized);
                 };
@@ -77,9 +77,10 @@ var PhotoEditor;
                     value: bindValue,
                     step: 0.01,
                     slide: function (event, ui) {
-                        var value = parseFloat(ui.value) / adjustment.multiplier;
+                        var value = parseFloat((parseFloat(ui.value) / parseFloat(adjustment.multiplier))).toPrecision(4);
                         $numBox.text(getDisplayValue(value));
-                        instance.actions.Adjust(type, value);
+                        instance.actions.Adjust(type, parseFloat(value));
+                        console.log(value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);

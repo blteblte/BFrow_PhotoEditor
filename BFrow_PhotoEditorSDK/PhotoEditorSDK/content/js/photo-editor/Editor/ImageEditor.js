@@ -35,7 +35,7 @@ var PhotoEditor;
                     var renderer = 'webgl'; //'webgl', 'canvas'
                     image.onload = function () { _this._imageOnLoad(container, renderer, image, resolve); };
                     image.src = _this.imageUrl;
-                    console.log(image.src);
+                    //console.log(image.src);
                 });
             };
             ImageEditor.prototype._imageOnLoad = function (container, renderer, image, resolve) {
@@ -73,7 +73,7 @@ var PhotoEditor;
             ImageEditor.prototype._getReadyState = function (resolve, inc) {
                 var _this = this;
                 try {
-                    console.log(100 * inc);
+                    //console.log(100 * inc);
                     this.actions.sdk.getInputDimensions();
                     resolve(this.actions);
                     if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {

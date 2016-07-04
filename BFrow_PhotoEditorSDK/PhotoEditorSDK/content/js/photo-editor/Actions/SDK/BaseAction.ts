@@ -38,7 +38,7 @@ namespace PhotoEditor.Actions.SDK {
             //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
             //let _canvas = { height: $inner.height(), width: $inner.width() };
 
-            console.log(this.state.originalZoom);
+            //console.log(this.state.originalZoom);
 
             var ratio = 1;
             if (_outputDimensions.y > _canvas.height) {

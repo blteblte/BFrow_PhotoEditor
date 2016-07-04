@@ -432,7 +432,7 @@ var PhotoEditor;
                     var _canvas = this.sdk.getCanvas();
                     //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
                     //let _canvas = { height: $inner.height(), width: $inner.width() };
-                    console.log(this.state.originalZoom);
+                    //console.log(this.state.originalZoom);
                     var ratio = 1;
                     if (_outputDimensions.y > _canvas.height) {
                         ratio = parseFloat(_canvas.height) / _outputDimensions.y;
@@ -1063,9 +1063,9 @@ var PhotoEditor;
                 var instance = this;
                 var $slider = $("#photo-editor-ui_slider");
                 var getDisplayValue = function (value) {
-                    var sliderRange = 200;
-                    var normalizeMultiplier = sliderRange / (adjustment.max - adjustment.min);
-                    var overflow = (adjustment.max + adjustment.min) * (normalizeMultiplier / (sliderRange / 100));
+                    var sliderRange = parseFloat(200);
+                    var normalizeMultiplier = sliderRange / parseFloat(((adjustment.max) - (adjustment.min)));
+                    var overflow = (adjustment.max + adjustment.min) * (parseFloat(normalizeMultiplier) / parseFloat((sliderRange / 100)));
                     var normalized = (value * normalizeMultiplier) * 100 - overflow;
                     return Math.round(normalized);
                 };
@@ -1077,9 +1077,10 @@ var PhotoEditor;
                     value: bindValue,
                     step: 0.01,
                     slide: function (event, ui) {
-                        var value = parseFloat(ui.value) / adjustment.multiplier;
+                        var value = parseFloat((parseFloat(ui.value) / parseFloat(adjustment.multiplier))).toPrecision(4);
                         $numBox.text(getDisplayValue(value));
-                        instance.actions.Adjust(type, value);
+                        instance.actions.Adjust(type, parseFloat(value));
+                        console.log(value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);
@@ -1128,7 +1129,7 @@ var PhotoEditor;
                     var renderer = 'webgl'; //'webgl', 'canvas'
                     image.onload = function () { _this._imageOnLoad(container, renderer, image, resolve); };
                     image.src = _this.imageUrl;
-                    console.log(image.src);
+                    //console.log(image.src);
                 });
             };
             ImageEditor.prototype._imageOnLoad = function (container, renderer, image, resolve) {
@@ -1166,7 +1167,7 @@ var PhotoEditor;
             ImageEditor.prototype._getReadyState = function (resolve, inc) {
                 var _this = this;
                 try {
-                    console.log(100 * inc);
+                    //console.log(100 * inc);
                     this.actions.sdk.getInputDimensions();
                     resolve(this.actions);
                     if (typeof (PhotoEditor.Handlers.onEditorLoaded) === 'function') {

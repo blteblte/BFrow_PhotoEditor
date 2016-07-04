@@ -42,7 +42,7 @@ namespace PhotoEditor.Editor {
                 image.onload = () => { this._imageOnLoad(container, renderer, image, resolve); };
 
                 image.src = this.imageUrl;
-                console.log(image.src);
+                //console.log(image.src);
             });
         }
 
@@ -85,7 +85,7 @@ namespace PhotoEditor.Editor {
 
         private _getReadyState(resolve, inc: number) {
             try {
-                console.log(100 * inc);
+                //console.log(100 * inc);
                 this.actions.sdk.getInputDimensions();
 
                 resolve(this.actions);
