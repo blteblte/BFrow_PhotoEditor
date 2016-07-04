@@ -653,7 +653,7 @@ var PhotoEditor;
                             //TODO: remove
                             if ($('#slider-force').val() == "1")
                                 value = parseFloat($('#f-value').val());
-                            console.log("passed value to AdjustmentOperation.set<operationName>(value): -----> ", value);
+                            console.log("passed value to AdjustmentOperation.setSaturation(value): -----> ", value, "float");
                             //
                             this.state.AdjustmentOperation.setSaturation(value);
                             this.state.saturationValue = value * settings.multiplier;
