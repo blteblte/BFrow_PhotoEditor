@@ -444,17 +444,23 @@ var PhotoEditor;
                     //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
                     //let _canvas = { height: $inner.height(), width: $inner.width() };
                     //console.log(this.state.originalZoom);
+                    var pixelRatio = parseFloat(this._getDevicePixelRatio());
+                    var realCanvasH = _canvas.height / pixelRatio;
+                    var realCanvasW = _canvas.width / pixelRatio;
+                    //console.log(realCanvasW, realCanvasH);
+                    //console.log(_outputDimensions.x, _outputDimensions.y);
                     var ratio = 1;
-                    if (_outputDimensions.y > _canvas.height) {
-                        ratio = parseFloat(_canvas.height) / _outputDimensions.y;
+                    if (_outputDimensions.y > realCanvasH) {
+                        ratio = realCanvasH / _outputDimensions.y;
                     }
-                    if (_outputDimensions.x > _canvas.width) {
-                        var assignable = parseFloat(_canvas.width) / _outputDimensions.x;
+                    if (_outputDimensions.x > realCanvasW) {
+                        var assignable = realCanvasW / _outputDimensions.x;
                         ratio = assignable < ratio ? assignable : ratio;
                     }
+                    //console.log(this.state.originalZoom * ratio);
                     var zoomRatioToSet = this.state.originalZoom * ratio;
-                    this.sdk.setZoom(zoomRatioToSet);
-                    this.sdk.render();
+                    this.editor.setZoom(zoomRatioToSet);
+                    this.editor.render();
                     //window.dispatchEvent(new Event('resize'));
                     if (typeof (callback) === 'function')
                         callback();
@@ -583,6 +589,18 @@ var PhotoEditor;
                     var path = PhotoEditor.Settings.APP_ROOT_PATH + "img/filters/";
                     return path + filterName + '.png';
                 };
+                BaseAction.prototype._getDevicePixelRatio = function () {
+                    var ratio = 1;
+                    // To account for zoom, change to use deviceXDPI instead of systemXDPI
+                    if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined && window.screen.systemXDPI > window.screen.logicalXDPI) {
+                        // Only allow for values > 1
+                        ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
+                    }
+                    else if (window.devicePixelRatio !== undefined) {
+                        ratio = window.devicePixelRatio;
+                    }
+                    return ratio;
+                };
                 return BaseAction;
             })();
             SDK.BaseAction = BaseAction;
@@ -662,13 +680,6 @@ var PhotoEditor;
                             this.state.brightnessValue = value * settings.multiplier;
                             break;
                         case PhotoEditor.Globals.AdjustmentTypes.Saturation:
-                            //test - rerender with same value
-                            //BUG in Microsoft Edge -> developers of SDK notified
-                            //TODO: remove
-                            if ($('#slider-force').val() == "1")
-                                value = parseFloat($('#f-value').val());
-                            console.log("passed value to AdjustmentOperation.setSaturation(value): -----> ", value, "float");
-                            //
                             this.state.AdjustmentOperation.setSaturation(value);
                             this.state.saturationValue = value * settings.multiplier;
                             break;
@@ -690,7 +701,7 @@ var PhotoEditor;
                             break;
                     }
                     if (render)
-                        this.sdk.render();
+                        this.editor.render();
                     if (typeof (callback) === 'function')
                         callback();
                 };

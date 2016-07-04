@@ -33,27 +33,35 @@ namespace PhotoEditor.Actions.SDK {
         * @return {Number}
         */
         FitToScreen(callback) {
-            var _outputDimensions = this.sdk.getOutputDimensions();
-            var _canvas = this.sdk.getCanvas();
+            let _outputDimensions = this.sdk.getOutputDimensions();
+            let _canvas = this.sdk.getCanvas();
             //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
             //let _canvas = { height: $inner.height(), width: $inner.width() };
 
             //console.log(this.state.originalZoom);
 
-            var ratio = 1;
-            if (_outputDimensions.y > _canvas.height) {
-                ratio = parseFloat(<string><any>_canvas.height) / _outputDimensions.y;
+            let pixelRatio = parseFloat(<string><any>this._getDevicePixelRatio());
+            let realCanvasH = _canvas.height / pixelRatio;
+            let realCanvasW = _canvas.width / pixelRatio;
+
+            //console.log(realCanvasW, realCanvasH);
+            //console.log(_outputDimensions.x, _outputDimensions.y);
+
+            let ratio = 1;
+            if (_outputDimensions.y > realCanvasH) {
+                ratio = realCanvasH / _outputDimensions.y;
             }
 
-            if (_outputDimensions.x > _canvas.width) {
-                var assignable = parseFloat(<string><any>_canvas.width) / _outputDimensions.x;
+            if (_outputDimensions.x > realCanvasW) {
+                let assignable = realCanvasW / _outputDimensions.x;
                 ratio = assignable < ratio ? assignable : ratio;
             }
+            //console.log(this.state.originalZoom * ratio);
 
             var zoomRatioToSet = this.state.originalZoom * ratio;
 
-            this.sdk.setZoom(zoomRatioToSet);
-            this.sdk.render();
+            this.editor.setZoom(zoomRatioToSet);
+            this.editor.render();
             //window.dispatchEvent(new Event('resize'));
 
             if (typeof (callback) === 'function') callback();
@@ -163,7 +171,7 @@ namespace PhotoEditor.Actions.SDK {
             });
         }
 
-        
+
 
         RemoveCrop() {
             let operationStack = this.editor.getOperationsStack();
@@ -182,6 +190,19 @@ namespace PhotoEditor.Actions.SDK {
         getFilterImageByName(filterName) {
             var path = `${Settings.APP_ROOT_PATH}img/filters/`;
             return path + filterName + '.png';
+        }
+
+        _getDevicePixelRatio() {
+            var ratio = 1;
+            // To account for zoom, change to use deviceXDPI instead of systemXDPI
+            if (window.screen.systemXDPI !== undefined && window.screen.logicalXDPI !== undefined && window.screen.systemXDPI > window.screen.logicalXDPI) {
+                // Only allow for values > 1
+                ratio = window.screen.systemXDPI / window.screen.logicalXDPI;
+            }
+            else if (window.devicePixelRatio !== undefined) {
+                ratio = window.devicePixelRatio;
+            }
+            return ratio;
         }
 
     }

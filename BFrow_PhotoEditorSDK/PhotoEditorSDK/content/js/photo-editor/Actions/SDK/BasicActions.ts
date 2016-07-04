@@ -67,13 +67,6 @@ namespace PhotoEditor.Actions.SDK {
                     this.state.brightnessValue = value * settings.multiplier;
                     break;
                 case Globals.AdjustmentTypes.Saturation:
-                    //test - rerender with same value
-                    //BUG in Microsoft Edge -> developers of SDK notified
-                    //TODO: remove
-                    if ($('#slider-force').val() == "1") value = parseFloat($('#f-value').val());
-                    console.log("passed value to AdjustmentOperation.setSaturation(value): -----> ", value, "float");
-                    //
-
                     this.state.AdjustmentOperation.setSaturation(value);
                     this.state.saturationValue = value * settings.multiplier;
                     break;
@@ -95,7 +88,7 @@ namespace PhotoEditor.Actions.SDK {
                     break;
             }
 
-            if (render) this.sdk.render();
+            if (render) this.editor.render();
             if (typeof (callback) === 'function') callback();
         }
 
