@@ -649,6 +649,12 @@ var PhotoEditor;
                             this.state.brightnessValue = value * settings.multiplier;
                             break;
                         case PhotoEditor.Globals.AdjustmentTypes.Saturation:
+                            //test - rerender with same value
+                            //TODO: remove
+                            if ($('#slider-force').val() == "1")
+                                value = parseFloat($('#f-value').val());
+                            console.log("passed value to AdjustmentOperation.set<operationName>(value): -----> ", value);
+                            //
                             this.state.AdjustmentOperation.setSaturation(value);
                             this.state.saturationValue = value * settings.multiplier;
                             break;
@@ -1081,7 +1087,6 @@ var PhotoEditor;
                         var value = parseFloat((parseFloat(ui.value) / parseFloat(adjustment.multiplier))).toPrecision(4);
                         $numBox.text(getDisplayValue(value));
                         instance.actions.Adjust(type, parseFloat(value));
-                        console.log(value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);

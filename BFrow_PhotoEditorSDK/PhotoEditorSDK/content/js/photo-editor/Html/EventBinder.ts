@@ -94,7 +94,6 @@
                     var value = parseFloat(<string><any>(parseFloat(<string><any>ui.value) / parseFloat(<string><any>adjustment.multiplier))).toPrecision(4);
                     $numBox.text(getDisplayValue(value));
                     instance.actions.Adjust(type, parseFloat(value));
-                    console.log(value);
                 }
             });
 

@@ -80,7 +80,6 @@ var PhotoEditor;
                         var value = parseFloat((parseFloat(ui.value) / parseFloat(adjustment.multiplier))).toPrecision(4);
                         $numBox.text(getDisplayValue(value));
                         instance.actions.Adjust(type, parseFloat(value));
-                        console.log(value);
                     }
                 });
                 $slider.find(".ui-slider-handle").append($numBox);
