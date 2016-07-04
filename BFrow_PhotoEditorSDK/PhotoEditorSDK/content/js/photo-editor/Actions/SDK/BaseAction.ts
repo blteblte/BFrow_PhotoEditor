@@ -163,6 +163,8 @@ namespace PhotoEditor.Actions.SDK {
             });
         }
 
+        
+
         RemoveCrop() {
             let operationStack = this.editor.getOperationsStack();
             operationStack.forEach((v) => {

@@ -12,6 +12,7 @@
         OrientationOperation: any = null;
         FilterOperation: any = null;
         AdjustmentOperation: any = null;
+        CurrentFilter: any = null;
 
         private _originalZoom: number = null;
         get originalZoom(): number {
@@ -135,12 +136,13 @@
             this.imageW = this.initialImageW;
             this.imageH = this.initialImageH;
 
-            this.brightnessValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Brightness).initial;
-            this.saturationValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Saturation).initial;
-            this.contrastValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Contrast).initial;
-            this.exposureValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Exposure).initial;
-            this.shadowsValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Shadows).initial;
-            this.highlightsValue = Globals.AdjustmentSettings.GetAdjustmentSettings(Globals.AdjustmentTypes.Highlights).initial;
+            var adj = Globals.AdjustmentSettings.GetAdjustmentSettings;
+            this.brightnessValue = adj(Globals.AdjustmentTypes.Brightness).initial;
+            this.saturationValue = adj(Globals.AdjustmentTypes.Saturation).initial;
+            this.contrastValue = adj(Globals.AdjustmentTypes.Contrast).initial;
+            this.exposureValue = adj(Globals.AdjustmentTypes.Exposure).initial;
+            this.shadowsValue = adj(Globals.AdjustmentTypes.Shadows).initial;
+            this.highlightsValue = adj(Globals.AdjustmentTypes.Highlights).initial;
         }
 
         ResetOrientationState() {
@@ -148,6 +150,16 @@
             this.rotation = 0;
             this.flippedV = false;
             this.flippedH = false;
+        }
+
+        ResetAdjustmentState() {
+            var adj = Globals.AdjustmentSettings.GetAdjustmentSettings;
+            this.brightnessValue = adj(Globals.AdjustmentTypes.Brightness).initial;
+            this.saturationValue = adj(Globals.AdjustmentTypes.Saturation).initial;
+            this.contrastValue = adj(Globals.AdjustmentTypes.Contrast).initial;
+            this.exposureValue = adj(Globals.AdjustmentTypes.Exposure).initial;
+            this.shadowsValue = adj(Globals.AdjustmentTypes.Shadows).initial;
+            this.highlightsValue = adj(Globals.AdjustmentTypes.Highlights).initial;
         }
 
         /**

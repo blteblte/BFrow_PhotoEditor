@@ -335,7 +335,11 @@ namespace PhotoEditor.Editor {
                 () => { getSubControls(Globals.AdjustmentTypes.Highlights, this.actions.state.highlightsValue); }
             ));
 
-            return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
+            let $resetTab = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Resset, 'resetTab1',
+                () => { this.actions.ResetColorSettings(); }
+            ));
+
+            return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights, $resetTab];
         }
 
         private _applySlickJS(tabId: number) {

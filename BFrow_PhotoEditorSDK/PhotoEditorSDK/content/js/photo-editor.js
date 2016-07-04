@@ -134,8 +134,8 @@ var PhotoEditor;
             }
             AdjustmentSettings.GetAdjustmentSettings = function (type) {
                 var lookup = {};
-                for (var i = 0, len = this._adjustmentSettings.length; i < len; i++) {
-                    lookup[this._adjustmentSettings[i].type] = this._adjustmentSettings[i];
+                for (var i = 0, len = AdjustmentSettings._adjustmentSettings.length; i < len; i++) {
+                    lookup[AdjustmentSettings._adjustmentSettings[i].type] = AdjustmentSettings._adjustmentSettings[i];
                 }
                 return lookup[type];
             };
@@ -184,6 +184,7 @@ var PhotoEditor;
                     this.OrientationOperation = null;
                     this.FilterOperation = null;
                     this.AdjustmentOperation = null;
+                    this.CurrentFilter = null;
                     this._originalZoom = null;
                     //private _wToHRatio: number = null;
                     //get wToHRatio(): number {
@@ -322,18 +323,28 @@ var PhotoEditor;
                     this.flippedV = false;
                     this.imageW = this.initialImageW;
                     this.imageH = this.initialImageH;
-                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
-                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
-                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
-                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
-                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
-                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
+                    var adj = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings;
+                    this.brightnessValue = adj(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = adj(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = adj(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = adj(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
                 ActionState.prototype.ResetOrientationState = function () {
                     this.OrientationOperation = null;
                     this.rotation = 0;
                     this.flippedV = false;
                     this.flippedH = false;
+                };
+                ActionState.prototype.ResetAdjustmentState = function () {
+                    var adj = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings;
+                    this.brightnessValue = adj(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = adj(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = adj(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = adj(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
                 /**
                 * Get image dimension ratio for specified dimension or reverse
@@ -637,7 +648,9 @@ var PhotoEditor;
                         flipV();
                     this.sdk.render();
                 };
-                BasicActions.prototype.Adjust = function (adjustmentType, value) {
+                BasicActions.prototype.Adjust = function (adjustmentType, value, render, callback) {
+                    if (render === void 0) { render = true; }
+                    if (callback === void 0) { callback = null; }
                     if (this.state.AdjustmentOperation == null) {
                         this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
                         this.editor.addOperation(this.state.AdjustmentOperation);
@@ -650,6 +663,7 @@ var PhotoEditor;
                             break;
                         case PhotoEditor.Globals.AdjustmentTypes.Saturation:
                             //test - rerender with same value
+                            //BUG in Microsoft Edge -> developers of SDK notified
                             //TODO: remove
                             if ($('#slider-force').val() == "1")
                                 value = parseFloat($('#f-value').val());
@@ -675,7 +689,21 @@ var PhotoEditor;
                             this.state.highlightsValue = value * settings.multiplier;
                             break;
                     }
-                    this.sdk.render();
+                    if (render)
+                        this.sdk.render();
+                    if (typeof (callback) === 'function')
+                        callback();
+                };
+                BasicActions.prototype.ResetColorSettings = function () {
+                    var _this = this;
+                    this.init(null, function () {
+                        if (_this.state.AdjustmentOperation !== null) {
+                            _this.editor.removeOperation(_this.state.AdjustmentOperation);
+                            _this.state.AdjustmentOperation = null;
+                            _this.state.ResetAdjustmentState();
+                            _this.sdk.render();
+                        }
+                    });
                 };
                 BasicActions.prototype.GenerateFilterIcons = function () {
                     var _this = this;
@@ -692,8 +720,11 @@ var PhotoEditor;
                                     _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
                                     _this.editor.addOperation(_this.state.FilterOperation);
                                 }
-                                _this.state.FilterOperation.setFilter(new filter());
-                                _this.sdk.render();
+                                if (_this.state.CurrentFilter === null || _this.state.CurrentFilter.name !== filter.name) {
+                                    _this.state.CurrentFilter = filter;
+                                    _this.state.FilterOperation.setFilter(new filter());
+                                    _this.sdk.render();
+                                }
                             });
                             var $image = $("<img src=\"" + _this.getFilterImageByName(filter.name) + "\" alt=\"\" />");
                             var $nameItem = $("<div>" + filter.displayName + "</div>");
@@ -1347,7 +1378,8 @@ var PhotoEditor;
                 var $exposure = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Exposure, 'exposure', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Exposure, _this.actions.state.exposureValue); }));
                 var $shadows = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Shadows, 'shadows', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Shadows, _this.actions.state.shadowsValue); }));
                 var $highlights = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Highlights, 'highlights', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Highlights, _this.actions.state.highlightsValue); }));
-                return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
+                var $resetTab = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetTab1', function () { _this.actions.ResetColorSettings(); }));
+                return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights, $resetTab];
             };
             ImageEditor.prototype._applySlickJS = function (tabId) {
                 $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ") > .photo-editor-ui_controls-container").slick({

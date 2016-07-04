@@ -54,8 +54,8 @@ var PhotoEditor;
             }
             AdjustmentSettings.GetAdjustmentSettings = function (type) {
                 var lookup = {};
-                for (var i = 0, len = this._adjustmentSettings.length; i < len; i++) {
-                    lookup[this._adjustmentSettings[i].type] = this._adjustmentSettings[i];
+                for (var i = 0, len = AdjustmentSettings._adjustmentSettings.length; i < len; i++) {
+                    lookup[AdjustmentSettings._adjustmentSettings[i].type] = AdjustmentSettings._adjustmentSettings[i];
                 }
                 return lookup[type];
             };

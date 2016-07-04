@@ -52,7 +52,7 @@ namespace PhotoEditor.Actions.SDK {
             this.sdk.render();
         }
 
-        Adjust(adjustmentType: Globals.AdjustmentTypes, value: number) {
+        Adjust(adjustmentType: Globals.AdjustmentTypes, value: number, render: boolean = true, callback = null) {
 
             if (this.state.AdjustmentOperation == null) {
                 this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
@@ -68,6 +68,7 @@ namespace PhotoEditor.Actions.SDK {
                     break;
                 case Globals.AdjustmentTypes.Saturation:
                     //test - rerender with same value
+                    //BUG in Microsoft Edge -> developers of SDK notified
                     //TODO: remove
                     if ($('#slider-force').val() == "1") value = parseFloat($('#f-value').val());
                     console.log("passed value to AdjustmentOperation.setSaturation(value): -----> ", value, "float");
@@ -94,7 +95,19 @@ namespace PhotoEditor.Actions.SDK {
                     break;
             }
 
-            this.sdk.render();
+            if (render) this.sdk.render();
+            if (typeof (callback) === 'function') callback();
+        }
+
+        ResetColorSettings() {
+            this.init(null, () => {
+                if (this.state.AdjustmentOperation !== null) {
+                    this.editor.removeOperation(this.state.AdjustmentOperation);
+                    this.state.AdjustmentOperation = null;
+                    this.state.ResetAdjustmentState();
+                    this.sdk.render();
+                }
+            });
         }
 
         GenerateFilterIcons() {
@@ -114,9 +127,11 @@ namespace PhotoEditor.Actions.SDK {
                             this.editor.addOperation(this.state.FilterOperation);
                         }
 
-                        this.state.FilterOperation.setFilter(new filter());
-                        this.sdk.render();
-
+                        if (this.state.CurrentFilter === null || this.state.CurrentFilter.name !== filter.name) {
+                            this.state.CurrentFilter = filter;
+                            this.state.FilterOperation.setFilter(new filter());
+                            this.sdk.render();
+                        }
                     });
                     var $image = $(`<img src="${this.getFilterImageByName(filter.name)}" alt="" />`);
                     var $nameItem = $(`<div>${filter.displayName}</div>`);

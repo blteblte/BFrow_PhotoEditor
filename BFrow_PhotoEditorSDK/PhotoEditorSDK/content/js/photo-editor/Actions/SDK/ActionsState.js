@@ -14,6 +14,7 @@ var PhotoEditor;
                     this.OrientationOperation = null;
                     this.FilterOperation = null;
                     this.AdjustmentOperation = null;
+                    this.CurrentFilter = null;
                     this._originalZoom = null;
                     //private _wToHRatio: number = null;
                     //get wToHRatio(): number {
@@ -152,18 +153,28 @@ var PhotoEditor;
                     this.flippedV = false;
                     this.imageW = this.initialImageW;
                     this.imageH = this.initialImageH;
-                    this.brightnessValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
-                    this.saturationValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
-                    this.contrastValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
-                    this.exposureValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
-                    this.shadowsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
-                    this.highlightsValue = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
+                    var adj = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings;
+                    this.brightnessValue = adj(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = adj(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = adj(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = adj(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
                 ActionState.prototype.ResetOrientationState = function () {
                     this.OrientationOperation = null;
                     this.rotation = 0;
                     this.flippedV = false;
                     this.flippedH = false;
+                };
+                ActionState.prototype.ResetAdjustmentState = function () {
+                    var adj = PhotoEditor.Globals.AdjustmentSettings.GetAdjustmentSettings;
+                    this.brightnessValue = adj(PhotoEditor.Globals.AdjustmentTypes.Brightness).initial;
+                    this.saturationValue = adj(PhotoEditor.Globals.AdjustmentTypes.Saturation).initial;
+                    this.contrastValue = adj(PhotoEditor.Globals.AdjustmentTypes.Contrast).initial;
+                    this.exposureValue = adj(PhotoEditor.Globals.AdjustmentTypes.Exposure).initial;
+                    this.shadowsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Shadows).initial;
+                    this.highlightsValue = adj(PhotoEditor.Globals.AdjustmentTypes.Highlights).initial;
                 };
                 /**
                 * Get image dimension ratio for specified dimension or reverse

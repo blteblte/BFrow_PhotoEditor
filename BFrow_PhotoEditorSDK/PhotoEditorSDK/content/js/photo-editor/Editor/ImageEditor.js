@@ -247,7 +247,8 @@ var PhotoEditor;
                 var $exposure = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Exposure, 'exposure', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Exposure, _this.actions.state.exposureValue); }));
                 var $shadows = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Shadows, 'shadows', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Shadows, _this.actions.state.shadowsValue); }));
                 var $highlights = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Highlights, 'highlights', function () { getSubControls(PhotoEditor.Globals.AdjustmentTypes.Highlights, _this.actions.state.highlightsValue); }));
-                return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights];
+                var $resetTab = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetTab1', function () { _this.actions.ResetColorSettings(); }));
+                return [$contrast, $brightness, $shadows, $saturation, $exposure, $highlights, $resetTab];
             };
             ImageEditor.prototype._applySlickJS = function (tabId) {
                 $("#" + this.containerId + " .photo-editor-ui_tab-container > div:nth-child(" + tabId + ") > .photo-editor-ui_controls-container").slick({

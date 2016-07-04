@@ -55,7 +55,9 @@ var PhotoEditor;
                         flipV();
                     this.sdk.render();
                 };
-                BasicActions.prototype.Adjust = function (adjustmentType, value) {
+                BasicActions.prototype.Adjust = function (adjustmentType, value, render, callback) {
+                    if (render === void 0) { render = true; }
+                    if (callback === void 0) { callback = null; }
                     if (this.state.AdjustmentOperation == null) {
                         this.state.AdjustmentOperation = new PhotoEditorSDK.Operations.AdjustmentsOperation(this.sdk, {});
                         this.editor.addOperation(this.state.AdjustmentOperation);
@@ -68,6 +70,7 @@ var PhotoEditor;
                             break;
                         case PhotoEditor.Globals.AdjustmentTypes.Saturation:
                             //test - rerender with same value
+                            //BUG in Microsoft Edge -> developers of SDK notified
                             //TODO: remove
                             if ($('#slider-force').val() == "1")
                                 value = parseFloat($('#f-value').val());
@@ -93,7 +96,21 @@ var PhotoEditor;
                             this.state.highlightsValue = value * settings.multiplier;
                             break;
                     }
-                    this.sdk.render();
+                    if (render)
+                        this.sdk.render();
+                    if (typeof (callback) === 'function')
+                        callback();
+                };
+                BasicActions.prototype.ResetColorSettings = function () {
+                    var _this = this;
+                    this.init(null, function () {
+                        if (_this.state.AdjustmentOperation !== null) {
+                            _this.editor.removeOperation(_this.state.AdjustmentOperation);
+                            _this.state.AdjustmentOperation = null;
+                            _this.state.ResetAdjustmentState();
+                            _this.sdk.render();
+                        }
+                    });
                 };
                 BasicActions.prototype.GenerateFilterIcons = function () {
                     var _this = this;
@@ -110,8 +127,11 @@ var PhotoEditor;
                                     _this.state.FilterOperation = new PhotoEditorSDK.Operations.FilterOperation(_this.sdk, {});
                                     _this.editor.addOperation(_this.state.FilterOperation);
                                 }
-                                _this.state.FilterOperation.setFilter(new filter());
-                                _this.sdk.render();
+                                if (_this.state.CurrentFilter === null || _this.state.CurrentFilter.name !== filter.name) {
+                                    _this.state.CurrentFilter = filter;
+                                    _this.state.FilterOperation.setFilter(new filter());
+                                    _this.sdk.render();
+                                }
                             });
                             var $image = $("<img src=\"" + _this.getFilterImageByName(filter.name) + "\" alt=\"\" />");
                             var $nameItem = $("<div>" + filter.displayName + "</div>");

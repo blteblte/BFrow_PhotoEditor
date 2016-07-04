@@ -37,7 +37,7 @@ namespace PhotoEditor.Globals {
 
     export class AdjustmentSettings {
 
-        private static _adjustmentSettings: Array<Adjustments> =
+        static _adjustmentSettings: Array<Adjustments> =
         [
             new Adjustments(AdjustmentTypes.Brightness, -50, 50, 0, 100),
             new Adjustments(AdjustmentTypes.Saturation, 0, 200, 100, 100),
@@ -47,10 +47,10 @@ namespace PhotoEditor.Globals {
             new Adjustments(AdjustmentTypes.Highlights, 0, 100, 100, 100)
         ];
 
-        static GetAdjustmentSettings (type: AdjustmentTypes): Adjustments {
+        static GetAdjustmentSettings(type: AdjustmentTypes): Adjustments {
             var lookup = {};
-            for (var i = 0, len = this._adjustmentSettings.length; i < len; i++) {
-                lookup[<string>this._adjustmentSettings[i].type] = this._adjustmentSettings[i];
+            for (var i = 0, len = AdjustmentSettings._adjustmentSettings.length; i < len; i++) {
+                lookup[<string>AdjustmentSettings._adjustmentSettings[i].type] = AdjustmentSettings._adjustmentSettings[i];
             }
             return lookup[<string>type];
         }
