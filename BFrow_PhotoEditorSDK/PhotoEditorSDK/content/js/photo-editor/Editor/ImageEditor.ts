@@ -347,6 +347,7 @@ namespace PhotoEditor.Editor {
             $(`#${this.containerId} .photo-editor-ui_tab-container > div:nth-child(${tabId}) > .photo-editor-ui_controls-container`).slick({
                 slidesToShow: 9,
                 slidesToScroll: 9,
+                //speed: 100,
                 dots: true,
                 touchMove: true,
                 infinite: false,
