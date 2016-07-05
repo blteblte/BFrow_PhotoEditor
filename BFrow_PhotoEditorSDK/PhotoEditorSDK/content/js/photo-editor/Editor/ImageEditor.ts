@@ -250,7 +250,7 @@ namespace PhotoEditor.Editor {
             ));
 
             let $fitToScreen = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.FitToScreen, 'fitToScreen',
-                () => { this.actions.TriggerFitToScreen() }
+                () => { /*this.actions.TriggerFitToScreen()*/ this.actions.FitToScreen() }
             ));
 
             let $resetTab1 = Html.HTMLControls.GetButtonContol(new Html.HTMLButtonControl(Globals.Texts.Buttons.Resset, 'resetTab1',

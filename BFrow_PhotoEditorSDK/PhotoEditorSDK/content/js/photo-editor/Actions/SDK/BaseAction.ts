@@ -32,40 +32,44 @@ namespace PhotoEditor.Actions.SDK {
         * @param {Function} callback
         * @return {Number}
         */
-        FitToScreen(callback) {
-            let _outputDimensions = this.sdk.getOutputDimensions();
-            let _canvas = this.sdk.getCanvas();
-            //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
-            //let _canvas = { height: $inner.height(), width: $inner.width() };
+        FitToScreen(callback = null) {
+            //let _outputDimensions = this.sdk.getOutputDimensions();
+            //let _canvas = this.sdk.getCanvas();
+            ////let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
+            ////let _canvas = { height: $inner.height(), width: $inner.width() };
 
-            //console.log(this.state.originalZoom);
+            ////console.log(this.state.originalZoom);
 
-            let pixelRatio = parseFloat(<string><any>this._getDevicePixelRatio());
-            let realCanvasH = _canvas.height / pixelRatio;
-            let realCanvasW = _canvas.width / pixelRatio;
+            //let pixelRatio = parseFloat(<string><any>this._getDevicePixelRatio());
+            //let realCanvasH = _canvas.height / pixelRatio;
+            //let realCanvasW = _canvas.width / pixelRatio;
 
-            //console.log(realCanvasW, realCanvasH);
-            //console.log(_outputDimensions.x, _outputDimensions.y);
+            ////console.log(realCanvasW, realCanvasH);
+            ////console.log(_outputDimensions.x, _outputDimensions.y);
 
-            let ratio = 1;
-            if (_outputDimensions.y > realCanvasH) {
-                ratio = realCanvasH / _outputDimensions.y;
-            }
+            //let ratio = 1;
+            //if (_outputDimensions.y > realCanvasH) {
+            //    ratio = realCanvasH / _outputDimensions.y;
+            //}
 
-            if (_outputDimensions.x > realCanvasW) {
-                let assignable = realCanvasW / _outputDimensions.x;
-                ratio = assignable < ratio ? assignable : ratio;
-            }
-            //console.log(this.state.originalZoom * ratio);
+            //if (_outputDimensions.x > realCanvasW) {
+            //    let assignable = realCanvasW / _outputDimensions.x;
+            //    ratio = assignable < ratio ? assignable : ratio;
+            //}
+            ////console.log(this.state.originalZoom * ratio);
 
-            var zoomRatioToSet = this.state.originalZoom * ratio;
+            //var zoomRatioToSet = this.state.originalZoom * ratio;
 
-            this.editor.setZoom(zoomRatioToSet);
+            //this.editor.setZoom(zoomRatioToSet);
+            //this.editor.render();
+            ////window.dispatchEvent(new Event('resize'));
+
+            //if (typeof (callback) === 'function') callback();
+            //return zoomRatioToSet;
+
+            this.editor.setZoom(this.editor.getDefaultZoom());
             this.editor.render();
-            //window.dispatchEvent(new Event('resize'));
-
             if (typeof (callback) === 'function') callback();
-            return zoomRatioToSet;
         }
 
         TriggerFitToScreen() {
@@ -165,7 +169,8 @@ namespace PhotoEditor.Actions.SDK {
 
                         this.RemoveCrop();
 
-                        this.TriggerFitToScreen();
+                        //this.TriggerFitToScreen();
+                        this.FitToScreen();
                     }, false);
                 }, false);
             });
@@ -192,6 +197,9 @@ namespace PhotoEditor.Actions.SDK {
             return path + filterName + '.png';
         }
 
+        /**
+         * @deprecated no need for this anymore
+         */
         _getDevicePixelRatio() {
             var ratio = 1;
             // To account for zoom, change to use deviceXDPI instead of systemXDPI

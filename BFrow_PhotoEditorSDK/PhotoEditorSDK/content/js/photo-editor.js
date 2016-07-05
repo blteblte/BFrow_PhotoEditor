@@ -439,32 +439,36 @@ var PhotoEditor;
                 * @return {Number}
                 */
                 BaseAction.prototype.FitToScreen = function (callback) {
-                    var _outputDimensions = this.sdk.getOutputDimensions();
-                    var _canvas = this.sdk.getCanvas();
-                    //let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
-                    //let _canvas = { height: $inner.height(), width: $inner.width() };
-                    //console.log(this.state.originalZoom);
-                    var pixelRatio = parseFloat(this._getDevicePixelRatio());
-                    var realCanvasH = _canvas.height / pixelRatio;
-                    var realCanvasW = _canvas.width / pixelRatio;
-                    //console.log(realCanvasW, realCanvasH);
-                    //console.log(_outputDimensions.x, _outputDimensions.y);
-                    var ratio = 1;
-                    if (_outputDimensions.y > realCanvasH) {
-                        ratio = realCanvasH / _outputDimensions.y;
-                    }
-                    if (_outputDimensions.x > realCanvasW) {
-                        var assignable = realCanvasW / _outputDimensions.x;
-                        ratio = assignable < ratio ? assignable : ratio;
-                    }
-                    //console.log(this.state.originalZoom * ratio);
-                    var zoomRatioToSet = this.state.originalZoom * ratio;
-                    this.editor.setZoom(zoomRatioToSet);
+                    //let _outputDimensions = this.sdk.getOutputDimensions();
+                    //let _canvas = this.sdk.getCanvas();
+                    ////let $inner = $('.pesdk-react-canvasControls.pesdk-react-canvasControls__innerContainer');
+                    ////let _canvas = { height: $inner.height(), width: $inner.width() };
+                    if (callback === void 0) { callback = null; }
+                    ////console.log(this.state.originalZoom);
+                    //let pixelRatio = parseFloat(<string><any>this._getDevicePixelRatio());
+                    //let realCanvasH = _canvas.height / pixelRatio;
+                    //let realCanvasW = _canvas.width / pixelRatio;
+                    ////console.log(realCanvasW, realCanvasH);
+                    ////console.log(_outputDimensions.x, _outputDimensions.y);
+                    //let ratio = 1;
+                    //if (_outputDimensions.y > realCanvasH) {
+                    //    ratio = realCanvasH / _outputDimensions.y;
+                    //}
+                    //if (_outputDimensions.x > realCanvasW) {
+                    //    let assignable = realCanvasW / _outputDimensions.x;
+                    //    ratio = assignable < ratio ? assignable : ratio;
+                    //}
+                    ////console.log(this.state.originalZoom * ratio);
+                    //var zoomRatioToSet = this.state.originalZoom * ratio;
+                    //this.editor.setZoom(zoomRatioToSet);
+                    //this.editor.render();
+                    ////window.dispatchEvent(new Event('resize'));
+                    //if (typeof (callback) === 'function') callback();
+                    //return zoomRatioToSet;
+                    this.editor.setZoom(this.editor.getDefaultZoom());
                     this.editor.render();
-                    //window.dispatchEvent(new Event('resize'));
                     if (typeof (callback) === 'function')
                         callback();
-                    return zoomRatioToSet;
                 };
                 BaseAction.prototype.TriggerFitToScreen = function () {
                     window.dispatchEvent(new Event('resize'));
@@ -566,7 +570,8 @@ var PhotoEditor;
                         _this.ResetOrientation(function () {
                             _this.ResizeImage(_this.state.initialImageW, _this.state.initialImageH, function () {
                                 _this.RemoveCrop();
-                                _this.TriggerFitToScreen();
+                                //this.TriggerFitToScreen();
+                                _this.FitToScreen();
                             }, false);
                         }, false);
                     });
@@ -589,6 +594,9 @@ var PhotoEditor;
                     var path = PhotoEditor.Settings.APP_ROOT_PATH + "img/filters/";
                     return path + filterName + '.png';
                 };
+                /**
+                 * @deprecated no need for this anymore
+                 */
                 BaseAction.prototype._getDevicePixelRatio = function () {
                     var ratio = 1;
                     // To account for zoom, change to use deviceXDPI instead of systemXDPI
@@ -1339,7 +1347,7 @@ var PhotoEditor;
                         _this.actions._createSubControls([$cancelResize, $widthInput, $lockRatioButton, $heightInput, $submitResize], $parent);
                     });
                 }));
-                var $fitToScreen = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.FitToScreen, 'fitToScreen', function () { _this.actions.TriggerFitToScreen(); }));
+                var $fitToScreen = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.FitToScreen, 'fitToScreen', function () { _this.actions.FitToScreen(); }));
                 var $resetTab1 = PhotoEditor.Html.HTMLControls.GetButtonContol(new PhotoEditor.Html.HTMLButtonControl(PhotoEditor.Globals.Texts.Buttons.Resset, 'resetTab1', function () { _this.actions.ResetPictureSettings(); }));
                 return [$crop, $rotateLeft, $rotateRight, $flipH, $flipV, $fitToScreen, $resetTab1];
             };

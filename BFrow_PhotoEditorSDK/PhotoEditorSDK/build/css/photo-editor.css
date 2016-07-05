@@ -179,10 +179,9 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
     .image-editor .photo-editor-instance-container{height: 350px;}
 }
 @media only screen and (max-width : 450px){
-    .image-editor .photo-editor-instance-container{height: 300px;}
+
 }
 @media only screen and (max-width : 400px){
-    .image-editor .photo-editor-instance-container{height: 250px;}
     .photo-editor-ui_container .slick-track > div{font-size: 12px;}
     .photo-editor-ui_container .slick-track > div img{width: 90%;}
 }
