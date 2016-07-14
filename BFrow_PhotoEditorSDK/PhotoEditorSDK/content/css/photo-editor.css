@@ -104,6 +104,7 @@ body .pesdk-react-controls.pesdk-react-controls__overlay.pesdk-react-controls__o
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item{ display: inline-block; margin: 4px; cursor: pointer; text-align: center;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item img{width: 80%;border-radius:0;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item div{color: gray;margin-top: 6px;}
+.photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item:hover img{border: 1px solid #c0b9a8;}
 .photo-editor-ui_container > .photo-editor-ui_tab-container > div .photo-editor-filter-item:hover div{color: #c0b9a8;}
 
 .photo-editor-ui_tab-control-container{background: #f4f4f4;color: #8c8678;margin-bottom: 10px;position: relative;margin: 0 2% 20px;font-size: 16px;}
